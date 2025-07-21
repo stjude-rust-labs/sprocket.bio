@@ -1,0 +1,26 @@
+@import './styles/vitepress-overrides.css';
+@import './styles/typography.css';
+@import './styles/colors.css';
+@import './styles/utilities.css';
+
+/**
+ * Custom
+ * -------------------------------------------------------------------------- */
+
+:root {
+	--vp-nav-logo-height: 32px;
+}
+
+.VPNavBarTitle > .title {
+  margin-top: 2px;
+  padding-bottom: 5px;
+}
+
+
+.dark {
+  --vp-c-bg: var(--theme-blue-900);
+  --vp-c-divider: #e2e2e333;
+
+  --vp-c-white: #e2e2e3;
+  --vp-sidebar-bg-color: #111420;
+}
