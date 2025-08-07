@@ -47,8 +47,8 @@ const copyToClipboard = async () => {
       <img v-if="copyText === 'Copy'" src="/svg/heroicons-outline-document-duplicate.svg" alt="Copy" class="code-preview__copy-icon">
       <img v-else src="/svg/heroicons-outline-check.svg" alt="Copied" class="code-preview__copy-icon">
     </button>
-    <div v-if="$slots.default && preformatted" class="code-preview__block">
-      <slot></slot>
+    <div style="margin-top: -16px; margin-bottom: -16px" v-if="$slots.default && preformatted" class="code-preview__block">
+      <slot "></slot>
     </div>
     <pre class="code-preview__block" v-else><code><slot></slot>{{ value }}</code></pre>
   </div>

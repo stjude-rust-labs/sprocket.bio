@@ -6,7 +6,7 @@ import HomepageContent from './HomepageContent.vue'
 
 <template>
   <Hero>
-    <slot />
+    <slot></slot>
   </Hero>
   <Showcase />
   <HomepageContent />

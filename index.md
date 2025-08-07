@@ -8,8 +8,14 @@ sidebar: false
 
 <HomePage>
 
+<template #install>
+```bash
+cargo install sprocket --locked
+```
+</template>
+
 ```wdl
-version 1.0
+version 1.2
 
 workflow count_lines {
     input { File input_file }

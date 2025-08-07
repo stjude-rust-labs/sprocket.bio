@@ -1,6 +1,62 @@
 <script setup>
-import PlatformCodePreview from "./PlatformCodePreview.vue";
 import CodePreview from "./CodePreview.vue";
+import { createHighlighter } from 'shiki';
+import { onMounted, ref } from "vue";
+import axios from "axios";
+
+const grammarUrl = "https://raw.githubusercontent.com/stjude-rust-labs/sprocket-vscode/refs/heads/main/syntaxes/wdl.tmGrammar.json";
+const installCode = ref(null);
+const wdlCode = ref(null);
+const runCode = ref(null);
+
+onMounted(async () => {
+  const wdl = await axios.get(grammarUrl);
+
+  const highlighter= await createHighlighter({
+    themes: ["github-dark"],
+    langs: ["bash", wdl.data]
+  });
+
+  installCode.value = await highlighter.codeToHtml("cargo install sprocket --locked", {
+    lang: "bash",
+    theme: "github-dark",
+    colorReplacements: {
+      "#24292e": "none"
+    }
+  });
+
+  const wdlCodeText = `version 1.2
+
+workflow count_lines {
+    input { File input_file }
+    call Count { input: file = input_file }
+    output { Int num_lines = Count.num_lines }
+}
+
+task Count {
+    input { File file }
+    command { wc -l \${file} | awk '{print $1}' }
+    output { Int num_lines = read_int(stdout()) }
+}`;
+
+   wdlCode.value = await highlighter.codeToHtml(wdlCodeText, {
+    lang: "wdl",
+    theme: "github-dark",
+    colorReplacements: {
+      "#24292e": "none"
+    }
+  });
+
+    runCode.value = await highlighter.codeToHtml("sprocket run example.wdl", {
+    lang: "bash",
+    theme: "github-dark",
+    colorReplacements: {
+      "#24292e": "none"
+    }
+  });
+
+});
+
 </script>
 
 <template>
@@ -31,25 +87,25 @@ import CodePreview from "./CodePreview.vue";
         <!-- Right: Code Cards -->
         <section class="hero__right-column">
           <!-- Card 1: Install -->
-          <PlatformCodePreview
-            windows-command="cargo install sprocket"
-            mac-command="cargo install sprocket"
-            unix-command="cargo install sprocket"
-          />
+          <div class="card" v-if="installCode != null">
+            <CodePreview header="bash" preformatted>
+              <div v-html="installCode"></div>
+            </CodePreview>
+          </div>
 
           <!-- Card 2: WDL Example -->
-          <div class="card">
-            <CodePreview header="WDL" preformatted>
-              <slot />
+          <div class="card" v-if="wdlCode != null">
+            <CodePreview header="wdl" preformatted>
+              <div v-html="wdlCode"></div>
             </CodePreview>
           </div>
 
           <!-- Card 3: Run Example -->
-          <PlatformCodePreview
-            windows-command="sprocket run example.wdl -vvv"
-            mac-command="sprocket run example.wdl -vvv"
-            unix-command="sprocket run example.wdl -vvv"
-          />
+          <div class="card" v-if="runCode != null">
+            <CodePreview header="bash" preformatted>
+              <div v-html="runCode"></div>
+            </CodePreview>
+          </div>
         </section>
       </div>
     </div>
