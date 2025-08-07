@@ -15,19 +15,7 @@ cargo install sprocket --locked
 </template>
 
 ```wdl
-version 1.2
 
-workflow count_lines {
-    input { File input_file }
-    call Count { input: file = input_file }
-    output { Int num_lines = Count.num_lines }
-}
-
-task Count {
-    input { File file }
-    command { wc -l ${file} | awk '{print $1}' }
-    output { Int num_lines = read_int(stdout()) }
-}
 ```
 
 </Homepage>

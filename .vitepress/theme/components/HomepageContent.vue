@@ -43,7 +43,8 @@ onBeforeUnmount(() => {
             <span class="homepage__title-highlight">Sprocket Powers</span>
             Your Workflows
           </h2>
-          <p class="typo-body1 homepage__subtitle">Sprocket is built for speed and efficiency, orchestrating complex WDL-based workflows with the power of high-performance computing. </p>
+          <p class="typo-body1 homepage__subtitle">Sprocket is built for speed and efficiency, orchestrating complex
+            WDL-based workflows with the power of high-performance computing. </p>
           <a href="/overview" class="typo-btn homepage__btn">
             Explore Documentation
           </a>
@@ -64,7 +65,8 @@ onBeforeUnmount(() => {
             Join
             <span class="homepage__title-highlight">Our Community</span>
           </h2>
-          <p class="typo-body1 homepage__subtitle">Connect with fellow researchers and developers, stay updated on the latest features,and share ideas to push the boundaries of bioinformatics.</p>
+          <p class="typo-body1 homepage__subtitle">Connect with fellow researchers and developers, stay updated on the
+            latest features,and share ideas to push the boundaries of bioinformatics.</p>
           <a href="/overview" class="typo-btn homepage__btn homepage__btn--slack">
             <span class="homepage__btn-slack-icon"></span> Join Slack
           </a>
@@ -122,12 +124,10 @@ onBeforeUnmount(() => {
 }
 
 .homepage__title-highlight {
-  background: linear-gradient(
-    90deg,
-    var(--theme-gradient-stop-start),
-    var(--theme-gradient-stop-middle),
-    var(--theme-gradient-stop-end)
-  );
+  background: linear-gradient(90deg,
+      var(--theme-gradient-stop-start),
+      var(--theme-gradient-stop-middle),
+      var(--theme-gradient-stop-end));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -173,8 +173,7 @@ onBeforeUnmount(() => {
   display: inline-block;
   width: 1.2em;
   height: 1.2em;
-  background: url("https://a.slack-edge.com/80588/marketing/img/icons/icon_slack_hash_colored.png")
-    no-repeat center/contain;
+  background: url("https://a.slack-edge.com/80588/marketing/img/icons/icon_slack_hash_colored.png") no-repeat center/contain;
 }
 
 .homepage__video {
@@ -190,6 +189,10 @@ onBeforeUnmount(() => {
 @media (min-width: 1024px) {
   .homepage__background {
     padding: 6rem 0;
+  }
+
+  .homepage__video {
+    width: 75%;
   }
 }
 

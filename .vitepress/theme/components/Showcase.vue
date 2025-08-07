@@ -11,7 +11,7 @@
             Designed to Work with Your Tools,
             <span class="showcase__title-highlight">on Your Infrastructure</span>
           </h2>
-          <a href="/overview" class="typo-btn showcase__btn">
+          <a href="/overview.html" class="typo-btn showcase__btn">
             Explore Documentation
           </a>
         </div>
@@ -22,7 +22,7 @@
           <div class="showcase__column">
             <h3 class="typo-body2 showcase__column-title">Local Environments</h3>
             <h4 class="typo-h2 showcase__column-subtitle">Where Sprocket Runs</h4>
-            
+
             <div class="showcase__items">
               <div class="showcase__item">
                 <div class="showcase__icon-box">
@@ -49,7 +49,7 @@
           <div class="showcase__column">
             <h3 class="typo-body2 showcase__column-title">Cloud Providers</h3>
             <h4 class="typo-h2 showcase__column-subtitle">Where the data lives</h4>
-            
+
             <div class="showcase__items">
               <div class="showcase__item">
                 <div class="showcase__icon-box">
@@ -76,13 +76,14 @@
           <div class="showcase__column">
             <h3 class="typo-body2 showcase__column-title">Supported Technologies</h3>
             <h4 class="typo-h2 showcase__column-subtitle">Where the execution happens</h4>
-            
+
             <div class="showcase__items">
               <div class="showcase__item">
                 <div class="showcase__icon-box">
-                  <img src="/svg/kubernetes.svg" alt="Kubernetes" class="showcase__icon">
+                  <img src="/svg/docker-mark-white.svg" alt="Docker" class="showcase__icon">
                 </div>
-                <span class="typo-body2 showcase__label">Kubernetes</span>
+                <span class="typo-body2 showcase__label showcase__label-tes-mobile">Docker</span>
+                <span class="typo-body2 showcase__label showcase__label-tes-desktop">Docker</span>
               </div>
               <div class="showcase__item">
                 <div class="showcase__icon-box">
@@ -132,12 +133,10 @@
 }
 
 .showcase__title-highlight {
-  background: linear-gradient(
-    90deg,
-    var(--theme-gradient-stop-start),
-    var(--theme-gradient-stop-middle),
-    var(--theme-gradient-stop-end)
-  );
+  background: linear-gradient(90deg,
+      var(--theme-gradient-stop-start),
+      var(--theme-gradient-stop-middle),
+      var(--theme-gradient-stop-end));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -241,7 +240,7 @@
   .showcase__label-tes-desktop {
     display: block;
   }
-  
+
   .showcase__label-tes-mobile {
     display: none;
   }

@@ -12,7 +12,7 @@ const runCode = ref(null);
 onMounted(async () => {
   const wdl = await axios.get(grammarUrl);
 
-  const highlighter= await createHighlighter({
+  const highlighter = await createHighlighter({
     themes: ["github-dark"],
     langs: ["bash", wdl.data]
   });
@@ -27,19 +27,25 @@ onMounted(async () => {
 
   const wdlCodeText = `version 1.2
 
-workflow count_lines {
-    input { File input_file }
-    call Count { input: file = input_file }
-    output { Int num_lines = Count.num_lines }
-}
+task say_hello {
+    input {
+        String greeting
+    }
 
-task Count {
-    input { File file }
-    command { wc -l \${file} | awk '{print $1}' }
-    output { Int num_lines = read_int(stdout()) }
+    command <<<
+        echo "~{greeting}, world!"
+    >>>
+
+    output {
+        String out = read_string(stdout())
+    }
+
+    requirements {
+        container: "ubuntu:latest"
+    }
 }`;
 
-   wdlCode.value = await highlighter.codeToHtml(wdlCodeText, {
+  wdlCode.value = await highlighter.codeToHtml(wdlCodeText, {
     lang: "wdl",
     theme: "github-dark",
     colorReplacements: {
@@ -47,7 +53,7 @@ task Count {
     }
   });
 
-    runCode.value = await highlighter.codeToHtml("sprocket run example.wdl", {
+  runCode.value = await highlighter.codeToHtml("sprocket run example.wdl --entrypoint say_hello greeting=\"Hello\"", {
     lang: "bash",
     theme: "github-dark",
     colorReplacements: {
@@ -66,21 +72,22 @@ task Count {
         <!-- Left: Headline and Actions -->
         <section class="hero__left-column">
           <h1 class="typo-h1 hero__title">
-            <span class="hero__title-gradient">Sprocket:</span>
-            The Bioinformatics Workflow Engine
+            <span class="hero__title-gradient">Sprocket.</span>
+            The Bioinformatics Workflow Engine.
           </h1>
           <p class="typo-body1 hero__subtitle">
             Sprocket is a high-performance, modern, and open-source workflow
             engine for bioinformatics. Create, test, and run your analyses
             locally, then seamlessly move to HPC or the cloud to handle
-            thousands of parallel tasks.
+            thousands of parallel workflows.
           </p>
           <div class="hero__actions">
-            <a href="#" class="typo-btn hero__btn hero__btn--primary">
-              <span>↗</span> Explore Documentation
+            <a href="/overview.html" class="typo-btn hero__btn hero__btn--primary">
+              <span>↗</span> Explore documentation
             </a>
-            <a href="#" class="typo-btn hero__btn hero__btn--slack">
-              <span class="hero__btn-slack-icon"></span> Join Slack
+            <a href="https://join.slack.com/t/openwdl/shared_invite/zt-ctmj4mhf-cFBNxIiZYs6SY9HgM9UAVw"
+              class="typo-btn hero__btn hero__btn--slack">
+              <span class="hero__btn-slack-icon"></span> Join us on Slack
             </a>
           </div>
         </section>
@@ -138,12 +145,10 @@ task Count {
 }
 
 .hero__title-gradient {
-  background: linear-gradient(
-    90deg,
-    var(--theme-gradient-stop-start),
-    var(--theme-gradient-stop-middle),
-    var(--theme-gradient-stop-end)
-  );
+  background: linear-gradient(90deg,
+      var(--theme-gradient-stop-start),
+      var(--theme-gradient-stop-middle),
+      var(--theme-gradient-stop-end));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -230,17 +235,17 @@ task Count {
   display: inline-block;
   width: 1.2em;
   height: 1.2em;
-  background: url("https://a.slack-edge.com/80588/marketing/img/icons/icon_slack_hash_colored.png")
-    no-repeat center/contain;
+  background: url("https://a.slack-edge.com/80588/marketing/img/icons/icon_slack_hash_colored.png") no-repeat center/contain;
 }
 
 /* ========================================
   Responsive Layout
   ======================================== */
-@media (min-width: 1025px) {
+@media (min-width: 1175px) {
   .hero__background {
-    padding: 6.25rem 0 6.25rem 0;
+    padding: 4.25rem 0 4.25rem 0;
   }
+
   .hero__content {
     flex-direction: row;
   }
@@ -250,7 +255,7 @@ task Count {
   }
 
   .hero__right-column {
-    flex: 0 0 500px;
+    flex: 0 0 700px;
   }
 }
 </style>
