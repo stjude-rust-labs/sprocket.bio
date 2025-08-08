@@ -67,7 +67,8 @@ onBeforeUnmount(() => {
           </h2>
           <p class="typo-body1 homepage__subtitle">Connect with fellow researchers and developers, stay updated on the
             latest features,and share ideas to push the boundaries of bioinformatics.</p>
-          <a href="/overview" class="typo-btn homepage__btn homepage__btn--slack">
+          <a href="https://join.slack.com/t/openwdl/shared_invite/zt-ctmj4mhf-cFBNxIiZYs6SY9HgM9UAVw"
+            class="typo-btn homepage__btn homepage__btn--slack">
             <span class="homepage__btn-slack-icon"></span> Join Slack
           </a>
         </div>
