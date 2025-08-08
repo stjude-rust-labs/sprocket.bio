@@ -61,7 +61,7 @@
                 <div class="showcase__icon-box">
                   <img src="/svg/google-cloud.svg" alt="Google Cloud Provider" class="showcase__icon">
                 </div>
-                <span class="typo-body2 showcase__label">Google Cloud Provider</span>
+                <span class="typo-body2 showcase__label">Google Cloud</span>
               </div>
               <div class="showcase__item">
                 <div class="showcase__icon-box">
@@ -84,6 +84,14 @@
                 </div>
                 <span class="typo-body2 showcase__label showcase__label-tes-mobile">Docker</span>
                 <span class="typo-body2 showcase__label showcase__label-tes-desktop">Docker</span>
+              </div>
+              <div class="showcase__item">
+                <div class="showcase__icon-box">
+                  <img src="/svg/server.svg" alt="Docker" class="showcase__icon">
+                </div>
+                <span class="typo-body2 showcase__label showcase__label-tes-mobile">HPC</span>
+                <span class="typo-body2 showcase__label showcase__label-tes-desktop">High-performance Computing
+                  Cluster (HPC)</span>
               </div>
               <div class="showcase__item">
                 <div class="showcase__icon-box">
@@ -207,7 +215,9 @@
   align-items: center;
   justify-content: center;
   width: 4rem;
+  min-width: 4rem;
   height: 4rem;
+  min-height: 4rem;
   background: linear-gradient(to top, var(--theme-blue-800), var(--theme-blue-600));
   border: 1px solid var(--theme-blue-500);
   border-radius: 0.75rem;

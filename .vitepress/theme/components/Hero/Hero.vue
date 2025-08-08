@@ -95,22 +95,19 @@ task say_hello {
         <section class="hero__right-column">
           <!-- Card 1: Install -->
           <div class="card" v-if="installCode != null">
-            <CodePreview header="bash" preformatted>
-              <div v-html="installCode"></div>
+            <CodePreview header="bash" preformatted :value="installCode">
             </CodePreview>
           </div>
 
           <!-- Card 2: WDL Example -->
           <div class="card" v-if="wdlCode != null">
-            <CodePreview header="wdl" preformatted>
-              <div v-html="wdlCode"></div>
+            <CodePreview header="wdl" preformatted :value="wdlCode">
             </CodePreview>
           </div>
 
           <!-- Card 3: Run Example -->
           <div class="card" v-if="runCode != null">
-            <CodePreview header="bash" preformatted>
-              <div v-html="runCode"></div>
+            <CodePreview header="bash" preformatted :value="runCode">
             </CodePreview>
           </div>
         </section>

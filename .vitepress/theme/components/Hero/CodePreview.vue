@@ -1,6 +1,7 @@
 <script setup>
 import { ref, nextTick } from 'vue';
 
+
 const props = defineProps({
   header: {
     type: String,
@@ -17,17 +18,18 @@ const props = defineProps({
 });
 
 const previewRef = ref(null);
+const codeRef = ref(null);
 const copyText = ref('Copy');
 
 const copyToClipboard = async () => {
   await nextTick();
   let text = '';
+
   // Prefer the value prop; otherwise extract textContent from slot
-  if (props.value) {
-    text = props.value;
-  } else if (previewRef.value) {
-    text = previewRef.value.innerText || '';
+  if (codeRef.value) {
+    text = codeRef.value.textContent || '';
   }
+
   if (text) {
     await navigator.clipboard.writeText(text);
     copyText.value = 'Copied!';
@@ -48,11 +50,13 @@ const copyToClipboard = async () => {
         class="code-preview__copy-icon">
       <img v-else src="/svg/heroicons-outline-check.svg" alt="Copied" class="code-preview__copy-icon">
     </button>
-    <div style="margin-top: -16px; margin-bottom: -16px" v-if="$slots.default && preformatted"
-      class="code-preview__block">
-      <slot></slot>
+    <div ref="codeRef">
+      <div v-if="$slots.default && preformatted" class="code-preview__block">
+        <div style="margin-top: -16px; margin-bottom: -16px" v-html="value"></div>
+      </div>
+      <pre style="margin-top: -16px; margin-bottom: -16px" class="code-preview__block"
+        v-else><code><div v-html="value"></div></code></pre>
     </div>
-    <pre class="code-preview__block" v-else><code><slot></slot>{{ value }}</code></pre>
   </div>
 </template>
 

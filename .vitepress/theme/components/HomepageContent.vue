@@ -58,7 +58,7 @@ onBeforeUnmount(() => {
   </section>
   <section class="homepage__background homepage__background--glow">
     <div class="container">
-      <div class="homepage__content" style="padding-top: 6rem; padding-bottom: 6rem;">
+      <div class="homepage__content" style="padding-top: 0rem; padding-bottom: 6rem;">
         <!-- Header -->
         <div class="homepage__header">
           <h2 class="typo-h1 homepage__title">
@@ -76,10 +76,6 @@ onBeforeUnmount(() => {
   </section>
   <footer class="container homepage__footer">
     <img src="/sprocket-logo-dark.png" alt="Sprocket Logo" style="height: 35px;">
-    <div class="homepage__footer-links">
-      <a class="typo-body2" href="/terms">Terms & Conditions</a>
-      <a class="typo-body2" href="/privacy">Privacy Policy</a>
-    </div>
   </footer>
 </template>
 
