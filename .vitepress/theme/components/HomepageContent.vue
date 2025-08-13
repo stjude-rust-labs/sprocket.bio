@@ -69,7 +69,7 @@ onBeforeUnmount(() => {
             latest features,and share ideas to push the boundaries of bioinformatics.</p>
           <a href="https://join.slack.com/t/openwdl/shared_invite/zt-ctmj4mhf-cFBNxIiZYs6SY9HgM9UAVw"
             class="typo-btn homepage__btn homepage__btn--slack">
-            <span class="homepage__btn-slack-icon"></span> Join Slack
+            <span class="homepage__btn-slack-icon"></span> Join us on Slack
           </a>
         </div>
       </div>
