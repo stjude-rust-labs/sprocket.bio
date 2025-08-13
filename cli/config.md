@@ -65,3 +65,11 @@ except = ['ContainerUri', 'SnakeCase']
 ```
 
 Configuration resolution can be disabled by passing the `--skip-config-search` option on the command line. This will disable searching for and loading configuration files. The only configuration loaded will be that (if) specified by the `--config` command line argument.
+
+## Ignoring files and directories
+
+Sprocket is able to parse `.sprocketignore` files found in the current working directory, its parent directories, and its child directories. The syntax and semantics of these "ignorefiles" are similar to `.gitignore` files.
+
+In short, each line of the ignorefile represents a path or glob pattern that should be ignored by Sprocket invocations. Ignorefiles apply their path filters to the directory they are in and any child directories, but not to their parent directory.
+
+This is useful if you have any WDL files that should not be analyzed, checked, or documented. Note that ignorefiles only impact searching for files with the extension `.wdl`.
