@@ -252,7 +252,7 @@ task say_hello {
   }
 
   .hero__right-column {
-    flex: 0 0 700px;
+    flex: 0 0 650px;
   }
 }
 </style>
