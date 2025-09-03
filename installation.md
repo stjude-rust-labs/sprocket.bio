@@ -1,10 +1,9 @@
 # Installation
 
 If you're looking for the latest stable version of the `sprocket` command line
-tool, you can either [download it from the release page](#download), [build it
-from source](#build-from-source) (most common), get Sprocket through a [package
-manager](#package-managers) (support still being added), or use
-[Docker](#docker).
+tool, you can download it through a [package manager](#package-managers),
+[download it from the release page](#download), use [Docker](#docker), or [build
+it from source](#build-from-source).
 
 ## Package managers
 
@@ -18,13 +17,12 @@ the following command.
 brew install sprocket
 ```
 
-### Other package managers
+## Direct download
 
-::: tip Note
-If you know of other, community-maintained
-packages for `sprocket`, please let us know by opening up [a pull
-request](https://github.com/stjude-rust-labs/sprocket/pulls).
-:::
+A pre-built binary for `sprocket` can be downloaded from the latest [release
+entry on GitHub](https://github.com/stjude-rust-labs/sprocket/releases). Each
+platform has different requirements regarding shared libraries that are expected
+to be installed.
 
 ## Docker images
 
@@ -34,13 +32,6 @@ Registry.
 ```bash
 docker run ghcr.io/stjude-rust-labs/sprocket:v0.16.0 -h
 ```
-
-## Direct download
-
-A pre-built binary for `sprocket` can be downloaded from the latest [release
-entry on GitHub](https://github.com/stjude-rust-labs/sprocket/releases). Each
-platform has different requirements regarding shared libraries that are expected
-to be installed.
 
 ## Build from source
 
