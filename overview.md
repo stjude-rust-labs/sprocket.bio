@@ -32,7 +32,7 @@ you to follow the project on
 progress.
 :::
 
-## Project Goals
+## Project goals
 
 ### High-Performance Workflow Execution Engine
 
