@@ -34,7 +34,7 @@ progress.
 
 ## Project goals
 
-### High-Performance Workflow Execution Engine
+### High-performance workflow execution engine
 
 Fundamentally, the Sprocket project was created to address the lack of
 bioinformatics workflow execution engines that can reliably handle tens of
@@ -68,7 +68,7 @@ Enabling the next generation of large-scale, open science by providing a robust
 and performant execution engine will always remain the top-level objective for
 the project.
 
-### Modern Development Tools
+### Modern development tools
 
 A suite of development tools are included alongside the execution engine. We
 believe that, when you _do_ need to dust off your code editor and write an
@@ -82,7 +82,7 @@ and overall [editor
 integration](https://github.com/stjude-rust-labs/wdl/tree/main/wdl-lsp), are
 critical to making that vision a reality.
 
-### Community-Focused Codebase
+### Community-focused codebase
 
 Since the beginning, Sprocket has been architected to maximize the potential for
 any interested party to effectively contribute to the codebase. This means that
@@ -93,7 +93,7 @@ members, a common commit message style, and `CHANGELOG.md` entries, are enforced
 for each contribution, and (c) a comprehensive testing suite and CI/CD
 integration mean you can tinker with confidence.
 
-### Open, Tailored Standard
+### Open, tailored standard
 
 Predictability, openness, and ensured longevity are virtues the project attempts
 to uphold. Given that the project is ultimately limited by the upstream workflow
@@ -104,7 +104,7 @@ within bioinformatics specifically. We've selected the [Workflow Description
 Language] as the underlying standard for Sprocket, as it meets all of the above
 criteria while also being relatively easy to learn and reason about.
 
-### Simple and Accessible User Experience
+### Simple and accessible user experience
 
 Sprocket aims to provide a user experience that works from workflow development,
 through local testing, and into production with fairly low overhead between
