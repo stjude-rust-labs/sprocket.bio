@@ -121,6 +121,9 @@ various lint and validation warnings into the "Problems" tab of your editor.
 ![A view of the "Problems" tab in VSCode with Sprocket reported
 issues](./guided-tour/problems.png){style="margin-top: 30px;"}
 
+For other editors, please refer to their documentation on how to configure the
+Sprocket LSP (i.e.,`sprocket analyzer`).
+
 ## Running tasks and workflows
 
 Individual tasks and workflows can be run with the `sprocket run` subcommand.
