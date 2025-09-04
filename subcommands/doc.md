@@ -4,7 +4,7 @@
 > 
 > This document describes the beta release of the `doc` command,
 > which is currently exposed under the `dev` subcommand (i.e. `sprocket dev
-> doc`). This functionality change in future releases.
+> doc`). This functionality may change in future releases.
 
 Via the `sprocket dev doc` command, Sprocket is capable of rendering rich HTML
 documentation for a WDL workspace. To make the most of this tool, there are

@@ -20,11 +20,11 @@ channels (listed in order of the relative priority during loading).
 
 # System-wide configuration locations
 
-| Platform | Value                                                                                            | Example                              |
-|----------|--------------------------------------------------------------------------------------------------|--------------------------------------|
-| Linux    | `$XDG_CONFIG_HOME/sprocket.toml` (if `$XDG_CONFIG_HOME` is set) or `$HOME/.config/sprocket.toml` | `/home/alice/.config/sprocket.toml`  |
-| macOS    | `$HOME/.config/sprocket.toml`                                                                    | `/Users/alice/.config/sprocket.toml` |
-| Windows  | `%USERPROFILE%\AppData\Roaming\sprocket.toml`                                                    | `C:\\Users\alice\AppData\Roaming`    |
+| Platform | Value                                                                                            | Example                                       |
+|----------|--------------------------------------------------------------------------------------------------|-----------------------------------------------|
+| Linux    | `$XDG_CONFIG_HOME/sprocket.toml` (if `$XDG_CONFIG_HOME` is set) or `$HOME/.config/sprocket.toml` | `/home/alice/.config/sprocket.toml`           |
+| macOS    | `$HOME/.config/sprocket/sprocket.toml`                                                           | `/Users/alice/.config/sprocket/sprocket.toml` |
+| Windows  | `%USERPROFILE%\AppData\Roaming\sprocket.toml`                                                    | `C:\\Users\alice\AppData\Roaming`             |
 
 ## Resolving effective configuration
 
@@ -46,7 +46,7 @@ working directory.
 
 ```toml
 [format]
-indentation_size = 5
+indentation_size = 4
 
 [check]
 except = ['ContainerUri']
@@ -57,7 +57,7 @@ environment variable.
 
 ```toml
 [format]
-indentation_size = 3
+indentation_size = 2
 
 [check]
 except = ['SnakeCase']
@@ -72,7 +72,7 @@ leaving you with the following final configuration.
 # Because this is a single-value configuration setting, the value provided in 
 # your home directory is overwritten by the one in provided in 
 # `$SPROCKET_CONFIG`.
-indentation_size = 3
+indentation_size = 2
 
 [check]
 # Because this is a list configuration setting, the values provided in 
