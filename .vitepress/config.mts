@@ -35,16 +35,21 @@ export default defineConfig({
         ],
       },
       {
-        text: "Visual Studio Code Extension",
-        items: [{ text: "Getting Started", link: "/vscode/getting-started" }],
+        text: "User Guides",
+        items: [
+          { text: "Configuration", link: "/user-guides/configuration" },
+        ],
       },
       {
-        text: "Sprocket CLI",
+        text: "Subcommands",
         items: [
-          { text: "Configuration", link: "/cli/config" },
-          { text: "Doc", link: "/cli/doc" },
-          { text: "Lock", link: "/cli/lock" },
+          { text: "doc", link: "/subcommands/doc" },
+          { text: "lock", link: "/subcommands/lock" },
         ],
+      },
+      {
+        text: "Visual Studio Code Extension",
+        items: [{ text: "Getting Started", link: "/vscode/getting-started" }],
       },
     ],
     socialLinks: [
