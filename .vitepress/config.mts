@@ -41,15 +41,21 @@ export default defineConfig({
         ],
       },
       {
-        text: "Subcommands",
+        text: "Commands",
         items: [
           { text: "analyzer", link: "/subcommands/analyzer" },
           { text: "check/lint", link: "/subcommands/check-lint" },
           { text: "config", link: "/subcommands/config" },
-          { text: "doc", link: "/subcommands/doc" },
           { text: "format", link: "/subcommands/format" },
-          { text: "lock", link: "/subcommands/lock" },
+          { text: "inputs", link: "/subcommands/inputs" },
+          { text: "run", link: "/subcommands/run" },
         ],
+      },
+      {
+        text: "Experimental Commands", collapsed: true, items: [
+          { text: "doc", link: "/subcommands/doc" },
+          { text: "lock", link: "/subcommands/lock" },
+        ]
       },
       {
         text: "Visual Studio Code Extension",
