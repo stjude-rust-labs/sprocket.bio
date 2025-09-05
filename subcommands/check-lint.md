@@ -7,7 +7,9 @@ the WDL files.
 With respect to checking if WDL files are well-formed, a non-zero exit code will
 be emitted if invalid WDL is encountered. This means `sprocket check` or
 `sprocket lint` can be integrated nicely into a continuous integration pipeline
-to ensure files remain valid.
+to ensure files remain valid. The [Sprocket GitHub
+action](https://github.com/stjude-rust-labs/sprocket-action) provides an easy
+way to do that on GitHub.
 
 With respect to emitting warnings, there are two levels of warnings in Sprocket:
 
