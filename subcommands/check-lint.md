@@ -21,5 +21,5 @@ With respect to emitting warnings, there are two levels of warnings in Sprocket:
 `sprocket check` only emits validation warnings unless you provide the `-l` flag
 (which enables the lint warnings).
 
-`sprocket lint` emits both validation warnings and lint warnings—it is
+`sprocket lint` emits both validation warnings and lint warnings — it is
 essentially an alias for `sprocket check -l`.
