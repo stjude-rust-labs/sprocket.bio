@@ -49,6 +49,7 @@ export default defineConfig({
           { text: "format", link: "/subcommands/format" },
           { text: "inputs", link: "/subcommands/inputs" },
           { text: "run", link: "/subcommands/run" },
+          { text: "validate", link: "/subcommands/validate" },
         ],
       },
       {
