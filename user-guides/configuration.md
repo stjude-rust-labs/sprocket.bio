@@ -5,7 +5,7 @@ resolving configuration.
 
 ## Options
 
-Rhile configuration is something we intend to put more effort into solving in
+While configuration is something we intend to put more effort into solving in
 the future, our existing documentation on what configuration options exist is
 lacking at the moment. You can expect this documentation to be updated as we
 make progress in that area. In the meantime, the best way to see what options
