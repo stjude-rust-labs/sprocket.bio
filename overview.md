@@ -87,7 +87,7 @@ critical to making that vision a reality.
 Since the beginning, Sprocket has been architected to maximize the potential for
 any interested party to effectively contribute to the codebase. This means that
 (a) every part of the code is designed to be read and modified by anyone [there
-are no "owners" of any part of the code base—only "experts" in a particular area
+are no "owners" of any part of the code base — only "experts" in a particular area
 of the code], (b) strict practices, such as required documentation for public
 members, a common commit message style, and `CHANGELOG.md` entries, are enforced
 for each contribution, and (c) a comprehensive testing suite and CI/CD
@@ -113,7 +113,7 @@ and deploy bioinformatics workflows with excellence. Generally speaking, this
 means **bioinformaticians** and **bioinformatics software engineers** working at
 a moderate to large scale, but Sprocket should work reasonably well for many
 other users too. In particular, we aim to keep Sprocket as simple as we possibly
-can—only introducing complexity when needed to achieve the project's other
+can — only introducing complexity when needed to achieve the project's other
 stated goals.
 
 ## Goal-adjacent

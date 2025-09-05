@@ -3,7 +3,16 @@
 Sprocket has a number of facilities for including, excluding, initializing, and
 resolving configuration.
 
-## Configuration load order
+## Options
+
+While configuration is something we intend to put more effort into solving in
+the future, our existing documentation on what configuration options exist is
+lacking at the moment. You can expect this documentation to be updated as we
+make progress in that area. In the meantime, the best way to see what options
+are available is to [look at the `Config` struct in the source
+code](https://github.com/stjude-rust-labs/sprocket/blob/main/src/config.rs).
+
+## Load order
 
 Configuration can be provided to Sprocket through a variety of different
 channels (listed in order of the relative priority during loading).
