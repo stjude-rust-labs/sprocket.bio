@@ -47,6 +47,7 @@ export default defineConfig({
           { text: "check/lint", link: "/subcommands/check-lint" },
           { text: "config", link: "/subcommands/config" },
           { text: "doc", link: "/subcommands/doc" },
+          { text: "format", link: "/subcommands/format" },
           { text: "lock", link: "/subcommands/lock" },
         ],
       },
