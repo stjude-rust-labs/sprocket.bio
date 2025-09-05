@@ -2,7 +2,7 @@
 
 The `check` and `lint` subcommands allow you to check a WDL file or set of WDL
 files to ensure that (a) they are valid WDL and (b) to report any warnings about
-the WDL files.
+the WDL files (described in further detail below).
 
 With respect to checking if WDL files are well-formed, a non-zero exit code will
 be emitted if invalid WDL is encountered. This means `sprocket check` or

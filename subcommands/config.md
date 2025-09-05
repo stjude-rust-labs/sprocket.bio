@@ -4,7 +4,8 @@ Sprocket has a number of configuration options that can be initialized or
 interrogated using the `config` subcommand.
 
 `sprocket config init` generates a default configuration object and prints it to
-standard out — you can use this as the basis for a Sprocket configuration file.
+standard out — you can use this as the basis for customizing a Sprocket
+configuration file.
 
 `sprocket config resolve` loads configuration in [the order specified on the
 configuration guide](/user-guides/configuration.md#load-order) and
