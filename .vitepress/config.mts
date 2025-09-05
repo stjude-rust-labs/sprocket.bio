@@ -43,6 +43,8 @@ export default defineConfig({
       {
         text: "Subcommands",
         items: [
+          { text: "analyzer", link: "/subcommands/analyzer" },
+          { text: "check/lint", link: "/subcommands/check-lint" },
           { text: "doc", link: "/subcommands/doc" },
           { text: "lock", link: "/subcommands/lock" },
         ],

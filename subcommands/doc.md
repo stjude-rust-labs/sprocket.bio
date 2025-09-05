@@ -1,4 +1,4 @@
-# How to make the most of `sprocket dev doc`
+# `sprocket dev doc`
 
 > [!CAUTION]
 > 
