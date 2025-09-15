@@ -30,12 +30,12 @@ sprocket explain ImportSorted
 This command gives the following description of the `ImportSorted` rule.
 
 ```txt
-ImportSorted [Style, Clarity, Sorting]
+ImportSorted [Sorting]
 Ensures that imports are sorted lexicographically.
 
 Imports should be sorted lexicographically to make it easier to find 
 specific imports. This rule ensures that imports are sorted in a 
-consistent manner. Specifically, the desired sort can be acheived
+consistent manner. Specifically, the desired sort can be achieved
 with a GNU compliant `sort` and `LC_COLLATE=C`. No comments are
 permitted within an import statement.
 ```
