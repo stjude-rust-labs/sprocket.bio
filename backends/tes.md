@@ -17,9 +17,10 @@ API server:
 * Basic HTTP authentication (i.e. username and password)
 * Bearer token
 
-The TES backend does not currently support authentication workflows such as
+The TES backend does not currently support authentication schemes such as
 OAuth; if the TES API server requires a bearer token, the token itself must be
-derived through external means and specified verbatim in Sprocket's configuration.
+derived through external means and specified verbatim in Sprocket's
+configuration.
 
 ## Task Inputs
 
