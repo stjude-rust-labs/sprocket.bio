@@ -19,8 +19,7 @@ API server:
 
 The TES backend does not currently support authentication workflows such as
 OAuth; if the TES API server requires a bearer token, the token itself must be
-derived through external means and specified in Sprocket's configuration
-verbatim.
+derived through external means and specified verbatim in Sprocket's configuration.
 
 ## Task Inputs
 
