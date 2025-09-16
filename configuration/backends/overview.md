@@ -6,13 +6,13 @@ responding to task lifecycle events.
 
 Sprocket currently supports two execution backends:
 
-* A local [Docker execution backend](/user-guides/backends/docker.md).
-* A remote [Task Execution Service backend](/user-guides/backends/tes.md).
+* A local [Docker execution backend](/configuration/backends/docker.md).
+* A remote [Task Execution Service backend](/configuration/backends/tes.md).
 
 There are two additional execution backends currently under development:
 
-* A [HPC backend](/user-guides/backends/hpc.md).
-* A [generic backend](/user-guides/backends/generic.md).
+* A [HPC backend](/configuration/backends/hpc.md).
+* A [generic backend](/configuration/backends/generic.md).
 
 ## Backend configuration
 

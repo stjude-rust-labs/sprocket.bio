@@ -25,7 +25,7 @@ configuration.
 ## Task inputs
 
 As task execution is remote when using the TES backend, local inputs are
-transferred to the remote server by uploading them to [cloud storage](/user-guides/storage/overview.md)
+transferred to the remote server by uploading them to [cloud storage](/configuration/storage/overview.md)
 and providing the TES API server with the upload locations.
 
 To prevent duplicate uploads of the same data, the TES backend will calculate a
@@ -37,7 +37,7 @@ is skipped; Sprocket will not download the object from cloud storage to verify
 that it matches the local input.
 
 Sprocket also supports specifying paths to files and directories by remote URL
-(either `http://`, `https://`, or using a [cloud storage URL](/user-guides/storage/overview.md#cloud-storage-urls)).
+(either `http://`, `https://`, or using a [cloud storage URL](/configuration/storage/overview.md#cloud-storage-urls)).
 If an input is already a remote URL, it is passed to the TES API server without
 transferring any data to cloud storage.
 

@@ -35,26 +35,26 @@ export default defineConfig({
         ],
       },
       {
-        text: "User Guides",
+        text: "Configuration",
         items: [
-          { text: "Configuration", link: "/user-guides/configuration", docFooterText: "User Guides &gt; Configuration" },
+          { text: "Overview", link: "/configuration/overview", docFooterText: "Configuration &gt; Configuration" },
           {
             text: "Execution Backends",
             items: [
-              { text: "Overview", link: "/user-guides/backends/overview", docFooterText: "User Guides &gt; Backends &gt; Overview" },
-              { text: "Docker", link: "/user-guides/backends/docker", docFooterText: "User Guides &gt; Backends &gt; Docker" },
-              { text: "Task Execution Service (TES)", link: "/user-guides/backends/tes", docFooterText: "User Guides &gt; Backends &gt; TES" },
-              { text: "High Performance Computing (HPC)", link: "/user-guides/backends/hpc", docFooterText: "User Guides &gt; Backends &gt; HPC" },
-              { text: "Generic", link: "/user-guides/backends/generic", docFooterText: "User Guides &gt; Backends &gt; Generic" },
+              { text: "Overview", link: "/configuration/backends/overview", docFooterText: "Configuration &gt; Backends &gt; Overview" },
+              { text: "Docker", link: "/configuration/backends/docker", docFooterText: "Configuration &gt; Backends &gt; Docker" },
+              { text: "Task Execution Service (TES)", link: "/configuration/backends/tes", docFooterText: "Configuration &gt; Backends &gt; TES" },
+              { text: "High Performance Computing (HPC)", link: "/configuration/backends/hpc", docFooterText: "Configuration &gt; Backends &gt; HPC" },
+              { text: "Generic", link: "/configuration/backends/generic", docFooterText: "Configuration &gt; Backends &gt; Generic" },
             ],
           },
           {
             text: "Cloud Storage",
             items: [
-              { text: "Overview", link: "/user-guides/storage/overview", docFooterText: "User Guides &gt; Cloud Storage &gt; Overview" },
-              { text: "Azure Blob Storage", link: "/user-guides/storage/azure", docFooterText: "User Guides &gt; Cloud Storage &gt; Azure" },
-              { text: "AWS S3", link: "/user-guides/storage/s3", docFooterText: "User Guides &gt; Cloud Storage &gt; S3" },
-              { text: "Google Cloud Storage", link: "/user-guides/storage/gcs", docFooterText: "User Guides &gt; Cloud Storage &gt; GCS" },
+              { text: "Overview", link: "/configuration/storage/overview", docFooterText: "Configuration &gt; Cloud Storage &gt; Overview" },
+              { text: "Azure Blob Storage", link: "/configuration/storage/azure", docFooterText: "Configuration &gt; Cloud Storage &gt; Azure" },
+              { text: "AWS S3", link: "/configuration/storage/s3", docFooterText: "Configuration &gt; Cloud Storage &gt; S3" },
+              { text: "Google Cloud Storage", link: "/configuration/storage/gcs", docFooterText: "Configuration &gt; Cloud Storage &gt; GCS" },
             ],
           },
         ],

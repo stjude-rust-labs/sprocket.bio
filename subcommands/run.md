@@ -6,7 +6,7 @@ outline a few of the important considerations below, but we encourage you to run
 
 ## Execution backends
 
-See the section on [execution backends](/user-guides/backends/overview.md) to
+See the section on [execution backends](/configuration/backends/overview.md) to
 learn more about configuring Sprocket to execute tasks in different
 environments.
 

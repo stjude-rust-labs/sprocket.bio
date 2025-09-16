@@ -13,7 +13,7 @@ task to the Docker daemon once sufficient resources are available on the host,
 as per the resource requests of other executing tasks.
 
 If a task's resource requirement exceeds the known maximum of a resource,
-Sprocket will error. See the section on [overriding task CPU and memory requirements](/user-guides/configuration.md#overriding-task-cpu-and-memory-requirements).
+Sprocket will error. See the section on [overriding task CPU and memory requirements](/configuration/overview.md#overriding-task-cpu-and-memory-requirements).
 
 ## Configuration
 

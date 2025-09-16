@@ -47,7 +47,7 @@ Currently Sprocket sends SAS tokens through to the TES API server as query
 string parameters in input and output URLS.
 
 This grants the TES API server read and write access to the storage containers,
-as well as anyone that get access to the TES task's input and output URLs.
+as well as anyone that has access to the TES task's input and output URLs.
 
 ::: danger
 :warning: Only use Azure SAS token authentication with a TES API server you trust to secure the input and output URLs.
