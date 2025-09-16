@@ -17,7 +17,7 @@ Follow these instructions to create a [SAS token for your storage container](htt
 
 ::: tip
 Create a SAS token with an expiration date that is sufficient for your workflow
-run, but not an expiration date that expires too far into the future in case 
+run, but not an expiration date that expires too far into the future in case
 the SAS token is leaked.
 :::
 
@@ -36,12 +36,17 @@ Where `account` is the Azure Storage account name, `container` is the name of
 the blob storage container, and `sas-token` is the SAS token generated for the
 storage container.
 
+::: warning
+On Unix operating systems, it is recommended that your `sprocket.toml` has an
+access permission of `0600` if it contains secrets like SAS tokens.
+:::
+
 ## Use with TES Backend
 
-Currently Sprocket sends SAS tokens through to the TES API server as query 
+Currently Sprocket sends SAS tokens through to the TES API server as query
 string parameters in input and output URLS.
 
-This grants the TES API server read and write access to the storage containers, 
+This grants the TES API server read and write access to the storage containers,
 as well as anyone that get access to the TES task's input and output URLs.
 
 ::: danger
