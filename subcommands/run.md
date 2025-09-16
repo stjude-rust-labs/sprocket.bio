@@ -4,6 +4,11 @@ Individual tasks and workflows can be run with the `sprocket run` subcommand. We
 outline a few of the important considerations below, but we encourage you to run
 `sprocket run --help` to see all available arguments and options.
 
+## Execution backends
+
+See the section on [execution backends](/backends/overview.md) to learn more
+about configuring Sprocket to execute tasks in different environments.
+
 ## Entrypoints
 
 The task or workflow to run can be provided explicitly with
