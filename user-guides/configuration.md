@@ -78,13 +78,13 @@ leaving you with the following final configuration.
 
 ```toml
 [format]
-# Because this is a single-value configuration setting, the value provided in 
-# your home directory is overwritten by the one in provided in 
+# Because this is a single-value configuration setting, the value provided in
+# your home directory is overwritten by the one in provided in
 # `$SPROCKET_CONFIG`.
 indentation_size = 2
 
 [check]
-# Because this is a list configuration setting, the values provided in 
+# Because this is a list configuration setting, the values provided in
 # `$SPROCKET_CONFIG` are appended to those provided in your home directory.
 except = ['ContainerUri', 'SnakeCase']
 ```
@@ -110,3 +110,21 @@ and any child directories, but not to their parent directory.
 This is particularly useful if you have any WDL files that should not be analyzed,
 checked, or documented. Note that ignorefiles only impact searching for files with the
 extension `.wdl`.
+
+## Overriding task CPU and memory requirements
+
+A task may specify a CPU or memory requirement that exceeds the maximum of that
+resource known to Sprocket. When this occurs, Sprocket will error saying that
+the task's resource requirement exceeds the known maximum.
+
+Sprocket can be configured to instead substitute the maximum known resource as
+the requirement; please note that this does not guarantee that the task will
+succeed, only that Sprocket will execute the task instead of reporting an error.
+
+Use the following settings to change Sprocket's resource limit behavior:
+
+```toml
+[run.task]
+cpu_limit_behavior = "try_with_max"
+memory_limit_behavior = "try_with_max"
+```

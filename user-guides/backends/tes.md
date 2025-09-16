@@ -22,10 +22,10 @@ OAuth; if the TES API server requires a bearer token, the token itself must be
 derived through external means and specified verbatim in Sprocket's
 configuration.
 
-## Task Inputs
+## Task inputs
 
 As task execution is remote when using the TES backend, local inputs are
-transferred to the remote server by uploading them to [cloud storage](/storage/overview.md)
+transferred to the remote server by uploading them to [cloud storage](/user-guides/storage/overview.md)
 and providing the TES API server with the upload locations.
 
 To prevent duplicate uploads of the same data, the TES backend will calculate a
@@ -37,11 +37,11 @@ is skipped; Sprocket will not download the object from cloud storage to verify
 that it matches the local input.
 
 Sprocket also supports specifying paths to files and directories by remote URL
-(either `http://`, `https://`, or using a [cloud storage URL](/storage/overview.md#cloud-storage-urls)).
+(either `http://`, `https://`, or using a [cloud storage URL](/user-guides/storage/overview.md#cloud-storage-urls)).
 If an input is already a remote URL, it is passed to the TES API server without
 transferring any data to cloud storage.
 
-## Task Outputs
+## Task outputs
 
 The TES backend requests that the TES API server uploads task outputs to a
 cloud storage location using a unique prefix for the task's execution.
@@ -83,3 +83,9 @@ password = "<password>"
 type = "bearer"
 token = "<token>"
 ```
+
+::: warning
+On Unix operating systems, it is recommended that your `sprocket.toml` has an
+access permission of `0600` if it contains secrets like TES API server
+passwords or tokens.
+:::

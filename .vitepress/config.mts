@@ -38,6 +38,25 @@ export default defineConfig({
         text: "User Guides",
         items: [
           { text: "Configuration", link: "/user-guides/configuration", docFooterText: "User Guides &gt; Configuration" },
+          {
+            text: "Execution Backends",
+            items: [
+              { text: "Overview", link: "/user-guides/backends/overview", docFooterText: "User Guides &gt; Backends &gt; Overview" },
+              { text: "Docker", link: "/user-guides/backends/docker", docFooterText: "User Guides &gt; Backends &gt; Docker" },
+              { text: "Task Execution Service (TES)", link: "/user-guides/backends/tes", docFooterText: "User Guides &gt; Backends &gt; TES" },
+              { text: "High Performance Computing (HPC)", link: "/user-guides/backends/hpc", docFooterText: "User Guides &gt; Backends &gt; HPC" },
+              { text: "Generic", link: "/user-guides/backends/generic", docFooterText: "User Guides &gt; Backends &gt; Generic" },
+            ],
+          },
+          {
+            text: "Cloud Storage",
+            items: [
+              { text: "Overview", link: "/user-guides/storage/overview", docFooterText: "User Guides &gt; Cloud Storage &gt; Overview" },
+              { text: "Azure Blob Storage", link: "/user-guides/storage/azure", docFooterText: "User Guides &gt; Cloud Storage &gt; Azure" },
+              { text: "AWS S3", link: "/user-guides/storage/s3", docFooterText: "User Guides &gt; Cloud Storage &gt; S3" },
+              { text: "Google Cloud Storage", link: "/user-guides/storage/gcs", docFooterText: "User Guides &gt; Cloud Storage &gt; GCS" },
+            ],
+          },
         ],
       },
       {
@@ -57,25 +76,6 @@ export default defineConfig({
           { text: "doc", link: "/subcommands/doc",  docFooterText: "Experimental Commands &gt; doc" },
           { text: "lock", link: "/subcommands/lock", docFooterText: "Experimental Commands &gt; lock" },
         ]
-      },
-      {
-        text: "Execution Backends",
-        items: [
-          { text: "Overview", link: "/backends/overview", docFooterText: "Backends &gt; Overview" },
-          { text: "Docker", link: "/backends/docker", docFooterText: "Backends &gt; Docker" },
-          { text: "Task Execution Service (TES)", link: "/backends/tes", docFooterText: "Backends &gt; TES" },
-          { text: "High Performance Computing (HPC)", link: "/backends/hpc", docFooterText: "Backends &gt; HPC" },
-          { text: "Generic", link: "/backends/generic", docFooterText: "Backends &gt; Generic" },
-        ],
-      },
-      {
-        text: "Cloud Storage",
-        items: [
-          { text: "Overview", link: "/storage/overview", docFooterText: "Cloud Storage &gt; Overview" },
-          { text: "Azure Blob Storage", link: "/storage/azure", docFooterText: "Cloud Storage &gt; Azure" },
-          { text: "AWS S3", link: "/storage/s3", docFooterText: "Cloud Storage &gt; S3" },
-          { text: "Google Cloud Storage", link: "/storage/gcs", docFooterText: "Cloud Storage &gt; GCS" },
-        ],
       },
       {
         text: "Visual Studio Code Extension",

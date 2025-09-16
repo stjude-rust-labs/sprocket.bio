@@ -41,7 +41,7 @@ On Unix operating systems, it is recommended that your `sprocket.toml` has an
 access permission of `0600` if it contains secrets like SAS tokens.
 :::
 
-## Use with TES Backend
+## Use with the TES backend
 
 Currently Sprocket sends SAS tokens through to the TES API server as query
 string parameters in input and output URLS.
