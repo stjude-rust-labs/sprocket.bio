@@ -64,7 +64,7 @@ The TES backend supports the following configuration:
 [run.backends.default]
 type = "tes"
 # The URL of the TES API server
-url = "<tes-server-url"
+url = "<tes-server-url>"
 # The cloud storage URL where Sprocket will upload inputs
 inputs = "<cloud-storage-url>"
 # The cloud storage URL where the TES API server will upload outputs
