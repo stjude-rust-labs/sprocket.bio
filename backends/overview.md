@@ -1,7 +1,8 @@
 # Execution Backends
 
-Sprocket dispatches tasks to a configured execution backend responsible for
-starting, monitoring, and responding to task lifecycle events.
+Sprocket evaluates a workflow locally and decomposes it into tasks. Sprocket dispatches
+these tasks to a configured execution backend responsible for starting, monitoring, and 
+responding to task lifecycle events.
 
 Sprocket currently supports two execution backends:
 
