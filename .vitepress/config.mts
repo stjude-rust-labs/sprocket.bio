@@ -4,7 +4,7 @@ import axios from 'axios';
 const grammarUrl = "https://raw.githubusercontent.com/stjude-rust-labs/sprocket-vscode/refs/heads/main/syntaxes/wdl.tmGrammar.json";
 
 export default defineConfig({
-  title: "Sprocket",
+  title: "Sprocket | St. Jude Rust Labs",
   description:
     "A bioinformatics workflow engine built on top of the Workflow Description Language (WDL)",
   themeConfig: {
