@@ -92,23 +92,34 @@ task say_hello {
           </div>
         </section>
         <!-- Right: Code Cards -->
-        <section class="hero__right-column">
+        <section class="hero__right-column" v-if="installCode != null && wdlCode != null && runCode != null">
           <!-- Card 1: Install -->
-          <div class="card" v-if="installCode != null">
+          <div class="card">
             <CodePreview header="bash" preformatted :value="installCode">
             </CodePreview>
           </div>
 
           <!-- Card 2: WDL Example -->
-          <div class="card" v-if="wdlCode != null">
+          <div class="card">
             <CodePreview header="wdl" preformatted :value="wdlCode">
             </CodePreview>
           </div>
 
           <!-- Card 3: Run Example -->
-          <div class="card" v-if="runCode != null">
+          <div class="card">
             <CodePreview header="bash" preformatted :value="runCode">
             </CodePreview>
+          </div>
+        </section>
+        <section class="hero__right-column" v-else>
+          <div :style="{ minHeight: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }">
+            <div class="sk-wave" :style="{ opacity: '90%', height: '50px', width: '50px' }">
+              <div class="sk-wave-rect" :style="{ backgroundColor: 'white' }"></div>
+              <div class="sk-wave-rect" :style="{ backgroundColor: 'white' }"></div>
+              <div class="sk-wave-rect" :style="{ backgroundColor: 'white' }"></div>
+              <div class="sk-wave-rect" :style="{ backgroundColor: 'white' }"></div>
+              <div class="sk-wave-rect" :style="{ backgroundColor: 'white' }"></div>
+            </div>
           </div>
         </section>
       </div>
@@ -125,6 +136,7 @@ task say_hello {
   display: flex;
   align-items: center;
   color: #fff;
+  min-height: 100vh;
   background:
     radial-gradient(circle at top right, #7035b4 0%, transparent 55%),
     radial-gradient(circle at bottom right, #6e89be 0%, transparent 45%),
