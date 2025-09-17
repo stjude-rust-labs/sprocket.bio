@@ -67,7 +67,7 @@
                 <div class="showcase__icon-box">
                   <img src="/svg/azure.svg" alt="Azure" class="showcase__icon">
                 </div>
-                <span class="typo-body2 showcase__label">Azure</span>
+                <span class="typo-body2 showcase__label">Microsoft Azure</span>
               </div>
             </div>
           </div>
