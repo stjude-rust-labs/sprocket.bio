@@ -4,7 +4,7 @@ Sprocket has built-in support for transferring files to and from the following
 cloud storage services:
 
 * [Azure Blob Storage](/configuration/storage/azure.md)
-* [AWS S3](/configuration/storage/s3.md)
+* [Amazon AWS S3](/configuration/storage/s3.md)
 * [Google Cloud Storage](/configuration/storage/gcs.md)
 
 ::: warning
@@ -31,7 +31,7 @@ The following cloud storage URLs for Azure Blob Storage are supported:
 See the documentation for [Azure Blob Storage](/configuration/storage/azure.md) for
 information on authenticating with Azure.
 
-### AWS S3 URLs
+### Amazon AWS S3 URLs
 
 The following cloud storage URLs for AWS S3 are supported:
 

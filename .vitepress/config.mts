@@ -40,20 +40,22 @@ export default defineConfig({
           { text: "Overview", link: "/configuration/overview", docFooterText: "Configuration &gt; Configuration" },
           {
             text: "Execution Backends",
+            collapsed: true,
             items: [
               { text: "Overview", link: "/configuration/backends/overview", docFooterText: "Configuration &gt; Backends &gt; Overview" },
-              { text: "Docker", link: "/configuration/backends/docker", docFooterText: "Configuration &gt; Backends &gt; Docker" },
-              { text: "Task Execution Service (TES)", link: "/configuration/backends/tes", docFooterText: "Configuration &gt; Backends &gt; TES" },
-              { text: "High Performance Computing (HPC)", link: "/configuration/backends/hpc", docFooterText: "Configuration &gt; Backends &gt; HPC" },
+              { text: "Docker (Local)", link: "/configuration/backends/docker", docFooterText: "Configuration &gt; Backends &gt; Docker" },
+              { text: "Task Execution Service", link: "/configuration/backends/tes", docFooterText: "Configuration &gt; Backends &gt; TES" },
+              { text: "High Performance Computing Cluster", link: "/configuration/backends/hpc", docFooterText: "Configuration &gt; Backends &gt; HPC" },
               { text: "Generic", link: "/configuration/backends/generic", docFooterText: "Configuration &gt; Backends &gt; Generic" },
             ],
           },
           {
             text: "Cloud Storage",
+            collapsed: true,
             items: [
               { text: "Overview", link: "/configuration/storage/overview", docFooterText: "Configuration &gt; Cloud Storage &gt; Overview" },
               { text: "Azure Blob Storage", link: "/configuration/storage/azure", docFooterText: "Configuration &gt; Cloud Storage &gt; Azure" },
-              { text: "AWS S3", link: "/configuration/storage/s3", docFooterText: "Configuration &gt; Cloud Storage &gt; S3" },
+              { text: "Amazon AWS S3", link: "/configuration/storage/s3", docFooterText: "Configuration &gt; Cloud Storage &gt; S3" },
               { text: "Google Cloud Storage", link: "/configuration/storage/gcs", docFooterText: "Configuration &gt; Cloud Storage &gt; GCS" },
             ],
           },
@@ -73,7 +75,7 @@ export default defineConfig({
       },
       {
         text: "Experimental Commands", collapsed: true, items: [
-          { text: "doc", link: "/subcommands/doc",  docFooterText: "Experimental Commands &gt; doc" },
+          { text: "doc", link: "/subcommands/doc", docFooterText: "Experimental Commands &gt; doc" },
           { text: "lock", link: "/subcommands/lock", docFooterText: "Experimental Commands &gt; lock" },
         ]
       },
