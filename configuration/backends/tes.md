@@ -5,6 +5,7 @@ backend submits tasks to a remote server using the TES API.
 
 Implementations of the TES API include:
 
+* [Planetary](https://github.com/stjude-rust-labs/planetary)
 * [Funnel](https://github.com/ohsu-comp-bio/funnel)
 * [Poiesis](https://github.com/JaeAeich/poiesis)
 * [TESK](https://github.com/elixir-cloud-aai/TESK)
