@@ -17,38 +17,4 @@ exist is lacking at the moment. You can expect the [configuration guide
 documentation](/configuration/overview.md) to be updated as we make progress
 in that area. In the meantime, the best way to see what options are available is
 to [look at the `Config` struct in the source
-code](https://github.com/stjude-rust-labs/sprocket/blob/main/src/config.rs).
-
-## Help text
-
-```
-Display the effective configuration
-
-Usage: sprocket config [OPTIONS] <COMMAND>
-
-Commands:
-  init     Generates a default configuration file
-  resolve  Displays the current configuration
-  help     Print this message or the help of the given subcommand(s)
-
-Options:
-  -v, --verbose...
-          Increase logging verbosity
-
-  -q, --quiet...
-          Decrease logging verbosity
-
-  -c, --config <CONFIG>
-          Path to the configuration file
-
-  -s, --skip-config-search
-          Skip searching for and loading configuration files.
-
-          Only a configuration file specified as a command line argument will be used.
-
-  -h, --help
-          Print help (see a summary with '-h')
-
-  -V, --version
-          Print version
-```
+code](https://github.com/stjude-rust-labs/sprocket/blob/main/src/config.rs). 

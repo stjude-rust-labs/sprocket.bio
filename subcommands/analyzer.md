@@ -17,46 +17,6 @@ At the time of writing, `sprocket analyzer` only supports the standard I/O
 (`--stdio`) transport. If you have a use case for us to support other
 transports, please [file an issue][issues].
 
-## Help text
-
-```
-Runs the Language Server Protocol (LSP) server
-
-Usage: sprocket analyzer [OPTIONS] --stdio
-
-Options:
-      --stdio
-          Use stdin and stdout for the RPC transport
-
-      --lint
-          Whether or not to enable lint rules
-
-  -e, --except <RULE>
-          Excepts (ignores) an analysis or lint rule.
-
-          Repeat the flag multiple times to except multiple rules.
-
-  -v, --verbose...
-          Increase logging verbosity
-
-  -q, --quiet...
-          Decrease logging verbosity
-
-  -c, --config <CONFIG>
-          Path to the configuration file
-
-  -s, --skip-config-search
-          Skip searching for and loading configuration files.
-
-          Only a configuration file specified as a command line argument will be used.
-
-  -h, --help
-          Print help (see a summary with '-h')
-
-  -V, --version
-          Print version
-```
-
 [lsp]: https://en.wikipedia.org/wiki/Language_Server_Protocol
 [extension]: /vscode/getting-started.md
 [issues]: https://github.com/stjude-rust-labs/wdl/issues

@@ -34,39 +34,3 @@ allowing users and developers to continue using the human-readable tag values in
 their source. This functionality can also help ensure a level of consistency
 across runs for a cohort by "locking" the container values to immutable
 checksums, rather than mutable tags that are commonly utilized in WDL source.
-
-## Help text
-
-```
-Locks Docker images to a sha256 digest
-
-Usage: sprocket dev lock [OPTIONS] [PATH or URL]
-
-Arguments:
-  [PATH or URL]
-          A source WDL document, directory, or URL
-
-Options:
-  -o, --output <DIR>
-          Output directory for the lock file
-
-  -v, --verbose...
-          Increase logging verbosity
-
-  -q, --quiet...
-          Decrease logging verbosity
-
-  -c, --config <CONFIG>
-          Path to the configuration file
-
-  -s, --skip-config-search
-          Skip searching for and loading configuration files.
-
-          Only a configuration file specified as a command line argument will be used.
-
-  -h, --help
-          Print help (see a summary with '-h')
-
-  -V, --version
-          Print version
-```
