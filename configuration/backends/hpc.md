@@ -36,7 +36,7 @@ run.backends.default.default_lsf_queue.name = "standard"
 # The largest number of CPUs and memory that can be reserved for a single job
 # on this queue.
 #
-# These parameter is optional, and should be set according to site-specific
+# These parameters are optional, and should be set according to site-specific
 # information about the hosts available to dispatch work from the queue. They
 # can also be set for the other types of queues, but this example leaves them
 # unconstrained by default.
