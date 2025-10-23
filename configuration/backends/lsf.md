@@ -1,11 +1,9 @@
-# High-Performance Computing (HPC) Backends
+# LSF + Apptainer backend
 
 Sprocket contains an experimental High-Performance Computing (HPC) backend
 targeting environments that use [LSF
 10.1.0](https://www.ibm.com/docs/en/spectrum-lsf/10.1.0) for job scheduling and
 [Apptainer 1.3.6](https://apptainer.org/docs/user/1.3/) as a container runtime.
-
-## LSF + Apptainer
 
 > [!WARNING]
 >
@@ -116,11 +114,5 @@ If you run into problems or have other feedback, please reach out to us in the
   likely that other configurations will behave slightly differently. Reports of
   these types of issues are greatly appreciated in [#sprocket channel on the WDL
   Slack][sprocket-slack].
-
-## Future plans
-
-The Sprocket development roadmap includes support for
-[SLURM](https://hpc-wiki.info/hpc/SLURM) as an alternate job scheduling system,
-and mix-and-matchable configurations of job schedulers and container runtimes.
 
 [sprocket-slack]: https://join.slack.com/t/openwdl/shared_invite/zt-ctmj4mhf-cFBNxIiZYs6SY9HgM9UAVw
