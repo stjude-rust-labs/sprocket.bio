@@ -90,3 +90,7 @@ On Unix operating systems, it is recommended that your `sprocket.toml` has an
 access permission of `0600` if it contains secrets like TES API server
 passwords or tokens.
 :::
+
+## GPU Support
+
+GPU acceleration is not currently supported by the TES backend. If your workflow requires GPU resources, please use the [Docker backend](/configuration/backends/docker) or the [HPC backend](/configuration/backends/hpc) with Apptainer.
