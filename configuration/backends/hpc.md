@@ -26,30 +26,39 @@ using the HPC:
 run.experimental_features_enabled = true
 
 # Set the default backend to LSF + Apptainer.
-run.backends.default.type = "lsf_apptainer"
+run.backends.default.type.name = "lsf_apptainer"
 
 # The LSF queue used by default for task execution.
 #
 # This parameter is optional. If it's absent and no other applicable queues
 # are specified, jobs will be submitted to your LSF cluster's default queue.
-run.backends.default.default_lsf_queue = "standard"
+run.backends.default.default_lsf_queue.name = "standard"
+# The largest number of CPUs and memory that can be reserved for a single job
+# on this queue.
+#
+# These parameters are optional, and should be set according to site-specific
+# information about the hosts available to dispatch work from the queue. They
+# can also be set for the other types of queues, but this example leaves them
+# unconstrained by default.
+run.backends.default.default_lsf_queue.max_cpu_per_task = 64
+run.backends.default.default_lsf_queue.max_memory_per_task = "96 GB"
 
 # The LSF queue used for short tasks.
 #
 # This parameter is optional, and overrides `default_lsf_queue`.
-run.backends.default.short_task_lsf_queue = "short"
+run.backends.default.short_task_lsf_queue.name = "short"
 
 # The LSF queue used for GPU tasks.
 #
 # This parameter is optional, and overrides `default_lsf_queue` and
 # `short_task_lsf_queue`.
-run.backends.default.gpu_lsf_queue = "gpu"
+run.backends.default.gpu_lsf_queue.name = "gpu"
 
 # The LSF queue used for FPGA tasks.
 #
 # This parameter is optional, and overrides `default_lsf_queue` and
 # `short_task_lsf_queue`.
-run.backends.default.fpga_lsf_queue = "fpga"
+run.backends.default.fpga_lsf_queue.name = "fpga"
 
 # Additional command-line arguments to pass to `bsub` when submitting jobs to
 # LSF.
