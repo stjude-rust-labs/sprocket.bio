@@ -108,26 +108,6 @@ If you run into problems or have other feedback, please reach out to us in the
   these types of issues are greatly appreciated in [#sprocket channel on the WDL
   Slack][sprocket-slack].
 
-## GPU Support
-
-The HPC backend will support GPU acceleration when using Apptainer. GPU support will be available for tasks that specify GPU requirements in their WDL runtime attributes, allowing HPC clusters to schedule tasks on nodes with appropriate GPU resources. WDL 1.2 is required to specify GPU requirements using the `requirements` section and provide hints about the number of GPUs needed:
-
-```wdl
-task gpu_task {
-  ...
-
-  requirements {
-    gpu: true
-  }
-
-  hints {
-    gpu: 1
-  }
-
-  ...
-}
-```
-
 ## Future plans
 
 The Sprocket development roadmap includes support for
