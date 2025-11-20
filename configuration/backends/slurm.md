@@ -68,13 +68,6 @@ run.backends.default.extra_sbatch_args = ["--time=60"]
 # This is *not* a direct limit on the total number of concurrent tasks, but
 # can affect the number of jobs that get queued at one time.
 run.backends.default.max_scatter_concurrency = 200
-
-# The directory where Apptainer `.sif` images will be cached.
-#
-# This must be a location that is accessible from both the node where Sprocket
-# is running and any nodes where Slurm may dispatch a job for execution. In
-# many cluster configurations, this means that `/tmp` will *not* work.
-run.backends.default.apptainer_images_dir = "/scratch_space/$USER/sprocket-apptainer-images"
 ```
 
 If you run into problems or have other feedback, please reach out to us in the
@@ -86,12 +79,6 @@ If you run into problems or have other feedback, please reach out to us in the
   of CLI tools and dumping output to files. Error messages presented at the
   command line will likely be less informative than inspecting the various
   output files left behind in the `runs` directory after a failure.
-
-- Docker-style OCI images are converted to Apptainer's `.sif` format once upon
-  first use in order to avoid issues where large scatters would encounter
-  network failures and rate limiting with certain container registries. These
-  images are currently left behind in a temp directory, and must be periodically
-  deleted in order to not continue consuming disk space.
 
 - There are only basic controls and limits applied to Slurm jobs: scatter
   concurrency factor, CPU per task, and memory per task. This has a couple
