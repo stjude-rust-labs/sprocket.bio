@@ -16,7 +16,7 @@ export default defineConfig({
     nav: [
       { text: "Documentation", link: "/overview" },
       {
-        text: "v0.17.1",
+        text: "v0.18.0",
         items: [
           {
             text: "Changelog",
@@ -45,7 +45,8 @@ export default defineConfig({
               { text: "Overview", link: "/configuration/backends/overview", docFooterText: "Configuration &gt; Backends &gt; Overview" },
               { text: "Docker (Local)", link: "/configuration/backends/docker", docFooterText: "Configuration &gt; Backends &gt; Docker" },
               { text: "Task Execution Service", link: "/configuration/backends/tes", docFooterText: "Configuration &gt; Backends &gt; TES" },
-              { text: "High Performance Computing Cluster", link: "/configuration/backends/hpc", docFooterText: "Configuration &gt; Backends &gt; HPC" },
+              { text: "LSF + Apptainer", link: "/configuration/backends/lsf", docFooterText: "Configuration &gt; Backends &gt; LSF + Apptainer" },
+              { text: "Slurm + Apptainer", link: "/configuration/backends/slurm", docFooterText: "Configuration &gt; Backends &gt; Slurm + Apptainer" },
               { text: "Generic", link: "/configuration/backends/generic", docFooterText: "Configuration &gt; Backends &gt; Generic" },
             ],
           },

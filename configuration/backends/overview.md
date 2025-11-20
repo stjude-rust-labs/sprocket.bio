@@ -9,9 +9,10 @@ Sprocket currently supports two execution backends:
 * A local [Docker execution backend](/configuration/backends/docker.md).
 * A remote [Task Execution Service backend](/configuration/backends/tes.md).
 
-There are two additional execution backends currently under development:
+There are additional execution backends currently under development:
 
-* A [HPC backend](/configuration/backends/hpc.md).
+* An [LSF + Apptainer HPC backend](/configuration/backends/lsf.md).
+* A [Slurm + Apptainer HPC backend](/configuration/backends/slurm.md).
 * A [generic backend](/configuration/backends/generic.md).
 
 ## Backend configuration
