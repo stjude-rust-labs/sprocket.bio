@@ -125,6 +125,15 @@ modified), the cache entry is _invalidated_.
 Sprocket will log a message indicating which of the above have been modified
 when it detects a change.
 
+::: warning Warning
+The call cache will not detect changes to the _image_ used for the task's
+execution.
+
+If the `container` requirement of the task is _mutable_ (i.e. it uses a
+_mutable_ tag), the image associated with that tag may change and not cause a
+call cache entry to be invalidated.
+:::
+
 ## Logged messages
 
 Sprocket will log an `INFO` level message indicating when it reuses or
