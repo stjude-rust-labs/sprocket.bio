@@ -38,6 +38,9 @@ for the cache.
 
 If the task's execution is retried by Sprocket, the resulting task execution
 will not be cached even if it succeeds.
+
+As a task can change the evaluated command between retry attempts in WDL 1.2+,
+retries are not cached to prevent storing a mismatched command digest.
 :::
 
 ## Call cache directory
@@ -103,8 +106,7 @@ A call cache entry is looked up with the following:
 * The name of the task.
 * The evaluated _values_ of the task's `input` section.
 
-If any of the above change, Sprocket will report it as a _cache miss_ if it
-hasn't seen that specific combination before.
+If any of the above change, Sprocket will treat it as a different cache entry.
 
 ## Call cache invalidation
 
