@@ -16,7 +16,7 @@ authentication.
 
 Follow these instructions for [viewing your account keys](https://learn.microsoft.com/en-us/azure/storage/common/storage-account-keys-manage#view-account-access-keys).
 
-### Environment variables
+### Environment variables (recommended)
 
 Use the `AZURE_ACCOUNT_NAME` and `AZURE_ACCESS_KEY` environment variables
 to configure Azure Blob Storage authentication in Sprocket.
