@@ -11,15 +11,24 @@ The following cloud storage URLs for Azure Blob Storage are supported:
 
 ## Authentication
 
-Sprocket currently supports authentication to Azure Blob Storage using [SAS tokens](https://learn.microsoft.com/en-us/azure/storage/common/storage-sas-overview).
+Sprocket supports authentication to Azure Blob Storage using shared key
+authentication.
 
-Follow these instructions to create a [SAS token for your storage container](https://learn.microsoft.com/en-us/azure/ai-services/translator/document-translation/how-to-guides/create-sas-tokens?tabs=Containers).
+Follow these instructions for [viewing your account keys](https://learn.microsoft.com/en-us/azure/storage/common/storage-account-keys-manage#view-account-access-keys).
 
-::: tip
-Create a SAS token with an expiration date that is sufficient for your workflow
-run, but not an expiration date that expires too far into the future in case
-the SAS token is leaked.
-:::
+### Environment variables (recommended)
+
+Use the `AZURE_ACCOUNT_NAME` and `AZURE_ACCESS_KEY` environment variables
+to configure Azure Blob Storage authentication in Sprocket.
+
+This overrides any Azure Blob Storage authentication settings in `sprocket.toml`.
+
+### Command line options
+
+Use the `--azure-account-name` and `--azure-access-key` options to the
+`sprocket run` command to configure Azure Storage authentication in Sprocket.
+
+This overrides any Azure Blob Storage authentication settings in `sprocket.toml`.
 
 ### Configuration
 
@@ -27,41 +36,16 @@ Azure Blob Store authentication can be configured with the `run.storage.azure.au
 section in `sprocket.toml`:
 
 ```toml
-[run.storage.azure.auth.<account>]
-<container> = "<sas-token>"
-<container> = "<sas-token>"
+[run.storage.azure.auth]
+account_name = "<account-name>"
+access_key = "<access-key>"
 ```
 
-Where `account` is the Azure Storage account name, `container` is the name of
-the blob storage container, and `sas-token` is the SAS token generated for the
-storage container.
+Where `account-name` is the Azure Storage account name and `access-key` is the
+account's access key.
 
 ::: warning
 On Unix operating systems, it is recommended that your `sprocket.toml` has an
-access permission of `0600` if it contains secrets like SAS tokens.
+access permission of `0600` if it contains secrets like an Azure Storage
+account key.
 :::
-
-## Use with the TES backend
-
-Currently Sprocket sends SAS tokens through to the TES API server as query
-string parameters in input and output URLS.
-
-This grants the TES API server read and write access to the storage containers,
-as well as anyone that has access to the TES task's input and output URLs.
-
-::: danger
-:warning: Only use Azure SAS token authentication with a TES API server you trust to secure the input and output URLs.
-:::
-
-::: info
-In the future, Sprocket will be extended to support shared key authentication and will no longer append SAS tokens to the URLs.
-:::
-
-### Permissions
-
-For use with TES backend `inputs` and `outputs` URLs, the configured SAS token must have the following permissions:
-
-* `Read`
-* `Create`
-* `Write`
-* `List`

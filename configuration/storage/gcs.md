@@ -16,7 +16,7 @@ Sprocket supports authentication to Google Cloud Storage using HMAC keys.
 
 Follow these instructions for [creating a new HMAC key for a service account](https://cloud.google.com/storage/docs/authentication/hmackeys).
 
-### Environment variables
+### Environment variables (recommended)
 
 Use the `GOOGLE_HMAC_ACCESS_KEY` and `GOOGLE_HMAC_SECRET` environment variables
 to configure Google Cloud Storage authentication in Sprocket.
