@@ -86,6 +86,15 @@ hints {
 For WDL versions before 1.2, substitute the `runtime` section in lieu of the
 `hints` section above.
 
+## Disabling the call cache for a run
+
+The call cache can be disabled for a specific invocation of `sprocket run` by
+specifying the `--no-call-cache` option:
+
+```bash
+$ sprocket run --no-call-cache ...
+```
+
 ## Call cache lookup
 
 A call cache entry is looked up with the following:
