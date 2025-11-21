@@ -93,4 +93,4 @@ passwords or tokens.
 
 ## GPU Support
 
-GPU acceleration is not currently supported by the TES backend. If your workflow requires GPU resources, use the [Docker backend](/configuration/backends/docker) or the [HPC backend](/configuration/backends/hpc) with Apptainer.
+GPU acceleration is not currently supported by the TES backend. If your workflow requires GPU resources, use the [Docker backend](/configuration/backends/docker) or an HPC backend ([LSF](/configuration/backends/lsf) or [Slurm](/configuration/backends/slurm)) with Apptainer.
