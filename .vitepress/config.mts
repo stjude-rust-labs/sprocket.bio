@@ -60,6 +60,7 @@ export default defineConfig({
               { text: "Google Cloud Storage", link: "/configuration/storage/gcs", docFooterText: "Configuration &gt; Cloud Storage &gt; GCS" },
             ],
           },
+          { text: "Call Cache", link: "/configuration/cache", docFooterText: "Configuration &gt; Call Cache" },
         ],
       },
       {
