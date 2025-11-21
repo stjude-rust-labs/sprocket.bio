@@ -99,7 +99,7 @@ $ sprocket run --no-call-cache ...
 
 A call cache entry is looked up with the following:
 
-* The path to the document containing the task.
+* The URI to the document containing the task.
 * The name of the task.
 * The evaluated _values_ of the task's `input` section.
 
