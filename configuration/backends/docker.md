@@ -30,3 +30,11 @@ type = "docker"
 # CLEANUP CONTAINERS.
 cleanup = false
 ```
+
+## GPU Support
+
+The Docker backend supports GPU acceleration for tasks that require it. To enable GPU support, you must first set up the necessary components on your host system:
+
+1. **NVIDIA Drivers**: Install the appropriate NVIDIA drivers for your GPU hardware. Follow the [official NVIDIA CUDA installation guide](https://docs.nvidia.com/cuda/) for your operating system.
+
+2. **NVIDIA Container Runtime**: Install the NVIDIA Container Runtime to enable Docker containers to access GPU resources. Follow the [NVIDIA Container Toolkit installation guide](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html) to set up the runtime on your system.
