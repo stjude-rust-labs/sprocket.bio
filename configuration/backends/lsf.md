@@ -31,6 +31,7 @@ run.backends.default.type.name = "lsf_apptainer"
 # This parameter is optional. If it's absent and no other applicable queues
 # are specified, jobs will be submitted to your LSF cluster's default queue.
 run.backends.default.default_lsf_queue.name = "standard"
+
 # The largest number of CPUs and memory that can be reserved for a single job
 # on this queue.
 #
@@ -66,7 +67,7 @@ run.backends.default.extra_bsub_args = ["-app", "my_app_profile"]
 #
 # This is *not* a direct limit on the total number of concurrent tasks, but
 # can affect the number of jobs that get queued at one time.
-run.backends.default.max_scatter_concurrency = 100
+run.backends.default.max_scatter_concurrency = 1000
 
 # Additional command-line arguments to pass to `apptainer exec` when executing
 # tasks.
@@ -86,17 +87,17 @@ If you run into problems or have other feedback, please reach out to us in the
 - There are only basic controls and limits applied to LSF jobs: scatter
   concurrency factor, CPU per task, and memory per task. This has a couple
   impacts worth noting:
-    - The backend may attempt to schedule tasks which will be forever pending
+    - The backend may attempt to schedule tasks that will be forever pending
       due to an unsatisfiable CPU or memory request. Using LSF tooling such as
       [`bjobs`](https://www.ibm.com/docs/en/spectrum-lsf/10.1.0?topic=reference-bjobs)
       can help identify when a task is pending for an inordinate amount of time.
     - Too-high scatter concurrency or other task count explosions may overwhelm
-      the LSF queues and cause impact to the cluster depending on how it's
+      the LSF queues and cause an impact on the cluster, depending on how it's
       administered. Raise this setting with caution, and note that each
       scattered task may itself request multiple CPUs, which LSF may see as
       multiple tasks.
 
-- Development and testing of this backend has taken place on a single HPC
+- Development and testing of this backend have taken place on a single HPC
   cluster with specific versions and configurations of the relevant tools. It is
   likely that other configurations will behave slightly differently. Reports of
   these types of issues are greatly appreciated in [#sprocket channel on the WDL
