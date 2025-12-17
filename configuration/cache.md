@@ -114,7 +114,7 @@ not. This may lead to Sprocket using a call cache entry when instead it should
 have been invalidated and the task executed again.
 
 Alternatively, a _strong_ digest may be used which is based off of hashing the 
-file's contents with a cryptographic hash function. A _strong_ digest 
+file's content with a cryptographic hash function. A _strong_ digest 
 guarantees that Sprocket will detect a change to the file's content itself, 
 even if metadata of the file remains unchanged. As the hash function must read 
 every byte in the file, calculating a _strong_ digest for very large files may 
