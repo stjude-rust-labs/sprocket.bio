@@ -98,6 +98,36 @@ specifying the `--no-call-cache` option:
 $ sprocket run --no-call-cache ...
 ```
 
+## Content digests
+
+The call cache makes use of content digests to detect changes to input files
+and previous output files.
+
+By default, content digests for files are calculated using a _weak_ digest that
+is based only off of file metadata (such as file size and last modified time)
+and not the actual content of the file.
+
+Calculating a weak digest is very fast as only the file's metadata needs to be 
+read. However, a file can be explicitly modified in such a way that, even 
+though the content of the file has changed, the _weak_ digest of the file does 
+not. This may lead to Sprocket using a call cache entry when instead it should 
+have been invalidated and the task executed again.
+
+Alternatively, a _strong_ digest may be used which is based off of hashing the 
+file's contents with a cryptographic hash function. A _strong_ digest 
+guarantees that Sprocket will detect a change to the file's content itself, 
+even if metadata of the file remains unchanged. As the hash function must read 
+every byte in the file, calculating a _strong_ digest for very large files may 
+greatly impact performance.
+
+You may opt-in to using _strong_ digests via the `run.tasks.digests` setting in 
+`sprocket.toml`:
+
+```toml
+[run.tasks]
+digests = "strong"
+```
+
 ## Call cache lookup
 
 A call cache entry is looked up with the following:
