@@ -1,0 +1,149 @@
+# `sprocket dev test`
+
+> [!CAUTION]
+> 
+> This document describes the beta release of the `test` command,
+> which is currently exposed under the `dev` subcommand (i.e. `sprocket dev
+> test`). This functionality may change in future releases.
+
+Write WDL unit tests using Sprocket! The Sprocket unit testing framework does not require any modifications to your source WDL, re-uses your `run` configuration, and everything required to write tests is done via simple to read and understand YAML. The framework has been designed to get you up and running with comprehensive unit tests as quickly and easily as possible.
+
+## How to write unit tests
+
+We hope you find this method of unit testing to be intuitive and concise.
+
+### Where test definitions are located
+
+Tests are defined separately from the WDL, in standalone YAML files. These YAML files need to have the same basename as the source WDL document, up to the trailing `.wdl` extension which should be replaced with either a `.yaml` or `.yml` file extension.
+
+These YAML files must be located either "sibling" to their source WDL or nested under a `test/` folder in the same directory. For example:
+
+```text
+wdl_source/
+├── data_structures
+│   ├── flag_filter.wdl
+│   ├── flag_filter.yml
+│   ├── read_group.wdl
+│   ├── test
+│   │   └── read_group.yaml
+│   └── untested_source.wdl
+└── other_source
+```
+
+### What test YAML looks like
+
+The root of each YAML file should be populated with a YAML mapping of exact matches to the names of any WDL tasks or workflows defined in the corresponding WDL source. Each entrypoint (task or workflow) can appear up to once in the root, but may have any number of tests associated with it. Tests are defined as a sequence beneath the entrypoint name (sequence elements are started with a hyphen (`-`)) and each test must have a `name: <your test name here>`. Inputs are defined as a mapping of WDL input names to sequences of values. Inputs must be specified as sequences, even if that sequence only contains one element; but if the sequence has multiple elements, they will be combinatorially expanded with all the other input sequences. This is referred to as an "input matrix", and allows for a large number of individual WDL executions to be run as a single test. For example:
+
+```yaml
+bam_to_fastq:
+  - name: kitchen_sink
+    inputs:
+      bam:
+        - bams/Aligned.sortedByCoord.chr9_chr22.bam
+        - bams/test_rnaseq_variant.bam
+        - bams/test.bwa_aln_pe.chrY_chrM.bam
+      bitwise_filter:
+        - include_if_all: "0x0"
+          exclude_if_any: "0x900"
+          include_if_any: "0x0"
+          exclude_if_all: "0x0"
+        - include_if_all: "00"
+          exclude_if_any: "0x904"
+          include_if_any: "3"
+          exclude_if_all: "0"
+      paired_end:
+        - true
+        - false
+      retain_collated_bam:
+        - true
+        - false
+      append_read_number:
+        - true
+        - false
+      output_singletons:
+        - true
+        - false
+      prefix:
+        - kitchen_sink_test
+```
+
+This is a single test named "kitchen_sink" which defines an input matrix that gets expanded into 96 individual WDL executions which all have a unique set of inputs and run in parallel!
+
+If not otherwise specified, a test is considered successful so long as the entrypoint runs to completion, exits without an error, and all outputs are evaluated successfully. For tasks, the test framework assumes the expected exit code is `0`.
+
+Fail conditionss can be tested by specifying an `assertions:` section for the YAML definition. The assertions available depends on whether the entrypoint is a task or a workflow. At the time of writing, the only assertion available for workflows is `should_fail: <boolean>`. This defaults to `false`, but may be specified as `should_fail: true` which will invert expectations. The `should_fail` assertion is ignored for task executions; to unit test a fail case for a task entrypoint, a non-zero `exit_code: <integer>` should be specified.
+
+```yaml
+validate_string_is_12bit_int: # this is a task
+  - name: valid_numbers
+    inputs:
+      number:
+        - "5" # decimal
+        - "0x9AF" # hexadecimal
+        - "01" # octal
+        - "4095" # decimal
+  - name: invalid_numbers
+    inputs:
+      number:
+        - "0x1000" # too many bits
+        - ""
+        - string
+        - this is not a number
+        - "000000000011" # too many bits
+        - "-1" # only positive/unsigned ints are accepted
+    assertions:
+      exit_code: 42
+validate_flag_filter: # this is a workflow
+  - name: valid_FlagFilter
+    inputs:
+      flags:
+        - include_if_all: "3"
+          exclude_if_any: "0xF04"
+          include_if_any: "03"
+          exclude_if_all: "4095"
+  - name: invalid_FlagFilter
+    inputs:
+      flags:
+        - include_if_all: "3"
+          exclude_if_any: "0xF04"
+          include_if_any: "03"
+          exclude_if_all: "whoops! I'll trigger a fail :("
+    assertions:
+      should_fail: true
+```
+
+Assertions are shared by all executions of a test. In the example above, there are 4 executions defined for the `validate_string_is_12bit_int::valid_numbers` test. This test is considered passed if all 4 of those executions evaluate with an exit code of `0`. The `invalid_numbers` test contains 6 executions, and every one of those executions must exit with a code of `42` for the test to be considered a success.
+
+At the time of writing, the only other assertions available for tasks are the `stdout` and `stderr` assertions. Both of these work very similarly; they expect a YAML sequence of strings that are interpreted as [regular expressions](https://en.wikipedia.org/wiki/Regular_expression) which should match on the task's STDOUT/STDERR stream. For example:
+
+```yaml
+validate_string_is_12bit_int:
+  - name: too_big_decimal_fails
+    inputs:
+      number:
+        - "4096"
+        - "10000"
+        - "9999"
+    assertions:
+      exit_code: 42
+      stderr:
+        - Input number \(.*\) interpreted as decimal
+        - But number must be less than 4096!
+```
+
+### How to use test fixtures
+
+WDL tasks and workflows often take file inputs, so the Sprocket unit testing framework has attempted to make it as easy as possible to reference "test fixtures" from test YAML.
+
+Fixtures are located relative to a WDL workspace's root, at `<workspace>/test/fixtures/`. A WDL workspace is very similar to a git repository (a directory can be both a WDL workspace and a git repo), in that it is simply a directory on your local filesystem with a collection of WDL documents within it. These WDL documents can be arbitrarily nested and Sprocket will recursively search the workspace for all files with a `.wdl` extension and an associated YAML file. The `test/fixtures/` directory will always be loaded as the "origin" from which all files are expected to be located. This means that your test YAML can live near the WDL source it is testing, but test files remain isolated relative to the workspace root, preventing clutter in your source directories.
+
+Let's return to the "kitchen_sink" example test defined earlier: one of the inputs sections looks like:
+
+```yaml
+      bam:
+        - bams/Aligned.sortedByCoord.chr9_chr22.bam
+        - bams/test_rnaseq_variant.bam
+        - bams/test.bwa_aln_pe.chrY_chrM.bam
+```
+
+Regardless of where this YAML file is located in the workspace, the 3 BAM files referenced will be found at `<workspace>/test/fixtures/bams/{Aligned.sortedByCoord.chr9_chr22.bam,test_rnaseq_variant.bam,test.bwa_aln_pe.chrY_chrM.bam}`. This makes re-using test fixtures across your workspace super easy!

@@ -79,6 +79,7 @@ export default defineConfig({
         text: "Experimental Commands", collapsed: true, items: [
           { text: "doc", link: "/subcommands/doc", docFooterText: "Experimental Commands &gt; doc" },
           { text: "lock", link: "/subcommands/lock", docFooterText: "Experimental Commands &gt; lock" },
+          { text: "test", link: "/subcommands/test", docFooterText: "Experimental Commands &gt; test" },
         ]
       },
       {
