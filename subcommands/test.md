@@ -146,4 +146,112 @@ Let's return to the "kitchen_sink" example test defined earlier: one of the inpu
         - bams/test.bwa_aln_pe.chrY_chrM.bam
 ```
 
-Regardless of where this YAML file is located in the workspace, the 3 BAM files referenced will be found at `<workspace>/test/fixtures/bams/{Aligned.sortedByCoord.chr9_chr22.bam,test_rnaseq_variant.bam,test.bwa_aln_pe.chrY_chrM.bam}`. This makes re-using test fixtures across your workspace super easy!
+Regardless of where this YAML file is located in the workspace, the 3 BAM files referenced will be found at:
+
+```text
+<workspace>/test/fixtures/bams/Aligned.sortedByCoord.chr9_chr22.bam
+<workspace>/test/fixtures/bams/test_rnaseq_variant.bam
+<workspace>/test/fixtures/bams/test.bwa_aln_pe.chrY_chrM.bam
+```
+
+This makes re-using test fixtures across your workspace super easy! Any YAML file in the workspace can reference the same fixtures using the same paths; even if the source WDL moves around, your tests will remain valid.
+
+### Specifying groups of inputs
+
+Often in bioinformatics, files have separate accessory files that are specific to each other and one relies on the other. If these files are provided as distinct inputs, the combinatorial nature of input matrices may mix up these files and cause unintended errors. For example, the following test definition would not produce a useful test matrix:
+
+```yaml
+bam_coverage:
+  - name: this_won't_work_right
+    inputs:
+      bam:
+        - bams/test.bam
+        - bams/test.bwa_aln_pe.chrY_chrM.bam
+        - bams/Aligned.sortedByCoord.chr9_chr22.bam
+        - bams/test_rnaseq_variant.bam
+      bam_index:
+        - bams/test.bam.bai
+        - bams/test.bwa_aln_pe.chrY_chrM.bam.bai
+        - bams/Aligned.sortedByCoord.chr9_chr22.bam.bai
+        - bams/test_rnaseq_variant.bam.bai
+      prefix:
+        - test_bigwig
+```
+
+The problem is that in addition to the correct inputs we want to test (e.g. `bam=bams/test.bam`, `bam_index=bams/test.bam.bai`, and `prefix=test_bigwig`) there will be incorrect file combinations that will fail (e.g. `bam=test_rnaseq_variant.bam`, `bam_index=test.bwa_aln_pe.chrY_chrM.bam.bai`, and `prefix=test_bigwig`). But don't worry, we've got a way to be more specific with our test matrices and prevent this mix up from happening!
+
+Groups of inputs that should be combined exactly can be specified with a special syntax that involves nesting the input keys under an arbitrary key starting with a dollar sign (`$`). The identifier that follows the dollar sign is unimportant and can be anything that makes sense to you. To fix our test definition, we could re-write to look like:
+
+```yaml
+bam_coverage:
+  - name: this_will_work
+    inputs:
+      $samples:
+        bam:
+          - bams/test.bam
+          - bams/test.bwa_aln_pe.chrY_chrM.bam
+          - bams/Aligned.sortedByCoord.chr9_chr22.bam
+          - bams/test_rnaseq_variant.bam
+        bam_index:
+          - bams/test.bam.bai
+          - bams/test.bwa_aln_pe.chrY_chrM.bam.bai
+          - bams/Aligned.sortedByCoord.chr9_chr22.bam.bai
+          - bams/test_rnaseq_variant.bam.bai
+      prefix:
+        - test_bigwig
+```
+
+Now, instead of creating a matrix with 16 executions (12 of which would fail), we are only defining 4 executions, all of which should succeed.
+
+### Tagging tests
+
+It's often helpful to only run a subset of tests defined in a workspace, either by excluding slow tests or by only running the tests you're developing. Each test can include a sequence of tags that can be toggled from the command line when executing tests. For example:
+
+```yaml
+build_bwa_db:
+  - name: build_reference
+    tags: [ reference, slow ]
+    inputs:
+      reference_fasta:
+        - reference/GRCh38.chrY_chrM.fa
+```
+
+## Running unit tests
+
+```text
+Usage: sprocket dev test [OPTIONS] [SOURCE]
+
+Arguments:
+  [SOURCE]
+          Local path to a WDL document or workspace to unit test.
+
+          If not specified, this defaults to the current working directory.
+
+Options:
+  -w, --workspace <WORKSPACE>
+          Root of the workspace where the `test/` directory will be located. Test fixtures will be loaded from `<workspace>/test/fixtures/`.
+
+          If a `<workspace>/test/` directory does not exist, one will be created and it will contain a `runs/` directory for test executions.
+
+          If not specified and the `source` argument is a directory, it's assumed that directory is also the workspace. This can be specified in addition to a source directory if they are different.
+
+          If not specified and the `source` argument is a file, it's assumed that the current working directory is the workspace. This can be specified in addition to a source file if the CWD is not the right workspace.
+
+  -t, --include-tag <TAG>
+          Specific test tag that should be run.
+
+          Can be repeated multiple times.
+
+  -f, --filter-tag <TAG>
+          Filter out any tests with a matching tag.
+
+          Can be repeated multiple times.
+
+      --do-not-clean
+          Do not clean the file system of successful tests.
+
+          The default behavior is to remove directories of successful tests, leaving only failed and errored run directories on the file system.
+
+      --clean-all
+          Clean all exectuion directories, even for tests that failed or errored
+```
