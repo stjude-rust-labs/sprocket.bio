@@ -6,7 +6,7 @@
 > which is currently exposed under the `dev` subcommand (i.e. `sprocket dev
 > test`). This functionality may change in future releases.
 
-Write WDL unit tests using Sprocket! The Sprocket unit testing framework does not require any modifications to your source WDL, re-uses your `run` configuration, and everything required to write tests is done via simple to read and understand YAML. The framework has been designed to get you up and running with comprehensive unit tests as quickly and easily as possible.
+Write WDL unit tests using Sprocket! The Sprocket unit testing framework does not require any modifications to your source WDL, re-uses your `run` configuration, and everything required to test is done via simple to read and write YAML. The framework has been designed to get you up and running with comprehensive unit tests as quickly and easily as possible.
 
 ## How to write unit tests
 
@@ -135,7 +135,7 @@ validate_string_is_12bit_int:
 
 WDL tasks and workflows often take file inputs, so the Sprocket unit testing framework has attempted to make it as easy as possible to reference "test fixtures" from test YAML.
 
-Fixtures are located relative to a WDL workspace's root, at `<workspace>/test/fixtures/`. A WDL workspace is very similar to a git repository (a directory can be both a WDL workspace and a git repo), in that it is simply a directory on your local filesystem with a collection of WDL documents within it. These WDL documents can be arbitrarily nested and Sprocket will recursively search the workspace for all files with a `.wdl` extension and an associated YAML file. The `test/fixtures/` directory will always be loaded as the "origin" from which all files are expected to be located. This means that your test YAML can live near the WDL source it is testing, but test files remain isolated relative to the workspace root, preventing clutter in your source directories.
+Fixtures are located relative to a WDL workspace's root, at `<workspace>/test/fixtures/`. A WDL workspace is very similar to a git repository (a directory can be both a WDL workspace and a git repo), in that it is simply a directory on your local filesystem with a collection of WDL documents within it. These WDL documents can be arbitrarily nested and Sprocket will recursively search the workspace for all files with a `.wdl` extension and an associated YAML file. The `test/fixtures/` directory will always be loaded as the "origin" from which all files are expected to be located. This means that your test YAML can live near the WDL source it is testing, but test fixtures remain isolated relative to the workspace root, preventing clutter in your source directories.
 
 Let's return to the "kitchen_sink" example test defined earlier: one of the inputs sections looks like:
 
@@ -158,7 +158,7 @@ This makes re-using test fixtures across your workspace super easy! Any YAML fil
 
 ### Specifying groups of inputs
 
-Often in bioinformatics, files have separate accessory files that are specific to each other and one relies on the other. If these files are provided as distinct inputs, the combinatorial nature of input matrices may mix up these files and cause unintended errors. For example, the following test definition would not produce a useful test matrix:
+Often in bioinformatics, files have separate accessory files that are specific to each other. If these files are provided as distinct inputs, the combinatorial nature of input matrices may mix up these files and cause unintended errors. For example, the following test definition would not produce a useful test matrix:
 
 ```yaml
 bam_coverage:
@@ -180,7 +180,7 @@ bam_coverage:
 
 The problem is that in addition to the correct inputs we want to test (e.g. `bam=bams/test.bam`, `bam_index=bams/test.bam.bai`, and `prefix=test_bigwig`) there will be incorrect file combinations that will fail (e.g. `bam=test_rnaseq_variant.bam`, `bam_index=test.bwa_aln_pe.chrY_chrM.bam.bai`, and `prefix=test_bigwig`). But don't worry, we've got a way to be more specific with our test matrices and prevent this mix up from happening!
 
-Groups of inputs that should be combined exactly can be specified with a special syntax that involves nesting the input keys under an arbitrary key starting with a dollar sign (`$`). The identifier that follows the dollar sign is unimportant and can be anything that makes sense to you. To fix our test definition, we could re-write to look like:
+Groups of inputs that should be combined exactly can be specified with a special syntax that involves nesting the input keys under a key starting with a dollar sign (`$`). The identifier that follows the dollar sign is unimportant and can be anything that makes sense to you. To fix our test definition, we could re-write to look like:
 
 ```yaml
 bam_coverage:
@@ -229,7 +229,7 @@ Arguments:
 
 Options:
   -w, --workspace <WORKSPACE>
-          Root of the workspace where the `test/` directory will be located. Test fixtures will be loaded from `<workspace>/test/fixtures/`.
+          Root of the workspace where the `test/` directory will be located. Test fixtures will be loaded from `<workspace>/test/fixtures/` if it is present.
 
           If a `<workspace>/test/` directory does not exist, one will be created and it will contain a `runs/` directory for test executions.
 
