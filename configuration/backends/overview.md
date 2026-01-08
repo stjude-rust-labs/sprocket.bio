@@ -49,3 +49,31 @@ type = "tes"
 
 **If no execution backend is configured in `sprocket.toml`, the Docker backend
 is used**.
+
+## Container Protocol Support
+
+Different execution backends support different container image protocols. The
+table below summarizes which protocols are supported by each backend.
+
+| Protocol               | Docker | TES | LSF + Apptainer | Slurm + Apptainer |
+| ---------------------- | :----: | :-: | :-------------: | :---------------: |
+| `docker://`            |   ✓    |  ✓  |        ✓        |         ✓         |
+| `library://`           |        |  ✓  |        ✓        |         ✓         |
+| `oras://`              |        |  ✓  |        ✓        |         ✓         |
+| `file://` (local SIF)  |        |     |        ✓        |         ✓         |
+
+### Protocol Details
+
+- **[`docker://`](https://docs.docker.com/reference/cli/docker/image/pull/)** —
+  OCI/Docker registry images (e.g., `docker://ubuntu:22.04` or simply
+  `ubuntu:22.04`). This is the default protocol when no scheme is specified.
+- **[`library://`](https://apptainer.org/docs/user/main/library_api.html)** —
+  Sylabs Cloud Library images (e.g., `library://sylabs/default/alpine:3.18`).
+  Supported by Apptainer-based backends and TES servers that support Sylabs
+  Library references.
+- **[`oras://`](https://oras.land/docs/quickstart)** — OCI Registry As Storage images (e.g.,
+  `oras://ghcr.io/org/image:tag`). Supported by Apptainer-based backends and
+  TES servers that support ORAS.
+- **`file://`** — Local Apptainer/Singularity `.sif` files (e.g.,
+  `file:///path/to/image.sif`). Only supported by Apptainer-based backends
+  where the file is accessible from the execution environment.
