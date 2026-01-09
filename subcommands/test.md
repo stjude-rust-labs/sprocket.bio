@@ -6,11 +6,11 @@
 > which is currently exposed under the `dev` subcommand (i.e. `sprocket dev
 > test`). This functionality may change in future releases.
 
-Write WDL unit tests using Sprocket! The Sprocket unit testing framework does not require any modifications to your source WDL, re-uses your `run` configuration, and everything required to test is done via simple to read and write YAML. The framework has been designed to get you up and running with comprehensive unit tests as quickly and easily as possible.
+Write WDL unit tests using Sprocket! The Sprocket unit testing framework does not require any modifications to your source WDL, re-uses your `run` configuration, and everything required to test is done via YAML. The framework has been designed to get up and running with comprehensive unit tests as quickly and easily as possible.
 
 ## How to write unit tests
 
-We hope you find this method of unit testing to be intuitive and concise.
+Unit tests are written in YAML and stored alongside the WDL source.
 
 ### Where test definitions are located
 
@@ -32,7 +32,7 @@ wdl_source/
 
 ### What test YAML looks like
 
-The root of each YAML file should be populated with a YAML mapping of exact matches to the names of any WDL tasks or workflows defined in the corresponding WDL source. Each entrypoint (task or workflow) can appear up to once in the root, but may have any number of tests associated with it. Tests are defined as a sequence beneath the entrypoint name (sequence elements are started with a hyphen (`-`)) and each test must have a `name: <your test name here>`. Inputs are defined as a mapping of WDL input names to sequences of values. Inputs must be specified as sequences, even if that sequence only contains one element; if the sequence has multiple elements, they will be combinatorially expanded with all the other input sequences. This is referred to as an "input matrix", and allows for a large number of individual WDL executions to be run as a single test. For example:
+The root of each YAML file should be populated with a YAML mapping of exact matches to the names of any WDL tasks or workflows defined in the corresponding WDL source. Each entrypoint (task or workflow) can appear up to once in the root, but may have any number of tests associated with it. Tests are defined as a sequence beneath the entrypoint name where sequence elements are delimited with a hyphen (`-`) and each test must have a `name: <your test name here>`. Inputs are defined as a mapping of WDL input names to sequences of values. Inputs must be specified as sequences, even if the sequence only contains one element; if the sequence has multiple elements, they will be combinatorially expanded with all the other input sequences. This is referred to as an "input matrix" and allows for a large number of individual WDL executions to be run as a single test. For example:
 
 ```yaml
 bam_to_fastq:
@@ -67,11 +67,11 @@ bam_to_fastq:
         - kitchen_sink_test
 ```
 
-This is a single test named "kitchen_sink" which defines an input matrix that gets expanded into 96 individual WDL executions which all have a unique set of inputs and run in parallel!
+This is a single test named "kitchen_sink" which defines an input matrix that gets expanded into 96 individual WDL executions, all of which have a unique set of inputs and run in parallel!
 
 If not otherwise specified, a test is considered successful so long as the entrypoint runs to completion, exits without an error, and all outputs are evaluated successfully. For tasks, the test framework assumes the expected exit code is `0`.
 
-Fail conditionss can be tested by specifying an `assertions:` section for the YAML definition. The assertions available depends on whether the entrypoint is a task or a workflow. At the time of writing, the only assertion available for workflows is `should_fail: <boolean>`. This defaults to `false`, but may be specified as `should_fail: true` which will invert expectations. The `should_fail` assertion is ignored for task executions; to unit test a fail case for a task entrypoint, a non-zero `exit_code: <integer>` should be specified.
+Fail conditions can be tested by specifying an `assertions:` section for the YAML definition. The assertions available depend on whether the entrypoint is a task or a workflow. At the time of writing, the only assertion available for workflows is `should_fail: <boolean>`. This defaults to `false`, but may be specified as `should_fail: true`, which will invert expectations. The `should_fail` assertion is ignored for task executions. To unit test a fail case for a task entrypoint, a non-zero `exit_code: <integer>` should be specified.
 
 ```yaml
 validate_string_is_12bit_int: # this is a task
@@ -135,7 +135,7 @@ validate_string_is_12bit_int:
 
 WDL tasks and workflows often take file inputs, so the Sprocket unit testing framework has attempted to make it as easy as possible to reference "test fixtures" from test YAML.
 
-Fixtures are located relative to a WDL workspace's root, at `<workspace>/test/fixtures/`. A WDL workspace is very similar to a git repository (a directory can be both a WDL workspace and a git repo), in that it is simply a directory on your local filesystem with a collection of WDL documents within it. These WDL documents can be arbitrarily nested and Sprocket will recursively search the workspace for all files with a `.wdl` extension and an associated YAML file. The `test/fixtures/` directory will always be loaded as the "origin" from which all files are expected to be located. This means that your test YAML can live near the WDL source it is testing, but test fixtures remain isolated relative to the workspace root, preventing clutter in your source directories.
+Fixtures are located relative to a WDL workspace's root, at `<workspace>/test/fixtures/`. A WDL workspace is very similar to a git repository (a directory can be both a WDL workspace and a git repository), in that it is simply a directory on your local filesystem with a collection of WDL documents within it. These WDL documents can be arbitrarily nested and Sprocket will recursively search the workspace for all files with a `.wdl` extension and an associated YAML file. The `test/fixtures/` directory will always be loaded as the "origin" from which all files are expected to be located. This means that your test YAML can live near the WDL source it is testing, but test fixtures remain isolated relative to the workspace root, preventing clutter in your source directories.
 
 Let's return to the "kitchen_sink" example test defined earlier: one of the inputs sections looks like:
 
@@ -205,7 +205,7 @@ Now, instead of creating a matrix with 16 executions (12 of which would fail), w
 
 ### Tagging tests
 
-It's often helpful to only run a subset of tests defined in a workspace, either by excluding slow tests or by only running the tests you're developing. Each test can include a sequence of tags that can be toggled from the command line when executing tests. For example:
+It's often helpful to run only a subset of tests defined in a workspace, either by excluding slow tests or by only running the tests you are actively developing. Each test can include a sequence of tags that can be toggled from the command line when executing tests. For example:
 
 ```yaml
 build_bwa_db:
