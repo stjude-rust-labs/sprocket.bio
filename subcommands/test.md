@@ -250,7 +250,7 @@ Options:
 
           Can be repeated multiple times.
 
-      --do-not-clean
+      --no-clean
           Do not clean the file system of successful tests.
 
           The default behavior is to remove directories of successful tests, leaving only failed and errored run directories on the file system.
