@@ -6,7 +6,7 @@
 > which is currently exposed under the `dev` subcommand (i.e. `sprocket dev
 > test`). This functionality may change in future releases.
 
-Write WDL unit tests using Sprocket! The Sprocket unit testing framework does not require any modifications to your source WDL, re-uses your `run` configuration, and everything required to test is done via YAML. The framework has been designed to get up and running with comprehensive unit tests as quickly and easily as possible.
+The Sprocket unit testing framework does not require any modifications to your source WDL, re-uses your `run` configuration, and everything required to test is done via YAML. The framework has been designed to get up and running with comprehensive unit tests as quickly and easily as possible.
 
 ## How to write unit tests
 
@@ -69,6 +69,8 @@ bam_to_fastq:
 
 This is a single test named "kitchen_sink" which defines an input matrix that gets expanded into 96 individual WDL executions, all of which have a unique set of inputs and run in parallel!
 
+> 96 executions come from the cartesian product of each sequence inputs (`3*2*2*2*2*2*1=96`).
+
 If not otherwise specified, a test is considered successful so long as the entrypoint runs to completion, exits without an error, and all outputs are evaluated successfully. For tasks, the test framework assumes the expected exit code is `0`.
 
 Fail conditions can be tested by specifying an `assertions:` section for the YAML definition. The assertions available depend on whether the entrypoint is a task or a workflow. At the time of writing, the only assertion available for workflows is `should_fail: <boolean>`. This defaults to `false`, but may be specified as `should_fail: true`, which will invert expectations. The `should_fail` assertion is ignored for task executions. To unit test a fail case for a task entrypoint, a non-zero `exit_code: <integer>` should be specified.
@@ -89,8 +91,9 @@ validate_string_is_12bit_int: # this is a task
         - ""
         - string
         - this is not a number
-        - "000000000011" # too many bits
-        - "-1" # only positive/unsigned ints are accepted
+        - "000000000011" # too many bits (interpreted as octal, not binary)
+        - "-1" # only unsigned ints are accepted
+        - "+1"
     assertions:
       exit_code: 42
 validate_flag_filter: # this is a workflow
@@ -112,7 +115,7 @@ validate_flag_filter: # this is a workflow
       should_fail: true
 ```
 
-Assertions are shared by all executions of a test. In the example above, there are 4 executions defined for the `validate_string_is_12bit_int::valid_numbers` test. This test is considered passed if all 4 of those executions evaluate with an exit code of `0`. The `invalid_numbers` test contains 6 executions, and every one of those executions must exit with a code of `42` for the test to be considered a success.
+Assertions are shared by all executions of a test. In the example above, there are 4 executions defined for the `validate_string_is_12bit_int::valid_numbers` test. This test is considered passed if all 4 of those executions evaluate with an exit code of `0`. The `invalid_numbers` test contains 7 executions, and every one of those executions must exit with a code of `42` for the test to be considered a success.
 
 At the time of writing, the only other assertions available for tasks are the `stdout` and `stderr` assertions. Both of these work very similarly; they expect a YAML sequence of strings that are interpreted as [regular expressions](https://en.wikipedia.org/wiki/Regular_expression) which should match on the task's STDOUT/STDERR stream. For example:
 
@@ -162,7 +165,7 @@ Often in bioinformatics, files have separate accessory files that are specific t
 
 ```yaml
 bam_coverage:
-  - name: this_won't_work_right
+  - name: this_will_not_work
     inputs:
       bam:
         - bams/test.bam
@@ -178,9 +181,9 @@ bam_coverage:
         - test_bigwig
 ```
 
-The problem is that in addition to the correct inputs we want to test (e.g. `bam=bams/test.bam`, `bam_index=bams/test.bam.bai`, and `prefix=test_bigwig`) there will be incorrect file combinations that will fail (e.g. `bam=test_rnaseq_variant.bam`, `bam_index=test.bwa_aln_pe.chrY_chrM.bam.bai`, and `prefix=test_bigwig`). But don't worry, we've got a way to be more specific with our test matrices and prevent this mix up from happening!
+The problem is that in addition to the correct inputs we want to test (e.g. `bam=bams/test.bam`, `bam_index=bams/test.bam.bai`, and `prefix=test_bigwig`) there will be incorrect file combinations that will fail (e.g. `bam=test_rnaseq_variant.bam`, `bam_index=test.bwa_aln_pe.chrY_chrM.bam.bai`, and `prefix=test_bigwig`).
 
-Groups of inputs that should be combined exactly can be specified with a special syntax that involves nesting the input keys under a key starting with a dollar sign (`$`). The identifier that follows the dollar sign is unimportant and can be anything that makes sense to you. To fix our test definition, we could re-write to look like:
+Groups of inputs that should be combined exactly can be specified with a special syntax that involves nesting the input keys under a key starting with a dollar sign (`$`). The identifier that follows the dollar sign is unimportant and can be any non-empty string. To fix our test definition, we could re-write to look like:
 
 ```yaml
 bam_coverage:
