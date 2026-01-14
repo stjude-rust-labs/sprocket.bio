@@ -72,6 +72,8 @@ inputs = "<cloud-storage-url>"
 outputs = "<cloud-storage-url>"
 # The polling interval for task status updates (defaults to 60 seconds)
 interval = 60
+# The number of retries after encountering an error communicating with the TES server (defaults to 0 retries)
+retries = 0
 
 # If basic authentication is required:
 [run.backends.default.auth]
