@@ -24,13 +24,13 @@ using the HPC:
 run.experimental_features_enabled = true
 
 # Set the default backend to LSF + Apptainer.
-run.backends.default.type.name = "lsf_apptainer"
+run.backends.default.type = "lsf_apptainer"
 
 # The LSF queue used by default for task execution.
 #
 # This parameter is optional. If it's absent and no other applicable queues
 # are specified, jobs will be submitted to your LSF cluster's default queue.
-run.backends.default.default_lsf_queue.name = "standard"
+# run.backends.default.default_lsf_queue.name = "standard"
 # The largest number of CPUs and memory that can be reserved for a single job
 # on this queue.
 #
@@ -38,39 +38,39 @@ run.backends.default.default_lsf_queue.name = "standard"
 # information about the hosts available to dispatch work from the queue. They
 # can also be set for the other types of queues, but this example leaves them
 # unconstrained by default.
-run.backends.default.default_lsf_queue.max_cpu_per_task = 64
-run.backends.default.default_lsf_queue.max_memory_per_task = "96 GB"
+# run.backends.default.default_lsf_queue.max_cpu_per_task = 64
+# run.backends.default.default_lsf_queue.max_memory_per_task = "96 GB"
 
 # The LSF queue used for short tasks.
 #
 # This parameter is optional, and overrides `default_lsf_queue`.
-run.backends.default.short_task_lsf_queue.name = "short"
+# run.backends.default.short_task_lsf_queue.name = "short"
 
 # The LSF queue used for GPU tasks.
 #
 # This parameter is optional, and overrides `default_lsf_queue` and
 # `short_task_lsf_queue`.
-run.backends.default.gpu_lsf_queue.name = "gpu"
+# run.backends.default.gpu_lsf_queue.name = "gpu"
 
 # The LSF queue used for FPGA tasks.
 #
 # This parameter is optional, and overrides `default_lsf_queue` and
 # `short_task_lsf_queue`.
-run.backends.default.fpga_lsf_queue.name = "fpga"
+# run.backends.default.fpga_lsf_queue.name = "fpga"
 
 # Additional command-line arguments to pass to `bsub` when submitting jobs to
 # LSF.
-run.backends.default.extra_bsub_args = ["-app", "my_app_profile"]
+# run.backends.default.extra_bsub_args = ["-app", "my_app_profile"]
 
 # The maximum number of subtasks each `scatter` will try executing at once.
 #
 # This is *not* a direct limit on the total number of concurrent tasks, but
 # can affect the number of jobs that get queued at one time.
-run.backends.default.max_scatter_concurrency = 100
+# run.backends.default.max_scatter_concurrency = 100
 
 # Additional command-line arguments to pass to `apptainer exec` when executing
 # tasks.
-run.backends.default.extra_apptainer_exec_args = ["--hostname=\"my_host\""]
+# run.backends.default.extra_apptainer_exec_args = ["--hostname=\"my_host\""]
 ```
 
 If you run into problems or have other feedback, please reach out to us in the
