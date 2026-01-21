@@ -41,7 +41,102 @@ follow along for updates (see
 [#546](https://github.com/stjude-rust-labs/wdl/issues/546) for more
 information).
 
-## Preamble comments
+## Structs
+
+Structs and their members can be documented with both [Meta sections](#meta-sections)
+and [documentation comments](#documentation-comments).
+
+### Meta sections
+
+**WDL v1.2** introduced the `meta` and `parameter_meta` sections for structs and struct
+members respectively. See [Meta entries](#meta-entries) for the available keys.
+
+For prior versions, see [documentation comments](#documentation-comments).
+
+#### Example
+
+```wdl
+struct Foo {
+  String bar
+
+  meta {
+    description: "This is a struct-level comment."
+  }
+  
+  parameter_meta {
+    bar: "Bar is a very important struct member."
+  }
+}
+```
+
+## Enums
+
+Enums, unlike [structs](#structs), do not support `meta`/`parameter_meta` sections nor have their own specified equivalent.
+`sprocket doc` instead supports [documentation comments](#documentation-comments), both on the enum itself and its variants.
+
+### Example
+
+```wdl
+## An RGB24 color enum
+##
+## Each variant is represented as a 24-bit hexadecimal
+## RGB string with exactly one non-zero channel.
+enum Color[String] {
+    ## Pure red
+    Red = "#FF0000",
+    ## Pure green
+    ##
+    ## Some really long description about green.
+    Green = "#00FF00",
+    Blue = "#0000FF" # No description provided
+}
+```
+
+## Documentation comments
+
+> [!CAUTION]
+>
+> This section describes a feature that has not yet entered the RFC process.
+> This functionality may change in future releases. See [the discussion](https://github.com/openwdl/wdl/issues/757).
+
+Documentation comments are denoted by `##` and can be used anywhere in the document. They are intended to replace the
+`meta`/`parameter_meta` sections found in `struct`s, `task`s, and `workflow`s.
+
+Internally, documentation comments map to the existing [`description`](#description) and [`help`](#help) meta entries.
+The first paragraph will be used for the `description`, with all following paragraphs being joined and used for `help`.
+
+Documentation comments can be mixed with `meta`/`parameter_meta` sections like so:
+
+```wdl
+struct Foo {
+  String bar
+  ## Description of the `baz` field.
+  String baz
+
+  meta {
+    description: "This is a struct-level comment."
+  }
+  
+  parameter_meta {
+    bar: "Bar is a very important struct member."
+  }
+}
+```
+
+In the case that they overlap, the comments will take precedence:
+
+```wdl
+struct Foo {
+  ## This is the description that will show for `bar`.
+  String bar
+  
+  parameter_meta {
+    bar: "This description will not be shown."
+  }
+}
+```
+
+### Preamble comments
 
 To provide top-level documentation for a file, add a comment block before the
 `version` statement where each line starts with a double pound sign (i.e., `##`,
@@ -58,21 +153,6 @@ version 1.2
 
 workflow foo {}
 ```
-
-## Structs
-
-Structs are treated different for WDL v1.0/v1.1 and v1.2.
-
-### v1.0 and v1.1
-
-The WDL specification does not offer a way to document structs prior to WDL
-v1.2, so the pages for them are rather limited. The pages for these structs will
-have a copy of the raw WDL definition.
-
-### v1.2
-
-HTML documentation for structs defined in v1.2 WDL has not yet been implemented,
-so they are given the same treatment as pre-v1.2 structs.
 
 ## Meta entries
 
