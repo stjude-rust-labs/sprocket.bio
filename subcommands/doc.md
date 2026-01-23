@@ -34,12 +34,7 @@ If you wish to provide a custom logo, you can do so with the `--logo` argument.
 While it is technically possible to supply your own custom CSS styling, this
 capability is currently undocumented. We recommend sticking with the default
 styling at this point in time, but do let us know what kinds of customization
-you would like to see in future releases! 
-
-We are working on adding a light/dark mode toggle as well, so make sure to
-follow along for updates (see
-[#546](https://github.com/stjude-rust-labs/wdl/issues/546) for more
-information).
+you would like to see in future releases!
 
 ## Structs
 
