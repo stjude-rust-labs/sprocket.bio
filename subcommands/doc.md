@@ -94,7 +94,10 @@ enum Color[String] {
 > This section describes a feature that has not yet entered the RFC process.
 > This functionality may change in future releases. See [the discussion](https://github.com/openwdl/wdl/issues/757).
 
-Documentation comment support is not enabled by default. To enable it, use the `--with-doc-comments` CLI flag.
+> [!WARNING]
+>
+> Documentation comment support is not enabled by default. To enable it, use
+> the `--with-doc-comments` CLI flag.
 
 Documentation comments are denoted by `##` and can be used anywhere in the document. They are intended to replace the
 `meta`/`parameter_meta` sections found in `struct`s, `task`s, and `workflow`s.
