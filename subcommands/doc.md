@@ -99,13 +99,13 @@ enum Color[String] {
 > Documentation comment support is not enabled by default. To enable it, use
 > the `--with-doc-comments` CLI flag.
 
-Documentation comments are denoted by `##` and can be used anywhere in the document. They are intended to replace the
+Documentation comments (a.k.a. doc comments) are denoted by `##` and can be used anywhere in the document. They are intended to replace the
 `meta`/`parameter_meta` sections found in `struct`s, `task`s, and `workflow`s.
 
-Internally, documentation comments map to the existing [`description`](#description) and [`help`](#help) meta entries.
+Internally, doc comments map to the existing [`description`](#description) and [`help`](#help) meta entries.
 The first paragraph will be used for the `description`, with all following paragraphs being joined and used for `help`.
 
-Documentation comments can be mixed with `meta`/`parameter_meta` sections like so:
+Doc comments can be mixed with `meta`/`parameter_meta` sections like so:
 
 ```wdl
 struct Foo {
