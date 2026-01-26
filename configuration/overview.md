@@ -128,3 +128,7 @@ Use the following settings to change Sprocket's resource limit behavior:
 cpu_limit_behavior = "try_with_max"
 memory_limit_behavior = "try_with_max"
 ```
+
+## Check/lint configuration
+
+See the [check/lint](/subcommands/check-lint.md) page.
