@@ -98,4 +98,16 @@ sprocket lint -e ElementSpacing -e SnakeCase
 
 Will emit no warnings.
 
+## Rule Configuration
+
+Some lints can be configured in the [sprocket config file], under the `check.lint` table. For a list
+of supported options, see the [rules list](https://github.com/stjude-rust-labs/sprocket/blob/main/crates/wdl-lint/RULES.md).
+
+For example, the `ExpectedRuntimeKeys` can be configured to ignore certain keys via the `allowed_runtime_keys` option:
+
+```toml
+[check.lint]
+allowed_runtime_keys = ["foo"]
+```
+
 [sprocket config file]: /configuration/overview.md
