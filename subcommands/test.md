@@ -73,7 +73,35 @@ This is a single test named "kitchen_sink" which defines an input matrix that ge
 
 If not otherwise specified, a test is considered successful so long as the entrypoint runs to completion, exits without an error, and all outputs are evaluated successfully. For tasks, the test framework assumes the expected exit code is `0`.
 
-Fail conditions can be tested by specifying an `assertions:` section for the YAML definition. The assertions available depend on whether the entrypoint is a task or a workflow. At the time of writing, the only assertion available for workflows is `should_fail: <boolean>`. This defaults to `false`, but may be specified as `should_fail: true`, which will invert expectations. The `should_fail` assertion is ignored for task executions. To unit test a fail case for a task entrypoint, a non-zero `exit_code: <integer>` should be specified.
+### Assertions
+
+Assertions are available for ensuring more complex expectations than simply "success" remain true. These more complex conditions can be specified with an `assertions:` section for the YAML definition.
+
+The assertions available depend on whether the entrypoint is a workflow or a task.
+
+For workflows, there is a `should_fail: <boolean>` assertion. This defaults to `false`, but may be specified as `should_fail: true`. The `should_fail` assertion is ignored for task executions.
+
+```yaml
+validate_flag_filter: # this is a workflow
+  - name: valid_FlagFilter
+    inputs:
+      flags:
+        - include_if_all: "3"
+          exclude_if_any: "0xF04"
+          include_if_any: "03"
+          exclude_if_all: "4095"
+  - name: invalid_FlagFilter
+    inputs:
+      flags:
+        - include_if_all: "3"
+          exclude_if_any: "0xF04"
+          include_if_any: "03"
+          exclude_if_all: "whoops! I'll trigger a fail :("
+    assertions:
+      should_fail: true
+```
+
+To unit test a fail case for a task, a non-zero `exit_code: <integer>` can be specified.
 
 ```yaml
 validate_string_is_12bit_int: # this is a task
@@ -96,28 +124,11 @@ validate_string_is_12bit_int: # this is a task
         - "+1"
     assertions:
       exit_code: 42
-validate_flag_filter: # this is a workflow
-  - name: valid_FlagFilter
-    inputs:
-      flags:
-        - include_if_all: "3"
-          exclude_if_any: "0xF04"
-          include_if_any: "03"
-          exclude_if_all: "4095"
-  - name: invalid_FlagFilter
-    inputs:
-      flags:
-        - include_if_all: "3"
-          exclude_if_any: "0xF04"
-          include_if_any: "03"
-          exclude_if_all: "whoops! I'll trigger a fail :("
-    assertions:
-      should_fail: true
 ```
 
 Assertions are shared by all executions of a test. In the example above, there are 4 executions defined for the `validate_string_is_12bit_int::valid_numbers` test. This test is considered passed if all 4 of those executions evaluate with an exit code of `0`. The `invalid_numbers` test contains 7 executions, and every one of those executions must exit with a code of `42` for the test to be considered a success.
 
-At the time of writing, the only other assertions available for tasks are the `stdout` and `stderr` assertions. Both of these work very similarly; they expect a YAML sequence of strings that are interpreted as [regular expressions](https://en.wikipedia.org/wiki/Regular_expression) which should match on the task's STDOUT/STDERR stream. For example:
+Other assertions available for tasks are the `stdout` and `stderr` assertions. Both of these work very similarly; they expect a YAML sequence of strings that are interpreted as [regular expressions](https://en.wikipedia.org/wiki/Regular_expression) which should match on the task's STDOUT/STDERR stream. For example:
 
 ```yaml
 validate_string_is_12bit_int:
@@ -132,6 +143,70 @@ validate_string_is_12bit_int:
       stderr:
         - Input number \(.*\) interpreted as decimal
         - But number must be less than 4096!
+```
+
+#### Output Assertions
+
+It is often important to test for specific properties of the outputs for a WDL task or workflow. This is possible via the `outputs` section of the `assertions` YAML block.
+
+```yaml
+read_group_to_string:
+  - name: valid_read_groups
+    inputs:
+      read_group:
+        - ID: R1
+          SM: sampleFoo
+        - ID: R1
+          SM: sampleFoo
+          LB: spaces are allowed in LB
+          BC: barcode with a space
+          PU: platform_unit
+          PL: ILLUMINA
+          CN: center_name
+          DT: date
+          DS: description
+          PI: 1
+          PG: program_group
+          PM: platform_model
+          FO: ACMG
+          KS: key_sequence
+    assertions:
+      outputs:
+        validated_read_group: # this output is of type `String`
+          - Contains: R1
+          - Contains: sampleFoo
+```
+
+Each key under `outputs` should be an exact match to an output of the task or workflow. The assertions available for that output are going to depend on the WDL type of the output. It wouldn't make sense to assert whether a WDL `Float` "contains" a string, so Sprocket will emit an informative error if there are any type mismatches between the assertions used and the expected type of each output.
+
+The currently supported basic output assertions are:
+
+- `Defined: <boolean>`: is the output defined (i.e. any value other than `None`)?
+  - available for all optional WDL types.
+- `BoolEquals: <boolean>`: is the output `Boolean` equal to this value?
+- `StrEquals: <string>`: is the output `String` equal to this value?
+- `IntEquals: <integer>`: is the output `Int` equal to this value?
+- `FloatEquals: <float>`: is the output `Float` equal to this value?
+- `Contains: <string>`: does the output `String` contain this substring?
+- `Name: <string>`: does the output `File` or `Directory` have this basename?
+- `Length: <unsigned integer>`: does the output `String`, `Array`, or `Map` have this length? 
+
+There are also several recursive output assertions which can be combined with the above in order to test properties of compound WDL types:
+
+- `First: <inner assertion>`: applies the inner assertion to the first element of an output `Array`
+- `Last: <inner assertion>`: applies the inner assertion to the last element of an output `Array`
+- `Left: <inner assertion>`: applies the inner assertion to the left element of an output `Pair`
+- `Right: <inner assertion>`: applies the inner assertion to the right element of an output `Pair`
+
+An example combining these:
+
+```yaml
+assertions:
+  outputs:
+    fusion_bams: # this output is of type `Array[File]`
+      - Length: 2
+      - First: { Name: fusions_1.bam }
+      - Last: { Name: fusions_2.bam }
 ```
 
 ### How to use test fixtures
