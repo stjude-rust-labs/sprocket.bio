@@ -209,6 +209,12 @@ assertions:
       - Last: { Name: fusions_2.bam }
 ```
 
+::: tip Other assertions
+
+The above assertions are just a starting point! We intend to continue to grow the list of builtin assertions available to `test` in subsequent releases. Please reach out via the [#sprocket channel on the WDL Slack](https://join.slack.com/t/openwdl/shared_invite/zt-ctmj4mhf-cFBNxIiZYs6SY9HgM9UAVw) or file a feature request on [the Sprocket repository](https://github.com/stjude-rust-labs/sprocket/issues) to let us know what would be most useful to you during WDL development.
+
+:::
+
 ### How to use test fixtures
 
 WDL tasks and workflows often take file inputs, so the Sprocket unit testing framework has attempted to make it as easy as possible to reference "test fixtures" from test YAML.
