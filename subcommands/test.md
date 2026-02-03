@@ -182,7 +182,7 @@ Each key under `outputs` should be an exact match to an output of the task or wo
 The currently supported basic output assertions are:
 
 - `Defined: <boolean>`: is the output defined (i.e. any value other than `None`)?
-  - available for all optional WDL types.
+  - available for all optional WDL types
 - `BoolEquals: <boolean>`: is the output `Boolean` equal to this value?
 - `StrEquals: <string>`: is the output `String` equal to this value?
 - `IntEquals: <integer>`: is the output `Int` equal to this value?
@@ -190,6 +190,8 @@ The currently supported basic output assertions are:
 - `Contains: <string>`: does the output `String` contain this substring?
 - `Name: <string>`: does the output `File` or `Directory` have this basename?
 - `Length: <unsigned integer>`: does the output `String`, `Array`, or `Map` have this length? 
+- `Empty: <boolean>`: is the output `String`, `Array`, or `Map` empty? 
+  - "empty" for `String` types means length zero
 
 There are also several recursive output assertions which can be combined with the above in order to test properties of compound WDL types:
 
