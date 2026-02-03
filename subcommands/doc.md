@@ -52,21 +52,21 @@ For prior versions, see [documentation comments](#documentation-comments).
 
 ```wdl
 struct Foo {
-  String bar
+    String bar
 
-  meta {
-    description: "This is a struct-level comment."
-  }
-  
-  parameter_meta {
-    bar: "Bar is a very important struct member."
-  }
+    meta {
+        description: "This is a struct-level comment."
+    }
+
+    parameter_meta {
+        bar: "Bar is a very important struct member."
+    }
 }
 ```
 
 ## Enums
 
-Enums, unlike [structs](#structs), do not support `meta`/`parameter_meta` sections nor have their own specified equivalent.
+Enums, unlike [structs](#structs), do not support `meta`/`parameter_meta` sections.
 `sprocket doc` instead supports [documentation comments](#documentation-comments), both on the enum itself and its variants.
 
 ### Example
@@ -109,17 +109,17 @@ Doc comments can be mixed with `meta`/`parameter_meta` sections like so:
 
 ```wdl
 struct Foo {
-  String bar
-  ## Description of the `baz` field.
-  String baz
+    String bar
+    ## Description of the `baz` field.
+    String baz
 
-  meta {
-    description: "This is a struct-level comment."
-  }
-  
-  parameter_meta {
-    bar: "Bar is a very important struct member."
-  }
+    meta {
+        description: "This is a struct-level comment."
+    }
+
+    parameter_meta {
+        bar: "Bar is a very important struct member."
+    }
 }
 ```
 
@@ -127,12 +127,12 @@ In the case that they overlap, the comments will take precedence:
 
 ```wdl
 struct Foo {
-  ## This is the description that will show for `bar`.
-  String bar
-  
-  parameter_meta {
-    bar: "This description will not be shown."
-  }
+    ## This is the description that will show for `bar`.
+    String bar
+
+    parameter_meta {
+        bar: "This description will not be shown."
+    }
 }
 ```
 
