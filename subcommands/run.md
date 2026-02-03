@@ -10,22 +10,22 @@ See the section on [execution backends](/configuration/backends/overview.md) to
 learn more about configuring Sprocket to execute tasks in different
 environments.
 
-## Entrypoints
+## Targets
 
 The task or workflow to run can be provided explicitly with
-the `--entrypoint` argument.
+the `--target` argument.
 
 ```shell
-sprocket run --entrypoint main example.wdl
+sprocket run --target main example.wdl
 ```
 
 Whether or not this argument is _required_ is based on whether inputs are
-provided to Sprocket from which the entrypoint can be inferred (e.g., providing
-an input of `main.is_pirate` implies an entrypoint of `main`). Conversely, if
-you supply an `--entrypoint`, you don't have to prefix your inputs with the
-entrypoint fully qualified name.
+provided to Sprocket from which the target can be inferred (e.g., providing
+an input of `main.is_pirate` implies a target of `main`). Conversely, if
+you supply a `--target`, you don't have to prefix your inputs with the
+target's fully qualified name.
 
-Sprocket will indicate when it cannot infer the entrypoint.
+Sprocket will indicate when it cannot infer the target.
 
 ## Inputs
 
@@ -54,7 +54,7 @@ from the guided tour, we can specify the `name`
 parameter as a key-value pair on the command line.
 
 ```shell
-sprocket run example.wdl --entrypoint main name="World"
+sprocket run example.wdl --target main name="World"
 ```
 
 After a few seconds, this job runs successfully with the following outputs.
