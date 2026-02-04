@@ -33,13 +33,12 @@ Given the following WDL document:
 ```wdl
 version 1.1
 
-struct NoTrailingBlankLine {}
 workflow ThisIsNotSnakeCase {
-
+  String single_quoted_string = 'this string uses single quotes'
 }
 ```
 
-The `ElementSpacing` and `SnakeCase` rules would trigger.
+The `DoubleQuotes` and `SnakeCase` rules would trigger.
 
 There are multiple ways to add exceptions for these rules.
 
@@ -50,13 +49,12 @@ Exception comments come in the form `#@ except: <RULES>`, where `RULES` is a com
 The comments can either be applied to the entire document:
 
 ```wdl
-#@ except: ElementSpacing, SnakeCase
+#@ except: DoubleQuotes, SnakeCase
 
 version 1.1
 
-struct NoTrailingBlankLine {}
 workflow ThisIsNotSnakeCase {
-
+  String single_quoted_string = 'this string uses single quotes'
 }
 ```
 
@@ -67,7 +65,8 @@ version 1.1
 
 #@ except: SnakeCase
 workflow ThisIsNotSnakeCase {
-
+  #@ except: DoubleQuotes
+  String single_quoted_string = 'this string uses single quotes'
 }
 ```
 
@@ -81,7 +80,7 @@ For example:
 
 ```toml
 [check]
-except = ["ElementSpacing", "SnakeCase"]
+except = ["DoubleQuotes", "SnakeCase"]
 ```
 
 Running `sprocket lint` with this configuration will emit no warnings.
@@ -93,7 +92,7 @@ Exceptions can also be specified from the command line with the `-e` argument.
 For example, running:
 
 ```bash
-sprocket lint -e ElementSpacing -e SnakeCase
+sprocket lint -e DoubleQuotes -e SnakeCase
 ```
 
 Will emit no warnings.
