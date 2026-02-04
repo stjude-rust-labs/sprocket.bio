@@ -23,3 +23,90 @@ With respect to emitting warnings, there are two levels of warnings in Sprocket:
 
 `sprocket lint` emits both validation warnings and lint warnings — it is
 essentially an alias for `sprocket check -l`.
+
+## Exceptions
+
+Lint exceptions allow for individual lint rules to be ignored in certain contexts.
+
+Given the following WDL document:
+
+```wdl
+version 1.1
+
+workflow ThisIsNotSnakeCase {
+  String single_quoted_string = 'this string uses single quotes'
+}
+```
+
+The `DoubleQuotes` and `SnakeCase` rules would trigger.
+
+There are multiple ways to add exceptions for these rules.
+
+### Source Comments
+
+Exception comments come in the form `#@ except: <RULES>`, where `RULES` is a comma-separated list of lint rules.
+
+The comments can either be applied to the entire document:
+
+```wdl
+#@ except: DoubleQuotes, SnakeCase
+
+version 1.1
+
+workflow ThisIsNotSnakeCase {
+  String single_quoted_string = 'this string uses single quotes'
+}
+```
+
+Or on individual items:
+
+```wdl
+version 1.1
+
+#@ except: SnakeCase
+workflow ThisIsNotSnakeCase {
+  #@ except: DoubleQuotes
+  String single_quoted_string = 'this string uses single quotes'
+}
+```
+
+Running `sprocket lint` with either of these configurations will emit no warnings.
+
+### `sprocket.toml`
+
+In the [sprocket config file], the `check` table accepts a list of rule exceptions.
+
+For example:
+
+```toml
+[check]
+except = ["DoubleQuotes", "SnakeCase"]
+```
+
+Running `sprocket lint` with this configuration will emit no warnings.
+
+### CLI Arguments
+
+Exceptions can also be specified from the command line with the `-e` argument.
+
+For example, running:
+
+```bash
+sprocket lint -e DoubleQuotes -e SnakeCase
+```
+
+Will emit no warnings.
+
+## Rule Configuration
+
+Some lints can be configured in the [sprocket config file], under the `check.lint` table. For a list
+of supported options, see the [rules list](https://github.com/stjude-rust-labs/sprocket/blob/main/crates/wdl-lint/RULES.md).
+
+For example, the `ExpectedRuntimeKeys` can be configured to ignore certain keys via the `allowed_runtime_keys` option:
+
+```toml
+[check.lint]
+allowed_runtime_keys = ["foo"]
+```
+
+[sprocket config file]: /configuration/overview.md
