@@ -136,14 +136,14 @@ This will error right away, as we haven't told Sprocket which task or workflow
 to run.
 
 ```txt
-error: the `--entrypoint` option is required if no inputs are provided
+error: the `--target` option is required if no inputs are provided
 ```
 
 We want to run the "main" workflow defined in `example.wdl`, so we can try again
-but specify the entrypoint to use this time using the `--entrypoint` flag.
+but specify the target to use this time using the `--target` flag.
 
 ```shell
-sprocket run example.wdl --entrypoint main
+sprocket run example.wdl --target main
 ```
 
 After a few seconds, you'll see `sprocket` return an error.
@@ -178,19 +178,19 @@ than create many individual input files.
 sprocket run example.wdl hello_defaults.json main.name="Ari"
 ```
 
-Note that the above command does not specify an entrypoint with the `--entrypoint`
+Note that the above command does not specify a target with the `--target`
 flag. This is because every input is using fully qualified dot notation; each
-input is prefixed with the name of the entrypoint and a period, `main.`.
+input is prefixed with the name of the target and a period, `main.`.
 This fully qualified dot notation is required for inputs provided within a file.
 The dot notation can get repetitive if supplying many key value pairs on the command line,
-so specifying `--entrypoint` allows you to omit the repeated part of the keys.
+so specifying `--target` allows you to omit the repeated part of the keys on the command line.
 :::
 
 Here, we can specify the `name` parameter as a key-value pair on the command
 line.
 
 ```shell
-sprocket run example.wdl --entrypoint main name="World"
+sprocket run example.wdl --target main name="World"
 ```
 
 After a few seconds, this job runs successfully with the following outputs.

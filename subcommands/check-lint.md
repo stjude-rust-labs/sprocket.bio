@@ -23,3 +23,37 @@ With respect to emitting warnings, there are two levels of warnings in Sprocket:
 
 `sprocket lint` emits both validation warnings and lint warnings — it is
 essentially an alias for `sprocket check -l`.
+
+## Rule configuration
+
+Individual lint rules can be configured via the `[check.lint]` section in
+`sprocket.toml`. Currently, the following options are supported:
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `allowed_runtime_keys` | List of strings | Additional runtime keys to allow beyond the WDL specification defaults (used by the `ExpectedRuntimeKeys` rule) |
+
+```toml
+[check.lint]
+allowed_runtime_keys = ["gpu", "queue"]
+```
+
+## Filtering lint rules
+
+The set of active lint rules can be controlled via the `[check]` section in
+`sprocket.toml`:
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `except` | List | `[]` | Rule IDs to exclude from running |
+| `all_lint_rules` | Boolean | `false` | Enable all lint rules, including those outside the default set |
+| `only_lint_tags` | List | `[]` | Restrict linting to rules with these tags |
+| `filter_lint_tags` | List | `[]` | Exclude rules with these tags |
+
+For example, to enable all rules except `ContainerUri`:
+
+```toml
+[check]
+all_lint_rules = true
+except = ["ContainerUri"]
+```

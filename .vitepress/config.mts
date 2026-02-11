@@ -61,6 +61,7 @@ export default defineConfig({
             ],
           },
           { text: "Call Cache", link: "/configuration/cache", docFooterText: "Configuration &gt; Call Cache" },
+          { text: "Provenance Tracking", link: "/configuration/provenance", docFooterText: "Configuration &gt; Provenance Tracking" },
         ],
       },
       {
@@ -79,6 +80,7 @@ export default defineConfig({
         text: "Experimental Commands", collapsed: true, items: [
           { text: "doc", link: "/subcommands/doc", docFooterText: "Experimental Commands &gt; doc" },
           { text: "lock", link: "/subcommands/lock", docFooterText: "Experimental Commands &gt; lock" },
+          { text: "server", link: "/subcommands/server", docFooterText: "Experimental Commands &gt; server" },
           { text: "test", link: "/subcommands/test", docFooterText: "Experimental Commands &gt; test" },
         ]
       },

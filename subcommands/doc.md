@@ -59,6 +59,20 @@ version 1.2
 workflow foo {}
 ```
 
+## Documentation comments
+
+The `--with-doc-comments` flag enables experimental support for documentation
+comments. When enabled, Sprocket will recognize and render documentation
+comments (i.e., `///` comments placed directly above declarations) in the
+generated HTML output.
+
+> [!CAUTION]
+>
+> This feature is experimental and tracking the upstream WDL proposal at
+> [openwdl/wdl#757](https://github.com/openwdl/wdl/issues/757). The
+> `--with-doc-comments` flag will be removed in a future major version once the
+> proposal is resolved.
+
 ## Structs
 
 Structs are treated different for WDL v1.0/v1.1 and v1.2.
