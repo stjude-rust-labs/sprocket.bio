@@ -24,19 +24,78 @@ With respect to emitting warnings, there are two levels of warnings in Sprocket:
 `sprocket lint` emits both validation warnings and lint warnings — it is
 essentially an alias for `sprocket check -l`.
 
-## Rule configuration
+## Exceptions
 
-Individual lint rules can be configured via the `[check.lint]` section in
-`sprocket.toml`. Currently, the following options are supported:
+Lint exceptions allow for individual lint rules to be ignored in certain contexts.
 
-| Option | Type | Description |
-|--------|------|-------------|
-| `allowed_runtime_keys` | List of strings | Additional runtime keys to allow beyond the WDL specification defaults (used by the `ExpectedRuntimeKeys` rule) |
+Given the following WDL document:
+
+```wdl
+version 1.1
+
+workflow ThisIsNotSnakeCase {
+  String single_quoted_string = 'this string uses single quotes'
+}
+```
+
+The `DoubleQuotes` and `SnakeCase` rules would trigger.
+
+There are multiple ways to add exceptions for these rules.
+
+### Source Comments
+
+Exception comments come in the form `#@ except: <RULES>`, where `RULES` is a comma-separated list of lint rules.
+
+The comments can either be applied to the entire document:
+
+```wdl
+#@ except: DoubleQuotes, SnakeCase
+
+version 1.1
+
+workflow ThisIsNotSnakeCase {
+  String single_quoted_string = 'this string uses single quotes'
+}
+```
+
+Or on individual items:
+
+```wdl
+version 1.1
+
+#@ except: SnakeCase
+workflow ThisIsNotSnakeCase {
+  #@ except: DoubleQuotes
+  String single_quoted_string = 'this string uses single quotes'
+}
+```
+
+Running `sprocket lint` with either of these configurations will emit no warnings.
+
+### `sprocket.toml`
+
+In the [sprocket config file], the `check` table accepts a list of rule exceptions.
+
+For example:
 
 ```toml
-[check.lint]
-allowed_runtime_keys = ["gpu", "queue"]
+[check]
+except = ["DoubleQuotes", "SnakeCase"]
 ```
+
+Running `sprocket lint` with this configuration will emit no warnings.
+
+### CLI Arguments
+
+Exceptions can also be specified from the command line with the `-e` argument.
+
+For example, running:
+
+```bash
+sprocket lint -e DoubleQuotes -e SnakeCase
+```
+
+Will emit no warnings.
 
 ## Filtering lint rules
 
@@ -45,7 +104,6 @@ The set of active lint rules can be controlled via the `[check]` section in
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `except` | List | `[]` | Rule IDs to exclude from running |
 | `all_lint_rules` | Boolean | `false` | Enable all lint rules, including those outside the default set |
 | `only_lint_tags` | List | `[]` | Restrict linting to rules with these tags |
 | `filter_lint_tags` | List | `[]` | Exclude rules with these tags |
@@ -57,3 +115,17 @@ For example, to enable all rules except `ContainerUri`:
 all_lint_rules = true
 except = ["ContainerUri"]
 ```
+
+## Rule Configuration
+
+Some lints can be configured in the [sprocket config file], under the `check.lint` table. For a list
+of supported options, see the [rules list](https://github.com/stjude-rust-labs/sprocket/blob/main/crates/wdl-lint/RULES.md).
+
+For example, the `ExpectedRuntimeKeys` can be configured to ignore certain keys via the `allowed_runtime_keys` option:
+
+```toml
+[check.lint]
+allowed_runtime_keys = ["foo"]
+```
+
+[sprocket config file]: /configuration/overview.md
