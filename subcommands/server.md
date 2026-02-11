@@ -143,23 +143,10 @@ curl -X POST http://localhost:8080/api/v1/sessions/{session_uuid}/runs \
 curl http://localhost:8080/api/v1/sessions/{session_uuid}/runs/{run_uuid}
 ```
 
-## Output directory structure
+## Output directory
 
-The server creates an output directory with the following structure:
-
-```
-./out/
-├── sprocket.db              # SQLite provenance database
-├── runs/                    # Workflow execution directories
-│   └── <workflow_name>/
-│       └── <timestamp>/     # Individual run directory
-└── index/                   # Optional symlinked organization
-```
-
-All paths in the database are stored relative to the database file, making the
-entire output directory portable.
-
-For more details on provenance tracking and output organization, see the
+The server uses the same output directory structure as `sprocket run`. For
+details on directory layout, provenance database, and output indexing, see the
 [Provenance Tracking](/configuration/provenance) documentation.
 
 ## Security considerations

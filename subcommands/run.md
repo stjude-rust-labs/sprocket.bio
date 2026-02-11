@@ -101,3 +101,29 @@ This produces the following output.
   ]
 }
 ```
+
+## Output directory
+
+By default, `sprocket run` writes all execution artifacts to `./out`. This can
+be changed with the `-o, --output-dir` flag.
+
+```shell
+sprocket run example.wdl --target main name="World" -o /path/to/output
+```
+
+Individual runs are stored at `<output_dir>/runs/<target>/<timestamp>/`, and a
+`_latest` symlink is maintained for each target pointing to its most recent run.
+The output directory also contains a SQLite provenance database (`sprocket.db`)
+that tracks all executions.
+
+The `--index-on` flag enables output indexing, creating symlinks under
+`<output_dir>/index/<output_name>/` for efficient lookup of runs by output
+values.
+
+```shell
+sprocket run hello.wdl -t hello --index-on greeting
+```
+
+For full details on the output directory structure, provenance database, and
+output indexing, see the
+[Provenance Tracking](/configuration/provenance) documentation.
