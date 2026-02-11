@@ -37,7 +37,7 @@ indicate where workflow sources can be loaded from.
 |--------|-------------|
 | `--host <HOST>` | Host to bind to (default: `127.0.0.1`) |
 | `--port <PORT>` | Port to bind to (default: `8080`) |
-| `--database-url <URL>` | Database URL (default: `sprocket.db` in output directory) |
+| `--database-url <URL>` | Database path. When omitted, defaults to `sprocket.db` within the output directory. When provided, relative paths resolve from the current working directory. |
 | `-o, --output-directory <DIR>` | Output directory for workflow results (default: `./out`) |
 | `--allowed-file-paths <PATH>` | Allowed file paths for file-based workflows (can be repeated) |
 | `--allowed-urls <URL>` | Allowed URL prefixes for URL-based workflows (can be repeated) |
@@ -53,9 +53,9 @@ host = "127.0.0.1"
 port = 8080
 output_directory = "./out"
 allowed_file_paths = ["/path/to/workflows"]
-allowed_urls = ["https://github.com/"]
+allowed_urls = ["https://raw.githubusercontent.com/"]
 allowed_origins = ["http://localhost:3000"]
-max_concurrent_runs = 10
+max_concurrent_runs = 500
 
 [server.database]
 url = "sqlite://sprocket.db"
@@ -75,7 +75,7 @@ url = "sqlite://sprocket.db"
 | `allowed_urls` | List | `[]` | Allowed URL prefixes for workflow sources |
 | `allowed_origins` | List | `[]` | CORS allowed origins |
 | `max_concurrent_runs` | Integer | None | Maximum concurrent workflow executions |
-| `database.url` | String | None | Database URL (defaults to `sprocket.db` in output directory) |
+| `database.url` | String | None | Database path. When omitted, defaults to `sprocket.db` within the output directory. When provided, relative paths resolve from the current working directory (not the output directory). |
 | `engine` | Object | `{}` | Engine configuration (see execution backends) |
 
 ## REST API
@@ -84,27 +84,33 @@ The server exposes a REST API for managing workflow executions. Interactive
 documentation is available at `/api/v1/swagger-ui` when the server is running,
 and the OpenAPI specification can be retrieved from `/api/v1/openapi.json`.
 
-### Sessions
-
-Sessions group related workflow submissions.
-
-- `GET /api/v1/sessions` - List sessions.
-- `GET /api/v1/sessions/{uuid}` - Get session details.
-
 ### Runs
 
 Runs represent individual workflow executions.
 
-- `POST /api/v1/sessions/{session_uuid}/runs` - Submit a new workflow.
-- `GET /api/v1/sessions/{session_uuid}/runs` - List runs in a session.
-- `GET /api/v1/sessions/{session_uuid}/runs/{uuid}` - Get run details.
+- `POST /api/v1/runs` - Submit a new workflow.
+- `GET /api/v1/runs` - List all runs. Supports optional `?status=` filter
+  (e.g., `?status=running`).
+- `GET /api/v1/runs/{uuid}` - Get run details.
+- `POST /api/v1/runs/{uuid}/cancel` - Cancel a running workflow.
+- `GET /api/v1/runs/{uuid}/outputs` - Get run outputs.
+
+### Sessions
+
+Sessions group related workflow submissions. Each `sprocket run` invocation
+creates its own session, while a running `sprocket server` instance creates a
+single session at startup that is shared by all workflows submitted to it.
+
+- `GET /api/v1/sessions` - List sessions.
+- `GET /api/v1/sessions/{uuid}` - Get session details.
 
 ### Tasks
 
 Tasks represent individual task executions within a workflow run.
 
-- `GET /api/v1/sessions/{session_uuid}/runs/{run_uuid}/tasks` - List tasks.
-- `GET /api/v1/sessions/{session_uuid}/runs/{run_uuid}/tasks/{uuid}` - Get task details.
+- `GET /api/v1/tasks` - List tasks.
+- `GET /api/v1/tasks/{name}` - Get task details.
+- `GET /api/v1/tasks/{name}/logs` - Get task logs.
 
 ## Example usage
 
@@ -126,7 +132,7 @@ sprocket server \
 
 ```shell
 # Submit a workflow via the API
-curl -X POST http://localhost:8080/api/v1/sessions/{session_uuid}/runs \
+curl -X POST http://localhost:8080/api/v1/runs \
   -H "Content-Type: application/json" \
   -d '{
     "source": "/home/user/workflows/hello.wdl",
@@ -140,7 +146,10 @@ curl -X POST http://localhost:8080/api/v1/sessions/{session_uuid}/runs \
 
 ```shell
 # Get run details
-curl http://localhost:8080/api/v1/sessions/{session_uuid}/runs/{run_uuid}
+curl http://localhost:8080/api/v1/runs/{run_uuid}
+
+# List all running workflows
+curl http://localhost:8080/api/v1/runs?status=running
 ```
 
 ## Output directory

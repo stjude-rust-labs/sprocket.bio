@@ -183,7 +183,7 @@ flag. This is because every input is using fully qualified dot notation; each
 input is prefixed with the name of the target and a period, `main.`.
 This fully qualified dot notation is required for inputs provided within a file.
 The dot notation can get repetitive if supplying many key value pairs on the command line,
-so specifying `--target` allows you to omit the repeated part of the keys.
+so specifying `--target` allows you to omit the repeated part of the keys on the command line.
 :::
 
 Here, we can specify the `name` parameter as a key-value pair on the command

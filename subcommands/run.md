@@ -22,7 +22,7 @@ sprocket run --target main example.wdl
 Whether or not this argument is _required_ is based on whether inputs are
 provided to Sprocket from which the target can be inferred (e.g., providing
 an input of `main.is_pirate` implies a target of `main`). Conversely, if
-you supply a `--target`, you don't have to prefix your inputs with the
+you supply a `--target`, you don't have to prefix your command line inputs with the
 target's fully qualified name.
 
 Sprocket will indicate when it cannot infer the target.
