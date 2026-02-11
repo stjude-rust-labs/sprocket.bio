@@ -41,8 +41,8 @@ always available for inspection.
 The **`index/`** directory is an optional, user-curated view layered on top of
 the runs. When the `--index-on` flag is provided, Sprocket creates symlinks
 under `index/` that point back into `runs/`, giving users a way to organize
-results by whatever dimension makes sense for their domain (e.g., by project, by
-sample, by analysis type) without duplicating any data. Because the index
+results by whatever dimension makes sense for their domain (e.g., by project or
+by experiment) without duplicating any data. Because the index
 consists entirely of relative symlinks, it adds negligible storage overhead and
 can be reconstructed from the provenance database at any time.
 
