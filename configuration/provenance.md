@@ -2,7 +2,7 @@
 
 Sprocket automatically tracks all workflow executions in a SQLite database while
 maintaining an organized filesystem structure for outputs. Both `sprocket run`
-and `sprocket server` share the same execution engine and output structure, so
+and `sprocket dev server` share the same execution engine and output structure, so
 the concepts described here apply equally to both commands.
 
 > [!NOTE]
@@ -63,7 +63,7 @@ directory to store all workflow outputs and provenance data. This location can
 be configured via:
 
 - The `-o, --output-dir` CLI flag (for `sprocket run`).
-- The `-o, --output-directory` CLI flag (for `sprocket server`).
+- The `-o, --output-directory` CLI flag (for `sprocket dev server`).
 - The `run.output_dir` configuration option (for run mode).
 - The `server.output_directory` configuration option (for server mode).
 
@@ -162,6 +162,7 @@ the following:
 
 | File/Directory | Description |
 |----------------|-------------|
+| `output.log` | Log of all messages emitted during the run |
 | `inputs.json` | Serialized inputs provided for the run |
 | `outputs.json` | Serialized outputs produced by the run |
 | `tmp/` | Temporary files used during input localization |
@@ -207,7 +208,7 @@ The entire output directory is designed to be portable:
 
 ## Concurrent access
 
-Both `sprocket run` and `sprocket server` share the same execution engine and
+Both `sprocket run` and `sprocket dev server` share the same execution engine and
 can operate on the same output directory simultaneously:
 
 - The SQLite WAL mode enables concurrent access.
@@ -230,7 +231,7 @@ sprocket run pipeline_b.wdl -o ./pipeline-b-out ...
 
 ### Querying execution history
 
-The REST API (available via `sprocket server`) is the recommended way to query
+The REST API (available via `sprocket dev server`) is the recommended way to query
 execution history. The API provides endpoints for listing sessions, runs, and
 tasks with filtering capabilities. See the
 [server documentation](/subcommands/server) for endpoint details and the

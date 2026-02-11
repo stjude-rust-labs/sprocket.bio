@@ -23,6 +23,10 @@ channels (listed in order of the relative priority during loading).
   via the `SPROCKET_CONFIG` environment variable.
 * **Current working directory.** Sprocket will attempt to load a `sprocket.toml`
   within the current working directory when the `sprocket` command runs.
+* **Executable-adjacent configuration.** Sprocket will attempt to load a
+  `sprocket.toml` located in the same directory as the `sprocket` executable.
+  This is useful for bundled or deployed installations where a default
+  configuration should travel with the binary.
 * **System-wide configuration locations.** See [the section
   below](#system-wide-configuration-locations) on how to use the system-wide
   configuration directory.
@@ -95,6 +99,15 @@ Configuration resolution can be disabled by passing the `--skip-config-search` o
 the command line. This will disable the searching for and loading of configuration
 files. The only configuration loaded will be that (if) specified by the `--config`
 command line argument.
+
+## Global options
+
+Sprocket provides a few options that apply across all subcommands.
+
+| Option | Config Key | Values | Default | Description |
+|--------|-----------|--------|---------|-------------|
+| `--color` | `common.color` | `auto`, `always`, `never` | `auto` | Controls output colorization |
+| `-m, --report-mode` | `common.report_mode` | `full`, `one-line` | `full` | Controls diagnostic output format |
 
 ## Ignoring WDL files and directories
 

@@ -1,11 +1,11 @@
-# `sprocket server`
+# `sprocket dev server`
 
 > [!CAUTION]
 >
 > This document describes the beta release of the `server` command. This
 > functionality is considered experimental and may change in future releases.
 
-The `server` command starts Sprocket as an HTTP server, enabling remote workflow
+The `dev server` command starts Sprocket as an HTTP server, enabling remote workflow
 submission and monitoring through a REST API. This is useful for scenarios where
 you want to submit workflows from a separate machine or integrate Sprocket into
 larger systems.
@@ -25,7 +25,7 @@ consistent behavior between CLI and server-submitted workflows.
 ## Starting the server
 
 ```shell
-sprocket server --allowed-file-paths /path/to/workflows
+sprocket dev server --allowed-file-paths /path/to/workflows
 ```
 
 At least one of `--allowed-file-paths` or `--allowed-urls` must be specified to
@@ -98,7 +98,7 @@ Runs represent individual workflow executions.
 ### Sessions
 
 Sessions group related workflow submissions. Each `sprocket run` invocation
-creates its own session, while a running `sprocket server` instance creates a
+creates its own session, while a running `sprocket dev server` instance creates a
 single session at startup that is shared by all workflows submitted to it.
 
 - `GET /api/v1/sessions` - List sessions.
@@ -118,12 +118,12 @@ Tasks represent individual task executions within a workflow run.
 
 ```shell
 # Start server allowing workflows from a local directory
-sprocket server \
+sprocket dev server \
   --allowed-file-paths /home/user/workflows \
   --port 8080
 
 # Start server allowing workflows from GitHub
-sprocket server \
+sprocket dev server \
   --allowed-urls "https://raw.githubusercontent.com/" \
   --port 8080
 ```
@@ -162,7 +162,7 @@ details on directory layout, provenance database, and output indexing, see the
 
 > [!WARNING]
 >
-> Sprocket server does not perform any authentication or authorization. If you
+> The Sprocket server does not perform any authentication or authorization. If you
 > need to secure access to the server, you must run it behind a reverse proxy
 > (e.g., nginx, Caddy, or Traefik) that handles authentication.
 
