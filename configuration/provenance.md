@@ -16,8 +16,8 @@ the concepts described here apply equally to both commands.
 > [Ludäscher et al., 2016](https://link.springer.com/chapter/10.1007/978-3-319-40226-0_7);
 > [Deelman et al., 2018](https://journals.sagepub.com/doi/abs/10.1177/1094342017704893)).
 > Sprocket uses the term "provenance" more loosely here to describe its
-> execution tracking capabilities---recording what was run, with which inputs,
-> when, and by whom---rather than implementing the full data lineage and
+> execution tracking capabilities—recording what was run, with which inputs,
+> when, and by whom—rather than implementing the full data lineage and
 > dependency tracking described in those formal models.
 
 For design details, see [RFC #3](https://github.com/stjude-rust-labs/rfcs/pull/3).
@@ -33,7 +33,7 @@ choose one or maintain both manually, Sprocket provides both automatically.
 The **`runs/`** directory is the immutable record of truth. It organizes every
 execution chronologically by target name and timestamp, preserving the full
 history of inputs, outputs, and individual task attempts. This structure is
-append-only---Sprocket never modifies or removes previous runs---so it serves as
+append-only—Sprocket never modifies or removes previous runs—so it serves as
 a reliable audit trail. When a workflow is run multiple times, each execution
 receives its own timestamped directory, and the complete set of attempts is
 always available for inspection.
