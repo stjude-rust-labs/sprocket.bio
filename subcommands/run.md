@@ -126,4 +126,4 @@ sprocket run hello.wdl -t hello --index-on greeting
 
 For full details on the output directory structure, provenance database, and
 output indexing, see the
-[Provenance Tracking](/configuration/provenance) documentation.
+[Provenance Tracking](/concepts/provenance) documentation.

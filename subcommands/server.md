@@ -156,7 +156,7 @@ curl http://localhost:8080/api/v1/runs?status=running
 
 The server uses the same output directory structure as `sprocket run`. For
 details on directory layout, provenance database, and output indexing, see the
-[Provenance Tracking](/configuration/provenance) documentation.
+[Provenance Tracking](/concepts/provenance) documentation.
 
 ## Security considerations
 

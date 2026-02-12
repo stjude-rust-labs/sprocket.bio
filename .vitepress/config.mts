@@ -61,7 +61,12 @@ export default defineConfig({
             ],
           },
           { text: "Call Cache", link: "/configuration/cache", docFooterText: "Configuration &gt; Call Cache" },
-          { text: "Provenance Tracking", link: "/configuration/provenance", docFooterText: "Configuration &gt; Provenance Tracking" },
+        ],
+      },
+      {
+        text: "Concepts",
+        items: [
+          { text: "Provenance Tracking", link: "/concepts/provenance", docFooterText: "Concepts &gt; Provenance Tracking" },
         ],
       },
       {
