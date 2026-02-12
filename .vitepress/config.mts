@@ -70,6 +70,13 @@ export default defineConfig({
         ],
       },
       {
+        text: "Guides",
+        items: [
+          { text: "LSF + Apptainer", link: "/guides/lsf", docFooterText: "Guides &gt; LSF + Apptainer" },
+          { text: "Slurm + Apptainer", link: "/guides/slurm", docFooterText: "Guides &gt; Slurm + Apptainer" },
+        ],
+      },
+      {
         text: "Commands",
         items: [
           { text: "analyzer", link: "/subcommands/analyzer", docFooterText: "Commands &gt; analyzer" },

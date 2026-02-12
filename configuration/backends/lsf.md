@@ -10,6 +10,9 @@ targeting environments that use [LSF
 > This backend is experimental, and its behavior and configuration may change
 > substantially between Sprocket releases.
 
+For a step-by-step walkthrough of setting up Sprocket on an LSF cluster, see the
+[LSF + Apptainer guide](/guides/lsf).
+
 To execute WDL workflows and tasks using the LSF + Apptainer backend, you must
 be running Sprocket on a Linux system with the LSF command-line tools available
 locally. The nodes where LSF dispatches jobs must have the Apptainer
