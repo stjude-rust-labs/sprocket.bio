@@ -1,9 +1,10 @@
 # Slurm + Apptainer backend
 
 Sprocket contains an experimental High-Performance Computing (HPC) backend
-targeting environments that use [Slurm
-25.05.0](https://slurm.schedmd.com/archive/slurm-25.05.0/) for job scheduling and
-[Apptainer 1.3.6](https://apptainer.org/docs/user/1.3/) as a container runtime.
+targeting environments that use [Slurm 25.05.0 or
+later](https://slurm.schedmd.com/archive/slurm-25.05.0/) for job scheduling and
+[Apptainer 1.3.6 or later](https://apptainer.org/docs/user/1.3/) as a container
+runtime.
 
 > [!WARNING]
 >
@@ -66,11 +67,6 @@ run.backends.default.fpga_slurm_partition.name = "fpga"
 # to Slurm.
 run.backends.default.extra_sbatch_args = ["--time=60"]
 
-# The maximum number of subtasks each `scatter` will try executing at once.
-#
-# This is *not* a direct limit on the total number of concurrent tasks, but
-# can affect the number of jobs that get queued at one time.
-run.backends.default.max_scatter_concurrency = 200
 ```
 
 If you run into problems or have other feedback, please reach out to us in the

@@ -1,9 +1,10 @@
 # LSF + Apptainer backend
 
 Sprocket contains an experimental High-Performance Computing (HPC) backend
-targeting environments that use [LSF
-10.1.0](https://www.ibm.com/docs/en/spectrum-lsf/10.1.0) for job scheduling and
-[Apptainer 1.3.6](https://apptainer.org/docs/user/1.3/) as a container runtime.
+targeting environments that use [LSF 10.1.0 or
+later](https://www.ibm.com/docs/en/spectrum-lsf/10.1.0) for job scheduling and
+[Apptainer 1.3.6 or later](https://apptainer.org/docs/user/1.3/) as a container
+runtime.
 
 > [!WARNING]
 >
@@ -65,11 +66,14 @@ run.backends.default.type = "lsf_apptainer"
 # LSF.
 # run.backends.default.extra_bsub_args = ["-app", "my_app_profile"]
 
-# The maximum number of subtasks each `scatter` will try executing at once.
-#
-# This is *not* a direct limit on the total number of concurrent tasks, but
-# can affect the number of jobs that get queued at one time.
-# run.backends.default.max_scatter_concurrency = 100
+# The maximum number of concurrent `bsub` processes the backend will spawn to
+# queue tasks. Defaults to `10`. Consider raising this for large-scale
+# workflow execution.
+# run.backends.default.max_concurrency = 10
+
+# Prefix added to every LSF job name. Useful for identifying Sprocket jobs
+# in `bjobs` output (e.g., `bjobs -J "sprocket*"`).
+# run.backends.default.job_name_prefix = "sprocket"
 
 # Additional command-line arguments to pass to `apptainer exec` when executing
 # tasks.
