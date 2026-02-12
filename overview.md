@@ -20,8 +20,9 @@ Sprocket is written in [Rust](https://www.rust-lang.org/) and enjoys all of the
 benefits that come with that choice. It also takes heavy inspiration from Rust
 in terms of its approach to building developer tools that are a joy to use. The
 code that drives Sprocket is split across the [`wdl`] family of crates, the
-[`sprocket`] command line tool, and the [Visual Studio Code extension]
-([source](https://github.com/stjude-rust-labs/sprocket-vscode)).
+[`sprocket`] command line tool, the [Visual Studio Code extension]
+([source](https://github.com/stjude-rust-labs/sprocket-vscode)), and the
+[Neovim plugin] ([source](https://github.com/stjude-rust-labs/sprocket.nvim)).
 
 ::: tip Note
 **Sprocket** is currently an alpha-phase project. To that end,
@@ -168,4 +169,5 @@ used.
 [`sprocket`]: https://github.com/stjude-rust-labs/sprocket
 [TES]: https://www.ga4gh.org/product/task-execution-service-tes
 [Visual Studio Code extension]: https://marketplace.visualstudio.com/items?itemName=stjude-rust-labs.sprocket-vscode
+[Neovim plugin]: https://github.com/stjude-rust-labs/sprocket.nvim
 [Workflow Description Language]: https://openwdl.org

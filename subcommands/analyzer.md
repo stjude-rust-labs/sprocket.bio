@@ -8,8 +8,9 @@ and snippet generation.
 
 For Visual Studio Code, we have a [prepackaged Sprocket extension][extension]
 that automatically downloads the latest version of Sprocket and configures the
-LSP. For other editors, you should search for how to set up an LSP with your
-editor of choice.
+LSP. For Neovim, the [`sprocket.nvim`][neovim] plugin provides similar
+integration. For other editors, you should search for how to set up an LSP with
+your editor of choice.
 
 ## Transports
 
@@ -19,4 +20,5 @@ transports, please [file an issue][issues].
 
 [lsp]: https://en.wikipedia.org/wiki/Language_Server_Protocol
 [extension]: /vscode/getting-started.md
+[neovim]: https://github.com/stjude-rust-labs/sprocket.nvim
 [issues]: https://github.com/stjude-rust-labs/wdl/issues

@@ -121,8 +121,12 @@ various lint and validation warnings into the "Problems" tab of your editor.
 ![A view of the "Problems" tab in VSCode with Sprocket reported
 issues](./guided-tour/problems.png){style="margin-top: 30px;"}
 
+If you use Neovim, the
+[`sprocket.nvim`](https://github.com/stjude-rust-labs/sprocket.nvim) plugin
+provides similar integration.
+
 For other editors, please refer to their documentation on how to configure the
-Sprocket LSP (i.e.,`sprocket analyzer`).
+Sprocket LSP (i.e., `sprocket analyzer`).
 
 ## Running tasks and workflows
 
