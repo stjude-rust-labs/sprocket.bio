@@ -22,7 +22,7 @@ the concepts described here apply equally to both commands.
 
 For design details, see [RFC #3](https://github.com/stjude-rust-labs/rfcs/pull/3).
 
-## Runs and indexes
+## Runs and the index
 
 The output directory contains two complementary directory hierarchies that
 together address a fundamental tension in workflow management: users need both a
