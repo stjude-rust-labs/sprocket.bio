@@ -149,7 +149,7 @@ For example:
 ##
 ## This is a paragraph with **bolding**, _italics_, and `code` formatting.
 
-version 1.2
+version 1.3
 
 workflow foo {}
 ```

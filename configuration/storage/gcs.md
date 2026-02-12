@@ -2,7 +2,7 @@
 
 Sprocket supports transferring files to and from [Google Cloud Storage](https://cloud.google.com/storage).
 
-## Supported AWS S3 URLs
+## Supported Google Cloud Storage URLs
 
 The following cloud storage URLs for Google Cloud Storage are supported:
 
@@ -33,7 +33,7 @@ This overrides any Google Cloud Storage authentication settings in `sprocket.tom
 
 ### Configuration file
 
-Google Cloud Storage authentication can be configured with the `run.storage.s3.auth`
+Google Cloud Storage authentication can be configured with the `run.storage.google.auth`
 section in `sprocket.toml`:
 
 ```toml

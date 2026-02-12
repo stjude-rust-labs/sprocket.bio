@@ -25,7 +25,7 @@ onMounted(async () => {
     }
   });
 
-  const wdlCodeText = `version 1.2
+  const wdlCodeText = `version 1.3
 
 task say_hello {
     input {
@@ -53,7 +53,7 @@ task say_hello {
     }
   });
 
-  runCode.value = await highlighter.codeToHtml("sprocket run example.wdl --entrypoint say_hello greeting=\"Hello\"", {
+  runCode.value = await highlighter.codeToHtml("sprocket run example.wdl --target say_hello greeting=\"Hello\"", {
     lang: "bash",
     theme: "github-dark",
     colorReplacements: {
