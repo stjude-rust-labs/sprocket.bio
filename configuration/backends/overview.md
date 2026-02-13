@@ -4,16 +4,12 @@ Sprocket evaluates a workflow locally and decomposes it into tasks. Sprocket dis
 these tasks to a configured execution backend responsible for starting, monitoring, and 
 responding to task lifecycle events.
 
-Sprocket currently supports two execution backends:
+Sprocket currently supports the following execution backends:
 
 * A local [Docker execution backend](/configuration/backends/docker.md).
 * A remote [Task Execution Service backend](/configuration/backends/tes.md).
-
-There are additional execution backends currently under development:
-
-* An [LSF + Apptainer HPC backend](/configuration/backends/lsf.md).
-* A [Slurm + Apptainer HPC backend](/configuration/backends/slurm.md).
-* A [generic backend](/configuration/backends/generic.md).
+* An [LSF + Apptainer HPC backend](/configuration/backends/lsf.md) (experimental).
+* A [Slurm + Apptainer HPC backend](/configuration/backends/slurm.md) (experimental).
 
 ## Backend configuration
 
