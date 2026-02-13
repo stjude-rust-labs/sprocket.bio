@@ -16,7 +16,7 @@ export default defineConfig({
     nav: [
       { text: "Documentation", link: "/overview" },
       {
-        text: "v0.21.0",
+        text: "v0.21.1",
         items: [
           {
             text: "Changelog",
@@ -53,7 +53,6 @@ export default defineConfig({
               { text: "Task Execution Service", link: "/configuration/backends/tes", docFooterText: "Configuration &gt; Backends &gt; TES" },
               { text: "LSF + Apptainer", link: "/configuration/backends/lsf", docFooterText: "Configuration &gt; Backends &gt; LSF + Apptainer" },
               { text: "Slurm + Apptainer", link: "/configuration/backends/slurm", docFooterText: "Configuration &gt; Backends &gt; Slurm + Apptainer" },
-              { text: "Generic", link: "/configuration/backends/generic", docFooterText: "Configuration &gt; Backends &gt; Generic" },
             ],
           },
           {
