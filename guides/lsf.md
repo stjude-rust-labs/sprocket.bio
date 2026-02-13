@@ -55,11 +55,14 @@ the [GitHub releases page](https://github.com/stjude-rust-labs/sprocket/releases
 and place it on the shared filesystem.
 
 ```shell
-# Download the latest release (adjust the URL for your platform)
-curl -L -o sprocket https://github.com/stjude-rust-labs/sprocket/releases/latest/download/sprocket-x86_64-unknown-linux-gnu
+# Determine the latest version
+VERSION=$(curl -s https://api.github.com/repos/stjude-rust-labs/sprocket/releases/latest | grep '"tag_name"' | cut -d '"' -f 4)
 
-# Make it executable
-chmod +x sprocket
+# Download the release (adjust the platform as needed)
+curl -L -o sprocket.tar.gz "https://github.com/stjude-rust-labs/sprocket/releases/download/${VERSION}/sprocket-${VERSION}-x86_64-unknown-linux-gnu.tar.gz"
+
+# Extract the binary
+tar xzf sprocket.tar.gz
 
 # Move it somewhere on the shared filesystem
 mv sprocket /shared/software/bin/sprocket
@@ -119,42 +122,47 @@ backend. This is a good starting point for a shared `sprocket.toml`:
 
 ```toml
 # Enable experimental features (required for the LSF backend).
-run.experimental_features_enabled = true
+[run]
+experimental_features_enabled = true
 
 # Use the LSF + Apptainer backend.
-run.backends.default.type = "lsf_apptainer"
+[run.backends.default]
+type = "lsf_apptainer"
 
 # Default queue for task execution.
 #
 # If omitted, jobs are submitted to your cluster's default queue.
-run.backends.default.default_lsf_queue.name = "standard"
-run.backends.default.default_lsf_queue.max_cpu_per_task = 64
-run.backends.default.default_lsf_queue.max_memory_per_task = "96 GB"
+default_lsf_queue.name = "standard"
+default_lsf_queue.max_cpu_per_task = 64
+default_lsf_queue.max_memory_per_task = "96 GB"
 
 # Optional: dedicated queue for short tasks.
-# run.backends.default.short_task_lsf_queue.name = "short"
+# short_task_lsf_queue.name = "short"
 
 # Optional: dedicated queue for GPU tasks.
-# run.backends.default.gpu_lsf_queue.name = "gpu"
+# gpu_lsf_queue.name = "gpu"
 
 # Optional: dedicated queue for FPGA tasks.
-# run.backends.default.fpga_lsf_queue.name = "fpga"
+# fpga_lsf_queue.name = "fpga"
 
 # Additional arguments passed to `bsub` when submitting jobs.
-# run.backends.default.extra_bsub_args = ["-app", "my_app_profile"]
+# extra_bsub_args = ["-app", "my_app_profile"]
 
 # Maximum number of concurrent `bsub` processes the backend will spawn to
 # queue tasks. Defaults to `10`. Consider raising this for large-scale
 # workflow execution.
-# run.backends.default.max_concurrency = 10
+# max_concurrency = 10
 
 # Prefix added to every LSF job name. Useful for identifying Sprocket jobs
 # in `bjobs` output.
-# run.backends.default.job_name_prefix = "sprocket"
+# job_name_prefix = "sprocket"
+
+# Task monitor polling interval in seconds. Defaults to `30`.
+# interval = 30
 
 # Additional arguments passed to `apptainer exec`.
 # For example, pass `--nv` to enable GPU support inside containers.
-# run.backends.default.extra_apptainer_exec_args = ["--nv"]
+# extra_apptainer_exec_args = ["--nv"]
 ```
 
 ### Resource limit behavior
@@ -162,8 +170,9 @@ run.backends.default.default_lsf_queue.max_memory_per_task = "96 GB"
 Each queue can declare the largest CPU and memory allocation it supports:
 
 ```toml
-run.backends.default.default_lsf_queue.max_cpu_per_task = 64
-run.backends.default.default_lsf_queue.max_memory_per_task = "96 GB"
+[run.backends.default]
+default_lsf_queue.max_cpu_per_task = 64
+default_lsf_queue.max_memory_per_task = "96 GB"
 ```
 
 When a WDL task requests more than these limits, Sprocket's behavior is
@@ -261,14 +270,15 @@ will spawn concurrently to queue tasks. The default is `10`, which you may want
 to raise for large-scale workflow execution:
 
 ```toml
-run.backends.default.max_concurrency = 10
+[run.backends.default]
+max_concurrency = 10
 ```
 
-The `workflow.scatter.concurrency` setting controls how many elements within a
+The `run.workflow.scatter.concurrency` setting controls how many elements within a
 `scatter` block are evaluated concurrently. The default is `1000`:
 
 ```toml
-workflow.scatter.concurrency = 1000
+run.workflow.scatter.concurrency = 1000
 ```
 
 Setting scatter concurrency too high can put pressure on the scheduler by

@@ -25,17 +25,19 @@ using the HPC:
 ```toml
 # The Slurm + Apptainer backend requires explicitly opting into experimental
 # features.
-run.experimental_features_enabled = true
+[run]
+experimental_features_enabled = true
 
 # Set the default backend to Slurm + Apptainer.
-run.backends.default.type = "slurm_apptainer"
+[run.backends.default]
+type = "slurm_apptainer"
 
 # The Slurm partition used by default for task execution.
 #
 # This parameter is optional. If it's absent and no other applicable
 # partitions are specified, jobs will be submitted to your Slurm cluster's
 # default partition.
-run.backends.default.default_slurm_partition.name = "gpu"
+default_slurm_partition.name = "gpu"
 # The largest number of CPUs and memory that can be reserved for a single job
 # on this partition.
 #
@@ -43,30 +45,29 @@ run.backends.default.default_slurm_partition.name = "gpu"
 # information about the hosts available to dispatch work from the partition.
 # They can also be set for the other types of partitions, but this example
 # leaves them unconstrained by default.
-run.backends.default.default_slurm_partition.max_cpu_per_task = 64
-run.backends.default.default_slurm_partition.max_memory_per_task = "96 GB"
+default_slurm_partition.max_cpu_per_task = 64
+default_slurm_partition.max_memory_per_task = "96 GB"
 
 # The Slurm partition used for short tasks.
 #
 # This parameter is optional, and overrides `default_slurm_partition`.
-run.backends.default.short_task_slurm_partition.name = "short"
+short_task_slurm_partition.name = "short"
 
 # The Slurm partition used for GPU tasks.
 #
 # This parameter is optional, and overrides `default_slurm_partition` and
 # `short_task_slurm_partition`.
-run.backends.default.gpu_slurm_partition.name = "gpu"
+gpu_slurm_partition.name = "gpu"
 
 # The Slurm partition used for FPGA tasks.
 #
 # This parameter is optional, and overrides `default_slurm_partition` and
 # `short_task_slurm_partition`.
-run.backends.default.fpga_slurm_partition.name = "fpga"
+fpga_slurm_partition.name = "fpga"
 
 # Additional command-line arguments to pass to `sbatch` when submitting jobs
 # to Slurm.
-run.backends.default.extra_sbatch_args = ["--time=60"]
-
+extra_sbatch_args = ["--time=60"]
 ```
 
 If you run into problems or have other feedback, please reach out to us in the

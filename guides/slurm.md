@@ -55,11 +55,14 @@ the [GitHub releases page](https://github.com/stjude-rust-labs/sprocket/releases
 and place it on the shared filesystem.
 
 ```shell
-# Download the latest release (adjust the URL for your platform)
-curl -L -o sprocket https://github.com/stjude-rust-labs/sprocket/releases/latest/download/sprocket-x86_64-unknown-linux-gnu
+# Determine the latest version
+VERSION=$(curl -s https://api.github.com/repos/stjude-rust-labs/sprocket/releases/latest | grep '"tag_name"' | cut -d '"' -f 4)
 
-# Make it executable
-chmod +x sprocket
+# Download the release (adjust the platform as needed)
+curl -L -o sprocket.tar.gz "https://github.com/stjude-rust-labs/sprocket/releases/download/${VERSION}/sprocket-${VERSION}-x86_64-unknown-linux-gnu.tar.gz"
+
+# Extract the binary
+tar xzf sprocket.tar.gz
 
 # Move it somewhere on the shared filesystem
 mv sprocket /shared/software/bin/sprocket
@@ -119,35 +122,36 @@ default backend. This is a good starting point for a shared `sprocket.toml`:
 
 ```toml
 # Enable experimental features (required for the Slurm backend).
-run.experimental_features_enabled = true
+[run]
+experimental_features_enabled = true
 
 # Use the Slurm + Apptainer backend.
-run.backends.default.type = "slurm_apptainer"
+[run.backends.default]
+type = "slurm_apptainer"
 
 # Default partition for task execution.
 #
 # If omitted, jobs are submitted to your cluster's default partition.
-run.backends.default.default_slurm_partition.name = "compute"
-run.backends.default.default_slurm_partition.max_cpu_per_task = 64
-run.backends.default.default_slurm_partition.max_memory_per_task = "96 GB"
+default_slurm_partition.name = "compute"
+default_slurm_partition.max_cpu_per_task = 64
+default_slurm_partition.max_memory_per_task = "96 GB"
 
 # Optional: dedicated partition for short tasks.
-# run.backends.default.short_task_slurm_partition.name = "short"
+# short_task_slurm_partition.name = "short"
 
 # Optional: dedicated partition for GPU tasks.
-# run.backends.default.gpu_slurm_partition.name = "gpu"
+# gpu_slurm_partition.name = "gpu"
 
 # Optional: dedicated partition for FPGA tasks.
-# run.backends.default.fpga_slurm_partition.name = "fpga"
+# fpga_slurm_partition.name = "fpga"
 
 # Additional arguments passed to `sbatch` when submitting jobs.
 # For example, set a default time limit for all jobs.
-# run.backends.default.extra_sbatch_args = ["--time=60"]
-
+# extra_sbatch_args = ["--time=60"]
 
 # Additional arguments passed to `apptainer exec`.
 # For example, pass `--nv` to enable GPU support inside containers.
-# run.backends.default.extra_apptainer_exec_args = ["--nv"]
+# extra_apptainer_exec_args = ["--nv"]
 ```
 
 ### Resource limit behavior
@@ -155,8 +159,9 @@ run.backends.default.default_slurm_partition.max_memory_per_task = "96 GB"
 Each partition can declare the largest CPU and memory allocation it supports:
 
 ```toml
-run.backends.default.default_slurm_partition.max_cpu_per_task = 64
-run.backends.default.default_slurm_partition.max_memory_per_task = "96 GB"
+[run.backends.default]
+default_slurm_partition.max_cpu_per_task = 64
+default_slurm_partition.max_memory_per_task = "96 GB"
 ```
 
 When a WDL task requests more than these limits, Sprocket's behavior is
@@ -249,11 +254,11 @@ sprocket run workflow.wdl --target main -o /shared/results/my-project
 
 ### Scatter concurrency
 
-The `workflow.scatter.concurrency` setting controls how many elements within a
+The `run.workflow.scatter.concurrency` setting controls how many elements within a
 `scatter` block are evaluated concurrently. The default is `1000`:
 
 ```toml
-workflow.scatter.concurrency = 1000
+run.workflow.scatter.concurrency = 1000
 ```
 
 Setting this too high can put pressure on the scheduler by queueing a large
