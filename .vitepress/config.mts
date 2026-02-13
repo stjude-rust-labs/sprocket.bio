@@ -35,9 +35,15 @@ export default defineConfig({
         ],
       },
       {
+        text: "Concepts",
+        items: [
+          { text: "Provenance Tracking", link: "/concepts/provenance", docFooterText: "Concepts &gt; Provenance Tracking" },
+        ],
+      },
+      {
         text: "Configuration",
         items: [
-          { text: "Overview", link: "/configuration/overview", docFooterText: "Configuration &gt; Configuration" },
+          { text: "Overview", link: "/configuration/overview", docFooterText: "Configuration &gt; Overview" },
           {
             text: "Execution Backends",
             collapsed: true,
@@ -64,9 +70,10 @@ export default defineConfig({
         ],
       },
       {
-        text: "Concepts",
+        text: "End-to-end Guides",
         items: [
-          { text: "Provenance Tracking", link: "/concepts/provenance", docFooterText: "Concepts &gt; Provenance Tracking" },
+          { text: "LSF + Apptainer", link: "/guides/lsf", docFooterText: "End-to-end Guides &gt; LSF + Apptainer" },
+          { text: "Slurm + Apptainer", link: "/guides/slurm", docFooterText: "End-to-end Guides &gt; Slurm + Apptainer" },
         ],
       },
       {
@@ -90,8 +97,8 @@ export default defineConfig({
         ]
       },
       {
-        text: "Visual Studio Code Extension",
-        items: [{ text: "Getting Started", link: "/vscode/getting-started", docFooterText: "Extension &gt; Getting Started" }],
+        text: "Editor Integrations",
+        items: [{ text: "Visual Studio Code", link: "/vscode/getting-started", docFooterText: "Editor Integrations &gt; Visual Studio Code" }],
       },
     ],
     socialLinks: [

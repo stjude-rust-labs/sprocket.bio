@@ -1,14 +1,18 @@
 # LSF + Apptainer backend
 
 Sprocket contains an experimental High-Performance Computing (HPC) backend
-targeting environments that use [LSF
-10.1.0](https://www.ibm.com/docs/en/spectrum-lsf/10.1.0) for job scheduling and
-[Apptainer 1.3.6](https://apptainer.org/docs/user/1.3/) as a container runtime.
+targeting environments that use [LSF 10.1.0 or
+later](https://www.ibm.com/docs/en/spectrum-lsf/10.1.0) for job scheduling and
+[Apptainer 1.3.6 or later](https://apptainer.org/docs/user/1.3/) as a container
+runtime.
 
 > [!WARNING]
 >
 > This backend is experimental, and its behavior and configuration may change
 > substantially between Sprocket releases.
+
+For a step-by-step walkthrough of setting up Sprocket on an LSF cluster, see the
+[LSF + Apptainer guide](/guides/lsf).
 
 To execute WDL workflows and tasks using the LSF + Apptainer backend, you must
 be running Sprocket on a Linux system with the LSF command-line tools available
@@ -21,16 +25,18 @@ using the HPC:
 ```toml
 # The LSF + Apptainer backend requires explicitly opting into experimental
 # features.
-run.experimental_features_enabled = true
+[run]
+experimental_features_enabled = true
 
 # Set the default backend to LSF + Apptainer.
-run.backends.default.type = "lsf_apptainer"
+[run.backends.default]
+type = "lsf_apptainer"
 
 # The LSF queue used by default for task execution.
 #
 # This parameter is optional. If it's absent and no other applicable queues
 # are specified, jobs will be submitted to your LSF cluster's default queue.
-# run.backends.default.default_lsf_queue.name = "standard"
+# default_lsf_queue.name = "standard"
 # The largest number of CPUs and memory that can be reserved for a single job
 # on this queue.
 #
@@ -38,39 +44,45 @@ run.backends.default.type = "lsf_apptainer"
 # information about the hosts available to dispatch work from the queue. They
 # can also be set for the other types of queues, but this example leaves them
 # unconstrained by default.
-# run.backends.default.default_lsf_queue.max_cpu_per_task = 64
-# run.backends.default.default_lsf_queue.max_memory_per_task = "96 GB"
+# default_lsf_queue.max_cpu_per_task = 64
+# default_lsf_queue.max_memory_per_task = "96 GB"
 
 # The LSF queue used for short tasks.
 #
 # This parameter is optional, and overrides `default_lsf_queue`.
-# run.backends.default.short_task_lsf_queue.name = "short"
+# short_task_lsf_queue.name = "short"
 
 # The LSF queue used for GPU tasks.
 #
 # This parameter is optional, and overrides `default_lsf_queue` and
 # `short_task_lsf_queue`.
-# run.backends.default.gpu_lsf_queue.name = "gpu"
+# gpu_lsf_queue.name = "gpu"
 
 # The LSF queue used for FPGA tasks.
 #
 # This parameter is optional, and overrides `default_lsf_queue` and
 # `short_task_lsf_queue`.
-# run.backends.default.fpga_lsf_queue.name = "fpga"
+# fpga_lsf_queue.name = "fpga"
 
 # Additional command-line arguments to pass to `bsub` when submitting jobs to
 # LSF.
-# run.backends.default.extra_bsub_args = ["-app", "my_app_profile"]
+# extra_bsub_args = ["-app", "my_app_profile"]
 
-# The maximum number of subtasks each `scatter` will try executing at once.
-#
-# This is *not* a direct limit on the total number of concurrent tasks, but
-# can affect the number of jobs that get queued at one time.
-# run.backends.default.max_scatter_concurrency = 100
+# The maximum number of concurrent `bsub` processes the backend will spawn to
+# queue tasks. Defaults to `10`. Consider raising this for large-scale
+# workflow execution.
+# max_concurrency = 10
+
+# Prefix added to every LSF job name. Useful for identifying Sprocket jobs
+# in `bjobs` output (e.g., `bjobs -J "sprocket*"`).
+# job_name_prefix = "sprocket"
+
+# Task monitor polling interval in seconds. Defaults to `30`.
+# interval = 30
 
 # Additional command-line arguments to pass to `apptainer exec` when executing
 # tasks.
-# run.backends.default.extra_apptainer_exec_args = ["--hostname=\"my_host\""]
+# extra_apptainer_exec_args = ["--hostname=\"my_host\""]
 ```
 
 If you run into problems or have other feedback, please reach out to us in the

@@ -80,12 +80,13 @@ the run directory.
 ```
 ./out/
 ├── sprocket.db                       # SQLite provenance database
-├── output.log                        # Execution log
 ├── runs/
 │   └── <target>/
 │       ├── <timestamp>/              # Individual run (YYYY-MM-DD_HHMMSSffffff)
+│       │   ├── output.log            # Execution log
 │       │   ├── inputs.json           # Serialized inputs for the run
 │       │   ├── outputs.json          # Serialized outputs from the run
+│       │   ├── apptainer-images/     # Cached SIF images (Apptainer backends only)
 │       │   ├── tmp/                  # Temporary localization files
 │       │   └── attempts/
 │       │       └── <n>/              # Attempt number (0, 1, 2, ...)
@@ -108,12 +109,13 @@ subdirectory under `calls/`. Each call directory then contains the same
 ```
 ./out/
 ├── sprocket.db
-├── output.log
 ├── runs/
 │   └── <target>/
 │       ├── <timestamp>/
+│       │   ├── output.log
 │       │   ├── inputs.json
 │       │   ├── outputs.json
+│       │   ├── apptainer-images/     # Cached SIF images (Apptainer backends only)
 │       │   ├── tmp/                  # Workflow-level temporary files
 │       │   └── calls/               # Task execution directories
 │       │       └── <task_call_id>/   # One per task call in the workflow
@@ -165,6 +167,7 @@ the following:
 | `output.log` | Log of all messages emitted during the run |
 | `inputs.json` | Serialized inputs provided for the run |
 | `outputs.json` | Serialized outputs produced by the run |
+| `apptainer-images/` | Cached SIF container images pulled during the run (Apptainer backends only) |
 | `tmp/` | Temporary files used during input localization |
 | `attempts/` | Directory containing attempt subdirectories (task runs) |
 | `calls/` | Directory containing per-task-call subdirectories (workflow runs) |
