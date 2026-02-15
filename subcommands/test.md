@@ -147,7 +147,7 @@ validate_string_is_12bit_int:
 
 #### Output Assertions
 
-It is often important to test for specific properties of the outputs for a WDL task or workflow. This is possible via the `outputs` section of the `assertions` YAML block.
+It is often important to test for specific properties of the outputs for a WDL task or workflow. This is possible via the `outputs` section of the `assertions` YAML block. Just like other assertions, output assertions are expected to pass for every execution of a test.
 
 ```yaml
 read_group_to_string:
@@ -160,16 +160,6 @@ read_group_to_string:
           SM: sampleFoo
           LB: spaces are allowed in LB
           BC: barcode with a space
-          PU: platform_unit
-          PL: ILLUMINA
-          CN: center_name
-          DT: date
-          DS: description
-          PI: 1
-          PG: program_group
-          PM: platform_model
-          FO: ACMG
-          KS: key_sequence
     assertions:
       outputs:
         validated_read_group: # this output is of type `String`
@@ -188,7 +178,7 @@ The currently supported basic output assertions are:
 - `IntEquals: <integer>`: is the output `Int` equal to this value?
 - `FloatEquals: <float>`: is the output `Float` equal to this value?
 - `Contains: <string>`: does the output `String` contain this substring?
-- `Name: <string>`: does the output `File` or `Directory` have this basename?
+- `Name: <string>`: does the output `File` or `Directory` have this exact match basename?
 - `Length: <unsigned integer>`: does the output `String`, `Array`, or `Map` have this length? 
 - `Empty: <boolean>`: is the output `String`, `Array`, or `Map` empty? 
   - "empty" for `String` types means length zero
