@@ -75,7 +75,7 @@ If not otherwise specified, a test is considered successful so long as the entry
 
 ### Assertions
 
-Assertions are available for ensuring more complex expectations than simply "success" remain true. These more complex conditions can be specified with an `assertions:` section for the YAML definition.
+Assertions are available for ensuring more complex expectations than simple "success" remain true. These more complex conditions can be specified with an `assertions:` section for the YAML definition.
 
 The assertions available depend on whether the entrypoint is a workflow or a task.
 
