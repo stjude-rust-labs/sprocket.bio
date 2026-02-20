@@ -120,11 +120,11 @@ even if metadata of the file remains unchanged. As the hash function must read
 every byte in the file, calculating a _strong_ digest for very large files may 
 greatly impact performance.
 
-You may opt-in to using _strong_ digests via the `run.tasks.digests` setting in 
+You may opt-in to using _strong_ digests via the `run.task.digests` setting in 
 `sprocket.toml`:
 
 ```toml
-[run.tasks]
+[run.task]
 digests = "strong"
 ```
 
