@@ -175,6 +175,27 @@ _mutable_ tag), the image associated with that tag may change and not cause a
 call cache entry to be invalidated.
 :::
 
+## Call cache configuration
+
+::: warning Warning
+Configuring the call cache invalidation can lead to incorrect reuse of results.
+Ensure any excepted fields do not impact the result of a task.
+:::
+
+The invalidation logic for cache entries is configurable. Keys in `input`, 
+`requirements`, and/or `hints` can be excluded from caching checking. Any `input` 
+keys specified will also alter the digest used as a key for the cache and changes
+to the list will trigger rerun of any affected tasks. Keys added to `hints` or 
+`requirements` will be applied to existing cache entries since they do not affect
+the cache key digest.
+
+```toml
+[run.task]
+excluded_cache_inputs = []
+excluded_cache_hints = []
+excluded_cache_requirements = []
+```
+
 ## Logged messages
 
 Sprocket will log an `INFO` level message indicating when it reuses or
