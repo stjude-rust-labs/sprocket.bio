@@ -166,6 +166,26 @@ modified), the cache entry is _invalidated_.
 Sprocket will log a message indicating which of the above have been modified
 when it detects a change.
 
+## Cache exclusion options
+
+You can exclude specific requirements, hints, or inputs from cache key
+computation. This is useful for dynamic resource allocation (where CPU or
+memory may vary between runs) or inputs that do not affect a task's output.
+
+These options are configured under `[run.task]` in your `sprocket.toml`:
+
+```toml
+[run.task]
+excluded_cache_requirements = ["cpu", "memory"]
+excluded_cache_hints = ["maxRetries"]
+excluded_cache_inputs = ["runtime_param"]
+```
+
+- `excluded_cache_requirements` — requirement keys to ignore when checking
+  cache validity.
+- `excluded_cache_hints` — hint keys to ignore when checking cache validity.
+- `excluded_cache_inputs` — input keys to ignore when checking cache validity.
+
 ::: warning Warning
 The call cache will not detect changes to the _image_ used for the task's
 execution.
