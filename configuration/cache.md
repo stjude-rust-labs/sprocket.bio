@@ -189,12 +189,19 @@ to the list will trigger rerun of any affected tasks. Keys added to `hints` or
 `requirements` will be applied to existing cache entries since they do not affect
 the cache key digest.
 
+These options are configured under `[run.task]` in your `sprocket.toml`:
+
 ```toml
 [run.task]
-excluded_cache_inputs = []
-excluded_cache_hints = []
-excluded_cache_requirements = []
+excluded_cache_requirements = ["cpu", "memory"]
+excluded_cache_hints = ["maxRetries"]
+excluded_cache_inputs = ["runtime_param"]
 ```
+
+- `excluded_cache_requirements` — requirement keys to ignore when checking
+  cache validity.
+- `excluded_cache_hints` — hint keys to ignore when checking cache validity.
+- `excluded_cache_inputs` — input keys to ignore when checking cache validity.
 
 ## Logged messages
 
