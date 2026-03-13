@@ -83,6 +83,14 @@ type = "lsf_apptainer"
 # Additional command-line arguments to pass to `apptainer exec` when executing
 # tasks.
 # extra_apptainer_exec_args = ["--hostname=\"my_host\""]
+
+# Path to the Apptainer (or Singularity) executable. Defaults to `"apptainer"`.
+# Set to `"singularity"` or a full path if the executable is not on `PATH`.
+# executable = "apptainer"
+
+# Shared directory for caching pulled `.sif` images across runs. When unset,
+# images are stored per-run and not shared.
+# image_cache_dir = "/shared/containers/cache"
 ```
 
 If you run into problems or have other feedback, please reach out to us in the

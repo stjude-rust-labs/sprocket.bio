@@ -15,6 +15,11 @@ the subcommand.
 
 ## Input formatting
 
+> [!NOTE]
+>
+> Input sorting is disabled by default. To enable it, set `sort_inputs = true`
+> in the `[format]` section of your `sprocket.toml`.
+
 Sprocket has an opinionated order for WDL `input` sections.
 
 First, it sorts by:
@@ -41,3 +46,10 @@ Within each of those groupings, inputs are further sorted by WDL type:
 For ordering of the same compound type (`Array[\*]`, `Map[\*, \*]`, `Pair[\*, \*]`), Sprocket drops the outermost type (`Array`, `Map`, `Pair`) and recursively applies the above sorting on the first inner type, with ties broken by the second inner type. This continues as far as possible.
 
 Once this ordering is satisfied, it is up to the developer for final order of inputs of the same type. Sprocket `format` will preserve relative ordering within types.
+
+## Trailing commas
+
+The formatter automatically adds trailing commas to multiline lists (e.g.,
+`meta`, `parameter_meta`, and `runtime` sections). This is enabled by default
+and can be configured via the `trailing_commas` option in the `[format]`
+section of your `sprocket.toml`.

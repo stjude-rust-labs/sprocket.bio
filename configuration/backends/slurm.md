@@ -68,6 +68,29 @@ fpga_slurm_partition.name = "fpga"
 # Additional command-line arguments to pass to `sbatch` when submitting jobs
 # to Slurm.
 extra_sbatch_args = ["--time=60"]
+
+# The maximum number of concurrent Slurm operations the backend will perform.
+# Defaults to `10`. Consider raising this for large-scale workflow execution.
+# max_concurrency = 10
+
+# Prefix added to every Slurm job name. Useful for identifying Sprocket jobs
+# in `squeue` output (e.g., `squeue -n "sprocket*"`).
+# job_name_prefix = "sprocket"
+
+# Task monitor polling interval in seconds. Defaults to `30`.
+# interval = 30
+
+# Additional command-line arguments to pass to `apptainer exec` when executing
+# tasks.
+# extra_apptainer_exec_args = ["--hostname=\"my_host\""]
+
+# Path to the Apptainer (or Singularity) executable. Defaults to `"apptainer"`.
+# Set to `"singularity"` or a full path if the executable is not on `PATH`.
+# executable = "apptainer"
+
+# Shared directory for caching pulled `.sif` images across runs. When unset,
+# images are stored per-run and not shared.
+# image_cache_dir = "/shared/containers/cache"
 ```
 
 If you run into problems or have other feedback, please reach out to us in the

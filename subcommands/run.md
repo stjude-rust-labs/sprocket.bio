@@ -116,6 +116,17 @@ Individual runs are stored at `<output_dir>/runs/<target>/<timestamp>/`, and a
 The output directory also contains a SQLite provenance database (`sprocket.db`)
 that tracks all executions.
 
+The `--suffix` flag appends a user-defined string to the run directory name,
+producing `<timestamp>_<suffix>` instead of just `<timestamp>`. This is useful
+for identifying runs at a glance:
+
+```shell
+sprocket run example.wdl --target main name="World" --suffix experiment-1
+```
+
+This changes the run directory from `out/runs/main/<timestamp>/` to
+`out/runs/main/<timestamp>_experiment-1/`.
+
 The `--index-on` flag enables output indexing, creating symlinks under
 `<output_dir>/index/<output_name>/` for efficient lookup of runs by output
 values.

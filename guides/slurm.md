@@ -152,6 +152,26 @@ default_slurm_partition.max_memory_per_task = "96 GB"
 # Additional arguments passed to `apptainer exec`.
 # For example, pass `--nv` to enable GPU support inside containers.
 # extra_apptainer_exec_args = ["--nv"]
+
+# Maximum number of concurrent `sbatch` processes the backend will spawn to
+# queue tasks. Defaults to `10`. Consider raising this for large-scale
+# workflow execution.
+# max_concurrency = 10
+
+# Prefix added to every Slurm job name. Useful for identifying Sprocket jobs
+# in `squeue` output.
+# job_name_prefix = "sprocket"
+
+# Task monitor polling interval in seconds. Defaults to `30`.
+# interval = 30
+
+# Path to the Apptainer (or Singularity) executable. Defaults to `"apptainer"`.
+# Set to `"singularity"` or a full path if the executable is not on `PATH`.
+# executable = "apptainer"
+
+# Shared directory for caching pulled `.sif` images across runs. When unset,
+# images are stored per-run and not shared.
+# image_cache_dir = "/shared/containers/cache"
 ```
 
 ### Resource limit behavior
@@ -252,7 +272,16 @@ and compute nodes can access it. Use the `-o` flag to specify the location:
 sprocket run workflow.wdl --target main -o /shared/results/my-project
 ```
 
-### Scatter concurrency
+### Concurrency
+
+The `max_concurrency` setting controls how many `sbatch` processes the backend
+will spawn concurrently to queue tasks. The default is `10`, which you may want
+to raise for large-scale workflow execution:
+
+```toml
+[run.backends.default]
+max_concurrency = 10
+```
 
 The `run.workflow.scatter.concurrency` setting controls how many elements within a
 `scatter` block are evaluated concurrently. The default is `1000`:
@@ -261,19 +290,32 @@ The `run.workflow.scatter.concurrency` setting controls how many elements within
 run.workflow.scatter.concurrency = 1000
 ```
 
-Setting this too high can put pressure on the scheduler by queueing a large
-number of jobs at once. Note that each scattered task may itself request
-multiple CPUs, so the actual resource consumption can be a multiple of this
-number.
+Setting scatter concurrency too high can put pressure on the scheduler by
+queueing a large number of jobs at once. Note that each scattered task may
+itself request multiple CPUs, so the actual resource consumption can be a
+multiple of this number.
 
 ### Container image caching
 
 Sprocket pulls container images and converts them to SIF files in an
 `apptainer-images/` directory inside each run's timestamped directory. A given
 image is only pulled once within a run, but each new run pulls all of its
-images fresh. For workflows that use many large images, you can pre-pull
-images to a shared location using `apptainer pull` and reference the local SIF
-path in your WDL `container` declarations:
+images fresh.
+
+The preferred way to share images across runs is to set `image_cache_dir` in
+your backend configuration:
+
+```toml
+[run.backends.default]
+image_cache_dir = "/shared/containers/cache"
+```
+
+When set, Sprocket stores pulled `.sif` images in this directory and reuses
+them for subsequent runs, avoiding repeated downloads.
+
+Alternatively, you can pre-pull images to a shared location using
+`apptainer pull` and reference the local SIF path in your WDL `container`
+declarations:
 
 ```shell
 apptainer pull /shared/containers/ubuntu_latest.sif docker://ubuntu:latest
@@ -347,7 +389,10 @@ run directory structure.
 - **Apptainer not found on compute nodes.** Ensure Apptainer is installed and
   on the `PATH` for Slurm jobs. If Apptainer is provided via an environment
   module, it must be loaded in the user's environment before running
-  `sprocket run` so that the job inherits the correct `PATH`.
+  `sprocket run` so that the job inherits the correct `PATH`. You can also
+  set the `executable` option in `[run.backends.default]` to
+  `"singularity"` or a full path to the binary if it is not named
+  `apptainer` or is not on `PATH`.
 
 ### Getting help
 
