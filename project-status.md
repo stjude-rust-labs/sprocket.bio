@@ -1,6 +1,6 @@
 # Project Status
 
-Sprocket remains a v0 project, and as such, any part of its interface is
+Sprocket remains a pre-1.0 project, and as such, any part of its interface is
 technically subject to change between releases. In practice, however, the project
 has matured to the point where the command-line interface for most established
 commands (i.e., those not under the `dev` subcommand namespace) is relatively
@@ -24,9 +24,9 @@ of what to expect.
   These commands are under active development, and their interfaces may change
   substantially—or be removed entirely—between releases.
 
-Because Sprocket is still v0, we do not currently provide advance deprecation
-notices before breaking backwards compatibility for command interfaces. That said, we believe in rigorously
-documenting each change so you know what to expect in each upgrade, as described
+Because Sprocket is still pre-1.0, we do not currently provide advance deprecation
+notices before breaking backwards compatibility for command interfaces. That said, we
+document each change so you know what to expect in each upgrade, as described
 below. In this way, we believe that you can depend on Sprocket in your
 workflows, even before the v1 release.
 
@@ -38,7 +38,7 @@ every third Wednesday. You can track upcoming and past releases on the
 
 ## Upgrading between versions
 
-We rigorously document all changes—including breaking ones—in the changelogs for
+We rigorously document all changes, including breaking ones, in the CHANGELOGs for
 both [Sprocket](https://github.com/stjude-rust-labs/sprocket/blob/main/CHANGELOG.md)
 and its [associated crates](https://github.com/stjude-rust-labs/sprocket/tree/main/crates).
 All of this is surfaced in the
