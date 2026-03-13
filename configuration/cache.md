@@ -168,6 +168,11 @@ when it detects a change.
 
 ## Cache exclusion options
 
+::: warning Warning
+Excluding fields from cache checking can lead to incorrect reuse of results.
+Ensure any excluded fields do not impact the result of a task.
+:::
+
 You can exclude specific requirements, hints, or inputs from cache key
 computation. This is useful for dynamic resource allocation (where CPU or
 memory may vary between runs) or inputs that do not affect a task's output.
@@ -182,9 +187,13 @@ excluded_cache_inputs = ["runtime_param"]
 ```
 
 - `excluded_cache_requirements` — requirement keys to ignore when checking
-  cache validity.
+  cache validity. Exclusions apply retroactively to existing cache entries
+  since requirements do not affect the cache key digest.
 - `excluded_cache_hints` — hint keys to ignore when checking cache validity.
+  Like requirements, exclusions apply retroactively to existing cache entries.
 - `excluded_cache_inputs` — input keys to ignore when checking cache validity.
+  Because inputs contribute to the cache key digest, changes to this list will
+  trigger reruns of any affected tasks.
 
 ::: warning Warning
 The call cache will not detect changes to the _image_ used for the task's
