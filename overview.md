@@ -1,6 +1,6 @@
 ![Sprocket Repository Header](/public/repo-header.png)
 
-**Sprocket** is an bioinformatics workflow execution engine built on top of the
+**Sprocket** is a bioinformatics workflow execution engine built on top of the
 [Workflow Description Language](https://openwdl.org). The project has multiple
 high-level goals, including to:
 
@@ -23,15 +23,6 @@ code that drives Sprocket is split across the [`wdl`] family of crates, the
 [`sprocket`] command line tool, the [Visual Studio Code extension]
 ([source](https://github.com/stjude-rust-labs/sprocket-vscode)), and the
 [Neovim plugin] ([source](https://github.com/stjude-rust-labs/sprocket.nvim)).
-
-::: tip Note
-**Sprocket** is currently an alpha-phase project. To that end,
-this page serves the purpose of describing what we hope Sprocket _will_ become
-rather than what it actually is today. If you're using Sprocket, we encourage
-you to follow the project on
-[GitHub](https://github.com/stjude-rust-labs/sprocket) to stay up to date on
-progress.
-:::
 
 ## Project goals
 
@@ -58,7 +49,7 @@ carrying them out in an independent manner.
 
 Collectively, we consider the combination of an orchestration engine with one or
 more configured execution runtimes to comprise an **execution engine**. We
-envision the orchestration engine being provided by Sprocket alongside two
+envision the orchestration engine being provided by Sprocket alongside three
 official execution runtimes: (a) a local, Docker-based runtime, (b) a Task
 Execution Service ([TES]) based runtime, and (c) a flexible "generic" runtime
 that can be used to configure execution within HPC clusters. Beyond that, we
@@ -73,7 +64,7 @@ the project.
 
 A suite of development tools are included alongside the execution engine. We
 believe that, when you _do_ need to dust off your code editor and write an
-analysis workflow, that activity should as enjoyable as it can be. Supporting
+analysis workflow, that activity should be as enjoyable as it can be. Supporting
 tools, such as
 [linters](https://github.com/stjude-rust-labs/wdl/tree/main/wdl-lint),
 [formatters](https://github.com/stjude-rust-labs/wdl/tree/main/wdl-format),
