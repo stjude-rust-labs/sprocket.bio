@@ -128,6 +128,40 @@ provides similar integration.
 For other editors, please refer to their documentation on how to configure the
 Sprocket LSP (i.e., `sprocket analyzer`).
 
+## Generating input templates
+
+Before running a workflow, it can be helpful to see what inputs it expects. The
+`sprocket inputs` subcommand generates a template input JSON file for a given
+task or workflow:
+
+```shell
+sprocket inputs example.wdl --target main
+```
+
+This produces a JSON object with placeholders for each input:
+
+```json
+{
+  "main.name": "String <REQUIRED>",
+  "main.greetings": [
+    "Hello",
+    "Hallo",
+    "Hej"
+  ],
+  "main.color": "green",
+  "main.is_pirate": false
+}
+```
+
+Required inputs are marked with `<REQUIRED>` and their type, while inputs with
+defaults show their default values directly. Optional inputs without defaults
+appear as `null`.
+
+You can save this to a file, fill in the values, and pass it directly to
+`sprocket run`. The `--hide-defaults` flag narrows the output to only the
+required inputs, and `--show-non-literals` includes expression values. See the
+[`sprocket inputs`](/subcommands/inputs) reference for details.
+
 ## Running tasks and workflows
 
 Individual tasks and workflows can be run with the `sprocket run` subcommand.
