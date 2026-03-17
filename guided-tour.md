@@ -179,7 +179,7 @@ appear as `null`.
 
 You can save this to a file, fill in the values, and pass it directly to
 `sprocket run`. The `--hide-defaults` flag narrows the output to only the
-required inputs, and `--show-expressions` includes expression values. See the
+required inputs, and `--show-non-literals` includes expression values. See the
 [`sprocket inputs`](/subcommands/inputs) reference for details.
 
 ## Running tasks and workflows
