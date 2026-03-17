@@ -99,6 +99,26 @@ This leaves a single diagnostic, which is that `color` is an unused workflow
 input. Before continuing on, we will remove that input from the `main` workflow
 so it doesn't continue showing up in the diagnostics.
 
+### Formatting
+
+Sprocket includes an opinionated formatter that keeps your WDL documents
+consistent. You can check whether a document is already formatted correctly
+without modifying it:
+
+```shell
+sprocket format check example.wdl
+```
+
+To apply formatting in place, use the `overwrite` mode:
+
+```shell
+sprocket format overwrite example.wdl
+```
+
+The formatter handles indentation, whitespace, and input ordering (when
+enabled). See the [`sprocket format`](/subcommands/format) reference for the
+full set of configuration options.
+
 ### Continuous integration
 
 If you use GitHub for source control, you can use the [Sprocket GitHub
@@ -127,6 +147,40 @@ provides similar integration.
 
 For other editors, please refer to their documentation on how to configure the
 Sprocket LSP (i.e., `sprocket analyzer`).
+
+## Generating input templates
+
+Before running a workflow, it can be helpful to see what inputs it expects. The
+`sprocket inputs` subcommand generates a template input JSON file for a given
+task or workflow:
+
+```shell
+sprocket inputs example.wdl --name main
+```
+
+This produces a JSON object with placeholders for each input:
+
+```json
+{
+  "main.name": "String <REQUIRED>",
+  "main.greetings": [
+    "Hello",
+    "Hallo",
+    "Hej"
+  ],
+  "main.color": "green",
+  "main.is_pirate": false
+}
+```
+
+Required inputs are marked with `<REQUIRED>` and their type, while inputs with
+defaults show their default values directly. Optional inputs without defaults
+appear as `null`.
+
+You can save this to a file, fill in the values, and pass it directly to
+`sprocket run`. The `--hide-defaults` flag narrows the output to only the
+required inputs, and `--show-non-literals` includes expression values. See the
+[`sprocket inputs`](/subcommands/inputs) reference for details.
 
 ## Running tasks and workflows
 

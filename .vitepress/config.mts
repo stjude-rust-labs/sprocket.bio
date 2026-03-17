@@ -32,6 +32,7 @@ export default defineConfig({
           { text: "Overview", link: "/overview", docFooterText: "Getting Started &gt; Overview" },
           { text: "Project Status", link: "/project-status", docFooterText: "Getting Started &gt; Project Status" },
           { text: "Installation", link: "/installation", docFooterText: "Getting Started &gt; Installation" },
+          { text: "Quickstart Checklist", link: "/quickstart-checklist", docFooterText: "Getting Started &gt; Quickstart Checklist" },
           { text: "Guided Tour", link: "/guided-tour", docFooterText: "Getting Started &gt; Guided Tour" },
         ],
       },
