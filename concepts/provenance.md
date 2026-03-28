@@ -62,10 +62,9 @@ By default, Sprocket creates an `out/` directory in your current working
 directory to store all workflow outputs and provenance data. This location can
 be configured via:
 
-- The `-o, --output-dir` CLI flag (for `sprocket run`).
-- The `-o, --output-directory` CLI flag (for `sprocket dev server`).
+- The `-o, --output-dir` CLI flag (for `sprocket run` and `sprocket dev server`).
 - The `run.output_dir` configuration option (for run mode).
-- The `server.output_directory` configuration option (for server mode).
+- The `server.output_dir` configuration option (for server mode).
 
 ### Directory structure
 
