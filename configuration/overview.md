@@ -145,3 +145,8 @@ memory_limit_behavior = "try_with_max"
 ## Check/lint configuration
 
 See the [check/lint](/subcommands/check-lint.md) page.
+
+
+## Doc configuration
+
+See the [doc](/subcommands/doc.md#configuration) page.
