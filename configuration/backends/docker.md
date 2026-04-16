@@ -39,23 +39,23 @@ part of a Swarm cluster.
 
 ### Local Mode
 
-In local Docker mode, only the `maxCpu` and `maxMemory` hints are forwarded to
+In local Docker mode, only the `max_cpu` and `max_memory` hints are forwarded to
 Docker as hard limits ([`HostConfig.NanoCpus`](https://docs.docker.com/reference/api/engine/version/v1.47/#tag/Container/operation/ContainerCreate)
 and [`HostConfig.Memory`](https://docs.docker.com/reference/api/engine/version/v1.47/#tag/Container/operation/ContainerCreate),
-respectively). The `cpu` and `memory` requirements from the WDL `requirements`
-section are _not_ passed to Docker—Docker outside of Swarm mode has no concept
-of resource reservations, so these values are silently ignored at the container
+respectively). When not in Swarm mode, the `cpu` and `memory` requirements from
+the WDL `requirements` section are _not_ passed to Docker as it does not enforce
+resource reservations, so these values are silently ignored at the container
 level. They are, however, used internally by Sprocket's task manager for
 scheduling and queuing decisions (i.e., deciding when to start the next task
 based on available resources).
 
-If a task specifies `memory` but no `maxMemory` hint, the container runs with no
-memory constraint enforced by Docker. The same applies to CPU: without a `maxCpu`
-hint, no CPU limit is set on the container.
+If a task specifies `memory` but no `max_memory` hint, the container runs with
+no memory constraint enforced by Docker. The same applies to CPU: without a
+`max_cpu` hint, no CPU limit is set on the container.
 
-Additionally, if `maxCpu` or `maxMemory` exceeds what the Docker daemon reports
-as available, Sprocket clamps the value down to the host's capacity, since Docker
-does not respond gracefully to over-subscription.
+Additionally, if `max_cpu` or `max_memory` exceeds what the Docker daemon
+reports as available, Sprocket clamps the value down to the host's capacity,
+since Docker does not respond gracefully to over-subscription.
 
 The `disk` requirement is passed as a `HostConfig.StorageOpt["size"]` parameter,
 and `gpu` is passed as a `HostConfig.DeviceRequests` entry for NVIDIA GPUs.
@@ -64,8 +64,8 @@ and `gpu` is passed as a `HostConfig.DeviceRequests` entry for NVIDIA GPUs.
 |-|-|-|-|
 | `cpu` | Requirement | _(none)_ | Used only by Sprocket's internal scheduler |
 | `memory` | Requirement | _(none)_ | Used only by Sprocket's internal scheduler |
-| `maxCpu` | Hint | `NanoCpus` | Hard CPU limit; clamped to host capacity |
-| `maxMemory` | Hint | `Memory` | Hard memory limit; clamped to host capacity |
+| `max_cpu` | Hint | `NanoCpus` | Hard CPU limit; clamped to host capacity |
+| `max_memory` | Hint | `Memory` | Hard memory limit; clamped to host capacity |
 | `disk` | Requirement | `StorageOpt["size"]` | Storage limit |
 | `gpu` | Hint | `DeviceRequests` (NVIDIA) | GPU passthrough |
 
@@ -80,7 +80,7 @@ are forwarded. The `cpu` and `memory` requirements become Swarm
 and [`Reservations.MemoryBytes`](https://docs.docker.com/reference/api/engine/version/v1.47/#tag/Service/operation/ServiceCreate)),
 which the Swarm scheduler uses to place the task on a node with sufficient
 capacity—these are soft limits that guarantee the container can access at least
-the configured amount. The `maxCpu` and `maxMemory` hints become Swarm
+the configured amount. The `max_cpu` and `max_memory` hints become Swarm
 [_limits_](https://docs.docker.com/engine/containers/resource_constraints/#limit-a-containers-access-to-memory)
 ([`Limits.NanoCPUs`](https://docs.docker.com/reference/api/engine/version/v1.47/#tag/Service/operation/ServiceCreate)
 and [`Limits.MemoryBytes`](https://docs.docker.com/reference/api/engine/version/v1.47/#tag/Service/operation/ServiceCreate)),
@@ -92,8 +92,8 @@ OOM-terminated.
 |-|-|-|-|
 | `cpu` | Requirement | `Reservations.NanoCPUs` | Soft limit; used for Swarm scheduling/placement |
 | `memory` | Requirement | `Reservations.MemoryBytes` | Soft limit; used for Swarm scheduling/placement |
-| `maxCpu` | Hint | `Limits.NanoCPUs` | Hard CPU limit enforced on the container |
-| `maxMemory` | Hint | `Limits.MemoryBytes` | Hard memory limit; container is OOM-killed if exceeded |
+| `max_cpu` | Hint | `Limits.NanoCPUs` | Hard CPU limit enforced on the container |
+| `max_memory` | Hint | `Limits.MemoryBytes` | Hard memory limit; container is OOM-terminated if exceeded |
 | `disk` | Requirement | `StorageOpt["size"]` | Storage limit |
 | `gpu` | Hint | `DeviceRequests` (NVIDIA) | GPU passthrough |
 
