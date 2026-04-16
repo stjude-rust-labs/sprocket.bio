@@ -99,26 +99,6 @@ This leaves a single diagnostic, which is that `color` is an unused workflow
 input. Before continuing on, we will remove that input from the `main` workflow
 so it doesn't continue showing up in the diagnostics.
 
-### Formatting
-
-Sprocket includes an opinionated formatter that keeps your WDL documents
-consistent. You can check whether a document is already formatted correctly
-without modifying it:
-
-```shell
-sprocket format check example.wdl
-```
-
-To apply formatting in place, use the `overwrite` mode:
-
-```shell
-sprocket format overwrite example.wdl
-```
-
-The formatter handles indentation, whitespace, and input ordering (when
-enabled). See the [`sprocket format`](/subcommands/format) reference for the
-full set of configuration options.
-
 ### Continuous integration
 
 If you use GitHub for source control, you can use the [Sprocket GitHub
@@ -155,7 +135,7 @@ Before running a workflow, it can be helpful to see what inputs it expects. The
 task or workflow:
 
 ```shell
-sprocket inputs example.wdl --name main
+sprocket inputs example.wdl --target main
 ```
 
 This produces a JSON object with placeholders for each input:
