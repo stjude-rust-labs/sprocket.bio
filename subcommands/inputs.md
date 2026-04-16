@@ -25,6 +25,6 @@ sprocket inputs example.wdl --target main
 - `--show-non-literals` — includes inputs whose default values are non-literal
   expressions in the template. These appear as
   `<NON-LITERAL: expression>`.
-- `--nested-inputs` — includes an input for each task called in the workflow,
+- `--nested-inputs` — includes overrideable inputs for each task called in the workflow,
   not just the top-level workflow inputs.
 - `--yaml` — outputs the template as YAML instead of JSON.
