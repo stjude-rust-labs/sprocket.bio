@@ -38,7 +38,7 @@ indicate where workflow sources can be loaded from.
 | `--host <HOST>` | Host to bind to (default: `127.0.0.1`) |
 | `--port <PORT>` | Port to bind to (default: `8080`) |
 | `--database-url <URL>` | Database path. When omitted, defaults to `sprocket.db` within the output directory. When provided, relative paths resolve from the current working directory. |
-| `-o, --output-directory <DIR>` | Output directory for workflow results (default: `./out`) |
+| `-o, --output-dir <DIR>` | Output directory for workflow results (default: `./out`) |
 | `--allowed-file-paths <PATH>` | Allowed file paths for file-based workflows (can be repeated) |
 | `--allowed-urls <URL>` | Allowed URL prefixes for URL-based workflows (can be repeated) |
 | `--allowed-origins <ORIGIN>` | Allowed CORS origins (can be repeated) |
@@ -51,7 +51,7 @@ Server settings can also be configured in `sprocket.toml`:
 [server]
 host = "127.0.0.1"
 port = 8080
-output_directory = "./out"
+output_dir = "./out"
 allowed_file_paths = ["/path/to/workflows"]
 allowed_urls = ["https://raw.githubusercontent.com/"]
 allowed_origins = ["http://localhost:3000"]
@@ -70,7 +70,7 @@ url = "sqlite://sprocket.db"
 |--------|------|---------|-------------|
 | `host` | String | `"127.0.0.1"` | Host address to bind |
 | `port` | Integer | `8080` | Port to bind |
-| `output_directory` | Path | `"./out"` | Directory for workflow outputs |
+| `output_dir` | Path | `"./out"` | Directory for workflow outputs |
 | `allowed_file_paths` | List | `[]` | Allowed local paths for workflow sources |
 | `allowed_urls` | List | `[]` | Allowed URL prefixes for workflow sources |
 | `allowed_origins` | List | `[]` | CORS allowed origins |
