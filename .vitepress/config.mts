@@ -94,6 +94,7 @@ export default defineConfig({
           { text: "doc", link: "/subcommands/doc", docFooterText: "Experimental Commands &gt; doc" },
           { text: "lock", link: "/subcommands/lock", docFooterText: "Experimental Commands &gt; lock" },
           { text: "server", link: "/subcommands/server", docFooterText: "Experimental Commands &gt; server" },
+          { text: "submit", link: "/subcommands/submit", docFooterText: "Experimental Commands &gt; submit" },
           { text: "test", link: "/subcommands/test", docFooterText: "Experimental Commands &gt; test" },
         ]
       },
