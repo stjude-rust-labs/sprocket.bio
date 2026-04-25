@@ -201,11 +201,11 @@ must be provided before the workflow can run.
 Inputs to a Sprocket run are provided as arguments passed after the WDL document
 name is provided. Each input can be specified as either
 
-* a key value pair (e.g., `main.is_pirate=true`)
-* a JSON file containing inputs (e.g., a `hello_defaults.json` file where the
-  contents are `{ "main.is_pirate": true }`)
-* a YAML file containing inputs (e.g. a `hello_defaults.yaml` file where the
-  contents are `main.is_pirate: true`)
+* a key-value pair (e.g., `main.is_pirate=true`),
+* a JSON file of inputs prefixed with `@` (e.g., `@hello_defaults.json` where
+  the contents are `{ "main.is_pirate": true }`), or
+* a YAML file of inputs prefixed with `@` (e.g., `@hello_defaults.yaml` where
+  the contents are `main.is_pirate: true`).
 
 Inputs are _incrementally_ applied, meaning that inputs specified later override
 inputs specified earlier. This enables you to do something like the following to
@@ -213,7 +213,7 @@ use a set of default parameters and iterate through sample names in Bash rather
 than create many individual input files.
 
 ```bash
-sprocket run example.wdl hello_defaults.json main.name="Ari"
+sprocket run example.wdl @hello_defaults.json main.name="Ari"
 ```
 
 Note that the above command does not specify a target with the `--target`
@@ -262,7 +262,7 @@ so by defining the input in a `hello_overrides.json` file:
 Then providing that file in the set of inputs to the workflow.
 
 ```shell
-sprocket run example.wdl hello_overrides.json main.name="Sprocket"
+sprocket run example.wdl @hello_overrides.json main.name="Sprocket"
 ```
 
 This produces the following output.

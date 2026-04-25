@@ -32,11 +32,11 @@ Sprocket will indicate when it cannot infer the target.
 Inputs to a Sprocket run are provided as arguments passed after the WDL document
 name is provided. Each input can be specified as either
 
-* a key value pair (e.g., `main.is_pirate=true`)
-* a JSON file containing inputs (e.g., a `hello_defaults.json` file where the
-  contents are `{ "main.is_pirate": true }`)
-* a YAML file containing inputs (e.g. a `hello_defaults.yaml` file where the
-  contents are `main.is_pirate: true`)
+* a key-value pair (e.g., `main.is_pirate=true`),
+* a JSON file of inputs prefixed with `@` (e.g., `@hello_defaults.json` where
+  the contents are `{ "main.is_pirate": true }`), or
+* a YAML file of inputs prefixed with `@` (e.g., `@hello_defaults.yaml` where
+  the contents are `main.is_pirate: true`).
 
 Inputs are _incrementally_ applied, meaning that inputs specified later override
 inputs specified earlier. This enables you to do something like the following to
@@ -44,7 +44,35 @@ use a set of default parameters and iterate through sample names in Bash rather
 than create many individual input files.
 
 ```bash
-sprocket run example.wdl hello_defaults.json main.name="Ari"
+sprocket run example.wdl @hello_defaults.json main.name="Ari"
+```
+
+> [!IMPORTANT]
+>
+> The `@` prefix for input files is required. This follows the convention used
+> by tools such as `curl`, and it disambiguates input files from bare array
+> values (see [Array inputs](#array-inputs) below).
+
+### Array inputs
+
+Sprocket supports ergonomic ways to provide `Array` inputs on the command line
+without resorting to JSON syntax.
+
+**Repeated keys.** Specifying the same key multiple times collects the values
+into an array:
+
+```shell
+sprocket run example.wdl task.files=a.txt task.files=b.txt task.files=c.txt
+```
+
+A single occurrence of the key remains scalar.
+
+**Shell globbing.** Values from shell glob expansion are appended to the
+preceding key's array, which makes it easy to pass a set of files without
+repeating the key:
+
+```shell
+sprocket run example.wdl task.files=*.txt
 ```
 
 ### An example
@@ -86,7 +114,7 @@ so by defining the input in a `hello_overrides.json` file:
 Then providing that file in the set of inputs to the workflow.
 
 ```shell
-sprocket run example.wdl hello_overrides.json main.name="Sprocket"
+sprocket run example.wdl @hello_overrides.json main.name="Sprocket"
 ```
 
 This produces the following output.
