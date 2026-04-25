@@ -30,6 +30,14 @@ development environment, CI pipeline, and workflow execution set up.
   maintain consistent style across your project. See the
   [format command](/subcommands/format) reference.
 
+- [ ] **Baseline existing diagnostics (optional).** If your codebase has
+  pre-existing lint or validation diagnostics that you cannot address all at
+  once, run `sprocket lint --generate-baseline` to capture
+  them in a `sprocket-baseline.toml` file. Subsequent runs of `sprocket
+  check` will ignore baselined diagnostics, so CI catches _new_ issues while
+  the existing backlog is cleaned up on your own schedule. See
+  [Baselines](/subcommands/check-lint#baselines) for details.
+
 - [ ] **Add the GitHub Action.** Add the
   [Sprocket GitHub Action](https://github.com/stjude-rust-labs/sprocket-action)
   to your CI pipeline so that linting and formatting are checked on every pull
