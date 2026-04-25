@@ -1,5 +1,6 @@
 import { defineConfig } from "vitepress";
 import axios from 'axios';
+import taskLists from 'markdown-it-task-lists';
 
 const grammarUrl = "https://raw.githubusercontent.com/stjude-rust-labs/sprocket-vscode/refs/heads/main/syntaxes/wdl.tmGrammar.json";
 
@@ -112,7 +113,10 @@ export default defineConfig({
     shikiSetup: async (shiki) => {
       const response = await axios.get(grammarUrl);
       await shiki.loadLanguage(response.data);
-    }
+    },
+    config: (md) => {
+      md.use(taskLists);
+    },
   },
   appearance: 'dark'
 });
