@@ -208,7 +208,7 @@ include outputs anywhere in the `parameter_meta`.
 ## Configuration
 
 `sprocket dev doc` can be configured via the CLI or, as of Sprocket `v0.23.0`, via
-the [sprocket.toml](/configuration/overview.md) config file.
+the [`sprocket.toml`](/configuration/overview.md) config file.
 
 ### Index page
 
@@ -219,8 +219,8 @@ We encourage you to customize the experience of your user documentation by
 writing a custom Markdown document which can be embedded at the root of your
 generated documentation.
 
-A Markdown file can be embedded in the homepage during documentation generation.
-Every page contains links back to the homepage. If no homepage is provided, your
+A Markdown file can be embedded as the index page during documentation generation.
+Every page contains links back to the index page. If no index paghe is provided, your
 users will be faced with an empty screen stating "There's nothing to see on this page".
 
 ### External links
@@ -230,19 +230,14 @@ users will be faced with an empty screen stating "There's nothing to see on this
   * `--github-url <URL>`
 * Config:
   * `doc.homepage_url = "<URL>"`
-  * `doc.github_url = <URL>`
+  * `doc.github_url = "<URL>"`
 
-A limited set of external links can be added to the documentation site. These will be
-globally accessible via buttons in the top right of the header.
+A limited set of external links can be added to the documentation site. These
+will be globally accessible via buttons in the top right of the header.
 
-#### Homepage
-
-A `--homepage-url` should only be set if the project has a dedicated homepage, outside
-the to-be-generated documentation.
-
-#### Github
-
-A `--github-url` can be provided to link to the GitHub repository of the project.
+`--homepage-url` should only be set if the project has a dedicated homepage
+outside the to-be-generated documentation. `--github-url` links to the GitHub
+repository of the project
 
 ### Theming
 
@@ -280,14 +275,13 @@ available.
   * `doc.extra_html.html_body_open = "<HTML FILE>"`
   * `doc.extra_html.html_body_close = "<HTML FILE>"`
 
-These options can be used to inject custom HTML into *every* page.
-
 Custom HTML files can be injected in multiple locations:
 * `html-head` - Injects HTML before the closing `</head>` tag
 * `html-body-open` - Injects HTML immediately after the opening `<body>` tag
 * `html-body-close` - Injects HTML immediately before the closing `</body>` tag
 
-Each option can only be used once, but multiple options can be used together to inject HTML
+These options can be used to inject custom HTML into *every* page. Each option
+can only be used once, but multiple options can be used together to inject HTML
 in different locations.
 
 #### Custom themes
@@ -299,7 +293,7 @@ you would like to see in future releases!
 
 ### Experimental features
 
-#### Documentation Comment Support
+#### Documentation comment support
 
 * CLI: `--with-doc-comments`
 * Config: `doc.with_doc_comments = <true | false>`

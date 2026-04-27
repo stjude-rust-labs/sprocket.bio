@@ -146,7 +146,7 @@ memory_limit_behavior = "try_with_max"
 
 See the [check/lint](/subcommands/check-lint.md) page.
 
-
-## Doc configuration
+## `sprocket dev doc` configuration
 
 See the [doc](/subcommands/doc.md#configuration) page.
+
