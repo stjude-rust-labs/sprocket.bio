@@ -54,7 +54,7 @@ cargo install sprocket
 If desired, you can also check out a specific version of `sprocket`.
 
 ```shell
-cargo install sprocket@0.24.0
+cargo install sprocket@0.25.0
 ```
 
 ### GitHub
