@@ -73,7 +73,7 @@ which is expected to always contained a compilable and correct (though, perhaps
 unreleased) version of Sprocket.
 
 ```shell
-git clone git@github.com:stjude-rust-labs/sprocket.git
+git clone https://github.com/stjude-rust-labs/sprocket.git
 cd sprocket
 cargo run --release
 ```
