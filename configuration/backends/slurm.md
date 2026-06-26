@@ -53,7 +53,6 @@ gpu_slurm_partition.name = "gpu"
 # `short_task_slurm_partition`.
 fpga_slurm_partition.name = "fpga"
 
-
 # The maximum number of concurrent Slurm operations the backend will perform.
 # Defaults to `10`. Consider raising this for large-scale workflow execution.
 max_concurrency = 10
@@ -73,7 +72,6 @@ args = ["--time=60"]
 
 # Settings related to `apptainer`.
 [run.backends.default.apptainer]
-
 # Additional command-line arguments to pass to `apptainer exec` when executing
 # tasks.
 extra_args = ["--hostname=\"my_host\""]
@@ -112,8 +110,8 @@ If the expression evaluates to `true`, the provided arguments (via the `args`
 array) are applied to the `sbatch` command when queuing the task.
 
 Conditional arguments are evaluated in the order defined in the configuration 
-and only the first conditional arguments that evaluates to `true` is applied to 
-the `sbatch` command.
+and only the first conditional argument whose expression evaluates to `true` is
+applied to the `sbatch` command.
 
 The `condition` WDL expression has access to the following variables relating 
 to the task being evaluated:
@@ -121,7 +119,7 @@ to the task being evaluated:
 | Name     | Type      | Description                                                                                                                                 |
 |----------|-----------|---------------------------------------------------------------------------------------------------------------------------------------------|
 | `cpu`    | `Float`   | `cpu` requirement or default (1) if not present                                                                                             |
-| `memory` | `Int`     | `memory` requirement (in bytes) or default (2 GiB) if not present, in bytes                                                                 |
+| `memory` | `Int`     | `memory` requirement (in bytes) or default (2 GiB) if not present                                                                           |
 | `gpu`    | `Boolean` | `gpu` requirement or default (false) if not present                                                                                         |
 | `fpga`   | `Boolean` | `fpga` requirement or default (false) if not present                                                                                        |
 | `disks`  | `Int`     | the sum of all `disk` requirements (in bytes) or default (1 GiB) if not present                                                             |
@@ -132,8 +130,8 @@ syntax errors and most type errors prior to evaluating tasks.
 
 #### Example
 
-An example conditional argument that checks for more than requesting at least 
-64 CPUs and 16 GiB of memory to apply a fictitious `sbatch` argument:
+An example conditional argument that applies a fictitious `sbatch` argument
+when a task requests at least 64 CPUs and 16 GiB of memory:
 
 ```toml
 [[run.backends.default.sbatch.conditional]]
