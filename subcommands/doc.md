@@ -16,26 +16,6 @@ potential, the [St. Jude Cloud `workflows` repository] can be viewed [on
 GitHub](https://github.com/stjudecloud/workflows) or [as rendered
 HTML](https://stjudecloud.github.io/workflows/index.html).
 
-## Homepage
-
-We encourage you to customize the experience of your user documentation by
-writing a custom Markdown document which can be embedded at the root of your
-generated documentation.
-
-A Markdown file can be embedded in the homepage with the `--homepage <MARKDOWN
-FILE>` flag during documentation generation. Every page contains links back to
-the homepage. If no homepage is provided, your users will be faced with an empty
-screen stating "There's nothing to see on this page".
-
-## Custom logos and themes
-
-If you wish to provide a custom logo, you can do so with the `--logo` argument.
-
-While it is technically possible to supply your own custom CSS styling, this
-capability is currently undocumented. We recommend sticking with the default
-styling at this point in time, but do let us know what kinds of customization
-you would like to see in future releases!
-
 ## Structs
 
 Structs and their members can be documented with both [Meta sections](#meta-sections)
@@ -97,7 +77,7 @@ enum Color[String] {
 > [!WARNING]
 >
 > Documentation comment support is not enabled by default. To enable it, use
-> the `--with-doc-comments` CLI flag.
+> the `--with-doc-comments` CLI flag or `with_doc_comments` config field.
 
 Documentation comments (a.k.a. doc comments) are denoted by `##` and can be used anywhere in the document. They are intended to replace the
 `meta`/`parameter_meta` sections found in `struct`s, `task`s, and `workflow`s.
@@ -224,3 +204,98 @@ section. To be compliant with the [Sprocket `MatchingOutputMeta` lint
 rule](https://docs.rs/wdl/latest/wdl/lint/index.html#lint-rules), you should
 document each output under an `outputs` key in the `meta` section and not
 include outputs anywhere in the `parameter_meta`.
+
+## Configuration
+
+`sprocket dev doc` can be configured via the CLI or, as of Sprocket `v0.23.0`, via
+the [`sprocket.toml`](/configuration/overview.md) config file.
+
+### Index page
+
+* CLI: `--index-page <MARKDOWN FILE>`
+* Config: `doc.index_page = "<MARKDOWN FILE>"`
+
+We encourage you to customize the experience of your user documentation by
+writing a custom Markdown document which can be embedded at the root of your
+generated documentation.
+
+A Markdown file can be embedded as the index page during documentation generation.
+Every page contains links back to the index page. If no index paghe is provided, your
+users will be faced with an empty screen stating "There's nothing to see on this page".
+
+### External links
+
+* CLI:
+  * `--homepage-url <URL>`
+  * `--github-url <URL>`
+* Config:
+  * `doc.homepage_url = "<URL>"`
+  * `doc.github_url = "<URL>"`
+
+A limited set of external links can be added to the documentation site. These
+will be globally accessible via buttons in the top right of the header.
+
+`--homepage-url` should only be set if the project has a dedicated homepage
+outside the to-be-generated documentation. `--github-url` links to the GitHub
+repository of the project
+
+### Theming
+
+#### Custom logos
+
+* CLI:
+  * `--logo <LOGO FILE>`
+  * `--alt-light-logo <LOGO FILE>`
+* Config:
+  * `doc.logo = "<LOGO FILE>"`
+  * `doc.alt_light_logo = "<LOGO FILE>"`
+
+If you wish to provide a custom logo, you can do so with the `--logo` argument.
+`--alt-light-logo` can be used to provide an alternative logo for light mode.
+
+#### Light/dark mode
+
+* CLI:
+  * `--light-mode`
+* Config:
+  * `doc.light_mode = <true | false>`
+
+The `--light-mode` flag can be used to make the documentation light mode by default.
+Note that regardless of this setting, the user will always have a light/dark theme toggle
+available.
+
+#### Custom HTML
+
+* CLI:
+  * `--html-head <HTML FILE>`
+  * `--html-body-open <HTML FILE>`
+  * `--html-body-close <HTML FILE>`
+* Config:
+  * `doc.extra_html.html_head = "<HTML FILE>"`
+  * `doc.extra_html.html_body_open = "<HTML FILE>"`
+  * `doc.extra_html.html_body_close = "<HTML FILE>"`
+
+Custom HTML files can be injected in multiple locations:
+* `html-head` - Injects HTML before the closing `</head>` tag
+* `html-body-open` - Injects HTML immediately after the opening `<body>` tag
+* `html-body-close` - Injects HTML immediately before the closing `</body>` tag
+
+These options can be used to inject custom HTML into *every* page. Each option
+can only be used once, but multiple options can be used together to inject HTML
+in different locations.
+
+#### Custom themes
+
+While it is technically possible to supply your own custom CSS styling, this
+capability is currently undocumented. We recommend sticking with the default
+styling at this point in time, but do let us know what kinds of customization
+you would like to see in future releases!
+
+### Experimental features
+
+#### Documentation comment support
+
+* CLI: `--with-doc-comments`
+* Config: `doc.with_doc_comments = <true | false>`
+
+See [documentation comments](#documentation-comments).
