@@ -79,7 +79,7 @@ Assertions are available for ensuring more complex expectations than simple "suc
 
 The assertions available depend on whether the entrypoint is a workflow or a task.
 
-For workflows, there is a `should_fail: <boolean>` assertion. This defaults to `false`, but may be specified as `should_fail: true`. The `should_fail` assertion is ignored for task executions.
+The `should_fail: <boolean>` assertion is available for both workflows and tasks. It defaults to `false`, but may be specified as `should_fail: true` to assert that the execution is expected to fail. For workflows, any failure satisfies the assertion; for tasks, any nonzero exit code satisfies it. `should_fail` cannot be combined with `exit_code`.
 
 ```yaml
 validate_flag_filter: # this is a workflow
@@ -101,7 +101,7 @@ validate_flag_filter: # this is a workflow
       should_fail: true
 ```
 
-To unit test a fail case for a task, a non-zero `exit_code: <integer>` can be specified.
+To unit test a fail case for a task, you can either set `should_fail: true` to expect any nonzero exit code, or assert a specific non-zero `exit_code: <integer>`. These two assertions are mutually exclusive.
 
 ```yaml
 validate_string_is_12bit_int: # this is a task
@@ -329,5 +329,21 @@ Options:
           The default behavior is to remove directories of successful tests, leaving only failed and errored run directories on the file system.
 
       --clean-all
-          Clean all exectuion directories, even for tests that failed or errored
+          Clean all execution directories, even for tests that failed or errored
+
+  -p, --parallelism <PARALLELISM>
+          The number of test executions to run in parallel
+
+      --fixtures-dir <FIXTURES_DIR>
+          Directory containing fixture files used by tests.
+
+          If not specified, defaults to `<workspace>/test/fixtures`.
+
+      --run-dir <RUN_DIR>
+          Directory to execute tests in.
+
+          If not specified, defaults to `<workspace>/test/runs`.
+
+      --no-status
+          Do not print results as tests complete
 ```

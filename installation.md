@@ -30,7 +30,7 @@ Every released version of `sprocket` is available through the GitHub Container
 Registry.
 
 ```bash
-docker run ghcr.io/stjude-rust-labs/sprocket:v0.24.0 -h
+docker run ghcr.io/stjude-rust-labs/sprocket:v0.27.0 -h
 ```
 
 ## Build from source
@@ -54,7 +54,7 @@ cargo install sprocket
 If desired, you can also check out a specific version of `sprocket`.
 
 ```shell
-cargo install sprocket@0.26.0
+cargo install sprocket@0.27.0
 ```
 
 ### GitHub
@@ -78,6 +78,19 @@ cd sprocket
 cargo run --release
 ```
 
+### Nix flake
+
+Sprocket ships a [Nix](https://nixos.org/download/) flake. With flakes enabled,
+you can build or run Sprocket directly from the repository:
+
+```bash
+# Build the binary (output at ./result/bin/sprocket)
+nix build github:stjude-rust-labs/sprocket#sprocket
+./result/bin/sprocket --help
+
+# Or run it without installing
+nix run github:stjude-rust-labs/sprocket -- --help
+```
 
 ## Shell completions
 
