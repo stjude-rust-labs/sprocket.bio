@@ -13,11 +13,6 @@ configuring the backend, running your first workflow, and tuning for production
 use. By the end, you will have Sprocket submitting containerized WDL tasks as
 Slurm jobs.
 
-> [!WARNING]
->
-> The Slurm + Apptainer backend is experimental, and its behavior and
-> configuration may change between Sprocket releases.
-
 ## Prerequisites
 
 Before starting, verify that your environment meets the following requirements.
@@ -121,10 +116,6 @@ The following example configures Sprocket to use Slurm + Apptainer as its
 default backend. This is a good starting point for a shared `sprocket.toml`:
 
 ```toml
-# Enable experimental features (required for the Slurm backend).
-[run]
-experimental_features_enabled = true
-
 # Use the Slurm + Apptainer backend.
 [run.backends.default]
 type = "slurm_apptainer"
@@ -136,42 +127,12 @@ default_slurm_partition.name = "compute"
 default_slurm_partition.max_cpu_per_task = 64
 default_slurm_partition.max_memory_per_task = "96 GB"
 
-# Optional: dedicated partition for short tasks.
-# short_task_slurm_partition.name = "short"
-
-# Optional: dedicated partition for GPU tasks.
-# gpu_slurm_partition.name = "gpu"
-
-# Optional: dedicated partition for FPGA tasks.
-# fpga_slurm_partition.name = "fpga"
-
-# Additional arguments passed to `sbatch` when submitting jobs.
-# For example, set a default time limit for all jobs.
-# extra_sbatch_args = ["--time=60"]
-
-# Additional arguments passed to `apptainer exec`.
-# For example, pass `--nv` to enable GPU support inside containers.
-# extra_apptainer_exec_args = ["--nv"]
-
-# Maximum number of concurrent `sbatch` processes the backend will spawn to
-# queue tasks. Defaults to `10`. Consider raising this for large-scale
-# workflow execution.
-# max_concurrency = 10
-
 # Prefix added to every Slurm job name. Useful for identifying Sprocket jobs
 # in `squeue` output.
-# job_name_prefix = "sprocket"
+job_name_prefix = "sprocket"
 
 # Task monitor polling interval in seconds. Defaults to `30`.
-# interval = 30
-
-# Path to the Apptainer (or Singularity) executable. Defaults to `"apptainer"`.
-# Set to `"singularity"` or a full path if the executable is not on `PATH`.
-# executable = "apptainer"
-
-# Shared directory for caching pulled `.sif` images across runs. When unset,
-# images are stored per-run and not shared.
-# image_cache_dir = "/shared/containers/cache"
+interval = 30
 ```
 
 ### Resource limit behavior
@@ -287,7 +248,8 @@ The `run.workflow.scatter.concurrency` setting controls how many elements within
 `scatter` block are evaluated concurrently. The default is `1000`:
 
 ```toml
-run.workflow.scatter.concurrency = 1000
+[run.workflow.scatter]
+concurrency = 1000
 ```
 
 Setting scatter concurrency too high can put pressure on the scheduler by
@@ -306,7 +268,7 @@ The preferred way to share images across runs is to set `image_cache_dir` in
 your backend configuration:
 
 ```toml
-[run.backends.default]
+[run.backends.default.apptainer]
 image_cache_dir = "/shared/containers/cache"
 ```
 
@@ -390,7 +352,7 @@ run directory structure.
   on the `PATH` for Slurm jobs. If Apptainer is provided via an environment
   module, it must be loaded in the user's environment before running
   `sprocket run` so that the job inherits the correct `PATH`. You can also
-  set the `executable` option in `[run.backends.default]` to
+  set the `executable` option in `[run.backends.default.apptainer]` to
   `"singularity"` or a full path to the binary if it is not named
   `apptainer` or is not on `PATH`.
 
