@@ -1,11 +1,11 @@
-# `sprocket submit`
+# `sprocket dev server submit`
 
 > [!CAUTION]
 >
 > This document describes the beta release of the `submit` command. This
 > functionality is considered experimental and may change in future releases.
 
-The `submit` command is a thin wrapper around the [Sprocket Server REST
+The `dev server submit` command is a thin wrapper around the [Sprocket Server REST
 API](/subcommands/server#rest-api) that submits a WDL task or workflow to a
 running Sprocket server for remote execution. It mirrors the input and target
 semantics of `sprocket run`, so most invocations can be switched between the
@@ -14,7 +14,7 @@ two commands by changing only the subcommand name.
 ## Usage
 
 ```shell
-sprocket submit <SOURCE> [INPUTS...] [OPTIONS]
+sprocket dev server submit <SOURCE> [INPUTS...] [OPTIONS]
 ```
 
 The `SOURCE` argument can be either a local file path or a URL, matching the
@@ -30,7 +30,7 @@ Assuming a Sprocket server is running on the default host and port (see
 [`sprocket dev server`](/subcommands/server)):
 
 ```shell
-sprocket submit example.wdl --target main name="World"
+sprocket dev server submit example.wdl --target main name="World"
 ```
 
 The command analyzes the WDL source, validates inputs locally, and then

@@ -62,7 +62,7 @@ By default, Sprocket creates an `out/` directory in your current working
 directory to store all workflow outputs and provenance data. This location can
 be configured via:
 
-- The `-o, --output-dir` CLI flag (for `sprocket run` and `sprocket dev server`).
+- The `-o, --output-dir` CLI flag (for `sprocket run` and `sprocket dev server start`).
 - The `run.output_dir` configuration option (for run mode).
 - The `server.output_dir` configuration option (for server mode).
 
@@ -233,7 +233,7 @@ sprocket run pipeline_b.wdl -o ./pipeline-b-out ...
 
 ### Querying execution history
 
-The REST API (available via `sprocket dev server`) is the recommended way to query
+The REST API (available via `sprocket dev server start`) is the recommended way to query
 execution history. The API provides endpoints for listing sessions, runs, and
 tasks with filtering capabilities. See the
 [server documentation](/subcommands/server) for endpoint details and the

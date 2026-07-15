@@ -12,6 +12,14 @@ LSP. For Neovim, the [`sprocket.nvim`][neovim] plugin provides similar
 integration. For other editors, you should search for how to set up an LSP with
 your editor of choice.
 
+## Configuration
+
+The analyzer honors the `[format]` section of your `sprocket.toml`, so
+formatting performed through the LSP (for example, "format document" in your
+editor) matches the output of [`sprocket format`](/subcommands/format). See the
+[configuration guide](/configuration/overview.md) for the available `[format]`
+options.
+
 ## Transports
 
 At the time of writing, `sprocket analyzer` only supports the standard I/O
