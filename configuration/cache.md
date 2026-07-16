@@ -120,8 +120,15 @@ even if metadata of the file remains unchanged. As the hash function must read
 every byte in the file, calculating a _strong_ digest for very large files may 
 greatly impact performance.
 
-You may opt-in to using _strong_ digests via the `run.task.digests` setting in 
-`sprocket.toml`:
+A _strongish_ digest offers a middle ground between the two: it hashes the
+file's size, last modified time, and the first 10 MiB of the file's contents.
+This catches changes to the beginning of a file that a _weak_ digest would miss,
+without paying the cost of reading very large files in full. It is similar to
+Cromwell's `fingerprint` call caching strategy.
+
+You may choose which digest mode to use via the `run.task.digests` setting in 
+`sprocket.toml`. Valid values are `"weak"` (the default), `"strongish"`, and 
+`"strong"`:
 
 ```toml
 [run.task]

@@ -295,7 +295,10 @@ build_bwa_db:
 ## Running unit tests
 
 ```text
-Usage: sprocket dev test [OPTIONS] [SOURCE]
+Usage: sprocket dev test [OPTIONS] [SOURCE] [COMMAND]
+
+Commands:
+  schema  Print the JSON schema for Sprocket test definition YAMLs to stdout
 
 Arguments:
   [SOURCE]
@@ -313,12 +316,21 @@ Options:
 
           If not specified and the `source` argument is a file, it's assumed that the current working directory is the workspace. This can be specified in addition to a source file if the CWD is not the right workspace.
 
-  -t, --include-tag <TAG>
+  -t, --target <TARGET>
+          Only run tests whose target (task/workflow) name contains the given filter
+
+  -f, --filter <FILTER>
+          Only run tests whose names contain the given filter
+
+      --exact
+          If set, filters are matched exactly rather than by substring
+
+  -i, --include-tag <TAG>
           Specific test tag that should be run.
 
           Can be repeated multiple times.
 
-  -f, --filter-tag <TAG>
+  -e, --exclude-tag <TAG>
           Filter out any tests with a matching tag.
 
           Can be repeated multiple times.
@@ -346,4 +358,21 @@ Options:
 
       --no-status
           Do not print results as tests complete
+```
+
+### Filtering which tests run
+
+Use `--target` (`-t`) to run only tests whose task or workflow name contains a
+substring, and `--filter` (`-f`) to run only tests whose _test name_ contains a
+substring. Pass `--exact` to match these filters exactly rather than by
+substring. These combine with the tag-based selection described above.
+
+### Generating a test schema
+
+`sprocket dev test schema` prints a [JSON schema](https://json-schema.org) for
+Sprocket test definition YAMLs to standard out. You can use this to validate
+test definition files or to power editor autocompletion.
+
+```shell
+sprocket dev test schema > test.schema.json
 ```
