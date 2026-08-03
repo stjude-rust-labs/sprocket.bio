@@ -21,24 +21,40 @@ development. Sprocket contains both the `check` and `lint` (shortcut for `check
 You can see a list of all of the rules Sprocket contains by running `sprocket
 explain -h`. You can dive into any of the rules Sprocket includes by running
 `sprocket explain <RULE>`. For example, if we wanted to learn more about the
-`ImportSorted` rule, we could do the following.
+`ImportPlacement` rule, we could do the following.
 
 ```shell
-sprocket explain ImportSorted
+sprocket explain ImportPlacement
 ```
 
-This command gives the following description of the `ImportSorted` rule.
+This command gives the following description of the `ImportPlacement` rule.
 
-```txt
-ImportSorted [Sorting]
-Ensures that imports are sorted lexicographically.
+````txt
+ImportPlacement [Clarity]
+Ensures that imports are placed between the version statement and any document items.
 
-Imports should be sorted lexicographically to make it easier to find 
-specific imports. This rule ensures that imports are sorted in a 
-consistent manner. Specifically, the desired sort can be achieved
-with a GNU compliant `sort` and `LC_COLLATE=C`. No comments are
-permitted within an import statement.
+All import statements should follow the WDL version declaration with one empty line between the version and the first import statement.
+
+Examples:
+```wdl
+version 1.2
+
+workflow example {
+}
+
+import "example2.wdl"
 ```
+Use instead:
+
+```wdl
+version 1.2
+
+import "example2.wdl"
+
+workflow example {
+}
+```
+````
 
 We encourage you to explore the existing validation and linting rules supported
 by Sprocket along with suggesting new helpful rules on our [issues
