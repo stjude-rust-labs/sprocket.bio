@@ -216,7 +216,9 @@ out/
             ├── outputs.json
             └── attempts/
                 └── 0/
+                    ├── sbatch_command
                     ├── command
+                    ├── job_id
                     ├── stdout
                     ├── stderr
                     └── work/

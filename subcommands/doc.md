@@ -16,6 +16,17 @@ potential, the [St. Jude Cloud `workflows` repository] can be viewed [on
 GitHub](https://github.com/stjudecloud/workflows) or [as rendered
 HTML](https://stjudecloud.github.io/workflows/index.html).
 
+## Module workspaces
+
+When the workspace contains WDL modules, `sprocket dev doc` recursively searches
+for `module.json` manifests and generates documentation for every discovered
+module. This supports both nested modules and repositories that contain several
+sibling modules beneath a root directory without its own manifest.
+
+If a `module.json` cannot be parsed, Sprocket warns about the invalid manifest,
+skips that module, and continues generating documentation for the remaining
+workspace.
+
 ## Structs
 
 Structs and their members can be documented with both [Meta sections](#meta-sections)
@@ -219,25 +230,49 @@ We encourage you to customize the experience of your user documentation by
 writing a custom Markdown document which can be embedded at the root of your
 generated documentation.
 
-A Markdown file can be embedded as the index page during documentation generation.
-Every page contains links back to the index page. If no index paghe is provided, your
-users will be faced with an empty screen stating "There's nothing to see on this page".
+A Markdown file can be embedded as the index page during documentation
+generation. Every page contains links back to the index page. If no index page
+is provided, users will see an empty screen stating "There's nothing to see on
+this page".
 
 ### External links
 
 * CLI:
   * `--homepage-url <URL>`
   * `--github-url <URL>`
+  * `--slack-url <URL>`
 * Config:
   * `doc.homepage_url = "<URL>"`
   * `doc.github_url = "<URL>"`
+  * `doc.slack_url = "<URL>"`
 
-A limited set of external links can be added to the documentation site. These
-will be globally accessible via buttons in the top right of the header.
+Homepage, GitHub, and Slack links are available on every generated page.
 
 `--homepage-url` should only be set if the project has a dedicated homepage
 outside the to-be-generated documentation. `--github-url` links to the GitHub
-repository of the project
+repository of the project, and `--slack-url` links to its Slack workspace.
+
+### Search metadata
+
+The `[doc.seo]` table configures site-level metadata in the generated HTML:
+
+```toml
+[doc.seo]
+title = "My WDL workflows"
+description = "Reference documentation for our workflow library"
+author = "Example Research Group"
+keywords = ["WDL", "workflows"]
+base_url = "https://example.org/workflows/"
+image_url = "https://example.org/workflows/social-card.png"
+locale = "en_US"
+twitter_handle = "@example"
+robots = "index, follow"
+theme_color = "#18181b"
+```
+
+All fields are optional. When `title` is set, each page title becomes
+`"<page> | <title>"`. The remaining fields populate standard, Open Graph, and
+Twitter Card metadata; `base_url` also provides canonical page URLs.
 
 ### Theming
 

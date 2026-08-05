@@ -216,7 +216,9 @@ out/
             ├── outputs.json
             └── attempts/
                 └── 0/
+                    ├── bsub_command
                     ├── command
+                    ├── job_id
                     ├── stdout
                     ├── stderr
                     └── work/

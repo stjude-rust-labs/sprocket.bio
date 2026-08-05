@@ -142,6 +142,7 @@ A call cache entry is looked up with the following:
 * The URI to the document containing the task.
 * The name of the task.
 * The evaluated _values_ of the task's `input` section.
+* The execution backend used for the task.
 
 If any of the above change, Sprocket will treat it as a different cache entry.
 
