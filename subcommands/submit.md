@@ -43,7 +43,7 @@ submits the run to the server.
 | `--host <HOST>` | The hostname of the running Sprocket server. Falls back to the value in the Sprocket config when not provided. |
 | `-p, --port <PORT>` | The port of the running Sprocket server. Falls back to the value in the Sprocket config when not provided. |
 | `-t, --target <NAME>` | The name of the task or workflow to submit. Required if the task or workflow has no inputs. |
-| `--index-on <OUTPUT_NAME>` | The output name to index on. When provided, the server indexes the run outputs using the specified output name as the key. |
+| `--index-on <INDEX_PATH>` | A path within the server output directory's `index/` directory to index the run outputs under. The path must be relative and cannot contain `.` or `..` components. |
 | `-m, --report-mode <MODE>` | The diagnostic reporting mode. |
 
 ## Configuration
