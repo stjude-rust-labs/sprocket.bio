@@ -20,6 +20,7 @@ many common platforms and Python versions. If you install `sprocket-bio` on a pl
 not have a precompiled wheel, you will need the latest stable release of the [Rust
 compiler](https://rust-lang.org/) in order to build from source.
 
-## API Documentation
+## Documentation
 
-The Python bindings's API docs are published online at <https://sprocket-bio.readthedocs.io/>.
+You can find the Python binding's API docs and several examples online at
+<https://sprocket-bio.readthedocs.io/>.
