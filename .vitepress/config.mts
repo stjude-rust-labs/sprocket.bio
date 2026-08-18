@@ -102,6 +102,10 @@ export default defineConfig({
         text: "Editor Integrations",
         items: [{ text: "Visual Studio Code", link: "/vscode/getting-started", docFooterText: "Editor Integrations &gt; Visual Studio Code" }],
       },
+      {
+        text: "API",
+        items: [{ text: "Python Bindings", link: "/python-bindings", docFooterText: "API &gt; Python Bindings" }],
+      },
     ],
     socialLinks: [
       { icon: "github", link: "https://github.com/stjude-rust-labs/sprocket" },
