@@ -95,8 +95,9 @@ the run directory.
 │       │           └── work/         # Task working directory
 │       └── _latest -> <timestamp>/   # Symlink to most recent run
 └── index/                            # Optional output indexing
-    └── <output_name>/
-        └── outputs.json              # Symlink to run outputs
+    └── <index_path>/                 # The path given to `--index-on`
+        ├── outputs.json              # Symlink to run outputs
+        └── <outputs>                 # Symlinks to `File`/`Directory` outputs
 ```
 
 #### Workflow runs
@@ -127,8 +128,9 @@ subdirectory under `calls/`. Each call directory then contains the same
 │       │                   └── work/
 │       └── _latest -> <timestamp>/
 └── index/
-    └── <output_name>/
-        └── outputs.json
+    └── <index_path>/
+        ├── outputs.json
+        └── <outputs>
 ```
 
 ### The `_latest` symlink
@@ -183,14 +185,14 @@ execution attempts, which is valuable for debugging intermittent failures.
 
 ## Output indexing
 
-When the `--index-on` flag is provided, Sprocket indexes run outputs by the
-specified output name. For each run, a symlink is created under
-`index/<output_name>/` pointing to the run's `outputs.json` file. This enables
-efficient lookup of runs by output values without scanning the entire `runs/`
-directory.
+The `--index-on` flag takes a path within the output directory's `index/`
+directory. For each run, Sprocket symlinks the run's `outputs.json` along with
+every output that is a `File`, a `Directory`, or an array of them into
+`index/<index_path>/`, which gives results a stable location per project,
+experiment, or sample without walking `runs/`.
 
 ```shell
-# Run a workflow with output indexing on the `greeting` output
+# Index this run's outputs under `index/greeting/`
 sprocket run hello.wdl -t hello --index-on greeting
 ```
 
@@ -199,6 +201,16 @@ The resulting index entry is a relative symlink:
 ```
 index/greeting/outputs.json -> ../../runs/hello/<timestamp>/outputs.json
 ```
+
+An index path is relative and cannot contain `.` or `..` components; Sprocket
+rejects anything else before the run starts, which keeps every entry inside
+`index/`. Because Sprocket uses the path verbatim, group results by a value of
+your own choosing by interpolating that value into the index path in your shell.
+
+Outputs that live outside the output directory are reported and left out of the
+index. A `File` input that a task passes straight through to an output is the
+usual case: its path belongs to the input rather than to the run, so neither a
+relative symlink nor a database entry can describe it.
 
 ## Portability
 
