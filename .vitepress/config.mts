@@ -17,7 +17,7 @@ export default defineConfig({
     nav: [
       { text: "Documentation", link: "/overview" },
       {
-        text: "v0.28.1",
+        text: "v0.30.0",
         items: [
           {
             text: "Changelog",
@@ -94,6 +94,7 @@ export default defineConfig({
         text: "Experimental Commands", collapsed: true, items: [
           { text: "doc", link: "/subcommands/doc", docFooterText: "Experimental Commands &gt; doc" },
           { text: "lock", link: "/subcommands/lock", docFooterText: "Experimental Commands &gt; lock" },
+          { text: "module", link: "/subcommands/module", docFooterText: "Experimental Commands &gt; module" },
           { text: "server", link: "/subcommands/server", docFooterText: "Experimental Commands &gt; server" },
           { text: "submit", link: "/subcommands/submit", docFooterText: "Experimental Commands &gt; submit" },
           { text: "test", link: "/subcommands/test", docFooterText: "Experimental Commands &gt; test" },
@@ -102,6 +103,10 @@ export default defineConfig({
       {
         text: "Editor Integrations",
         items: [{ text: "Visual Studio Code", link: "/vscode/getting-started", docFooterText: "Editor Integrations &gt; Visual Studio Code" }],
+      },
+      {
+        text: "API",
+        items: [{ text: "Python Bindings", link: "/python-bindings", docFooterText: "API &gt; Python Bindings" }],
       },
     ],
     socialLinks: [

@@ -108,6 +108,7 @@ Sprocket provides a few options that apply across all subcommands.
 |--------|-----------|--------|---------|-------------|
 | `--color` | `common.color` | `auto`, `always`, `never` | `auto` | Controls output colorization |
 | `-m, --report-mode` | `common.report_mode` | `full`, `one-line` | `full` | Controls diagnostic output format |
+| `--no-ignore` | `common.no_ignore` | Boolean | `false` | Ignore `.sprocketignore` files while discovering WDL documents |
 
 ## Ignoring WDL files and directories
 
@@ -149,4 +150,8 @@ See the [check/lint](/subcommands/check-lint.md) page.
 ## `sprocket dev doc` configuration
 
 See the [doc](/subcommands/doc.md#configuration) page.
+
+## Module configuration
+
+See the [`sprocket dev module`](/subcommands/module.md#configuration) page.
 

@@ -33,6 +33,7 @@ Server mode provides:
 
 The server shares the same execution engine as `sprocket run`, ensuring
 consistent behavior between CLI and server-submitted workflows.
+All evaluations in one server process share backend resource limits and monitoring.
 
 ## Starting the server
 
@@ -68,6 +69,7 @@ allowed_file_paths = ["/path/to/workflows"]
 allowed_urls = ["https://raw.githubusercontent.com/"]
 allowed_origins = ["http://localhost:3000"]
 max_concurrent_runs = 500
+orphan_timeout_minutes = 5
 
 [server.database]
 url = "sqlite://sprocket.db"
@@ -88,6 +90,7 @@ url = "sqlite://sprocket.db"
 | `allowed_origins` | List | `[]` | CORS allowed origins |
 | `max_concurrent_runs` | Integer | None | Maximum concurrent workflow executions |
 | `database.url` | String | None | Database path. When omitted, defaults to `sprocket.db` within the output directory. When provided, relative paths resolve from the current working directory (not the output directory). |
+| `orphan_timeout_minutes` | Integer | `5` | Minutes without a server heartbeat before its active runs are marked `orphaned`; must be at least `1` |
 | `engine` | Object | `{}` | Engine configuration (see execution backends) |
 
 ## Managing runs
