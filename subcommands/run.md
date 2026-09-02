@@ -155,12 +155,17 @@ sprocket run example.wdl --target main name="World" --suffix experiment-1
 This changes the run directory from `out/runs/main/<timestamp>/` to
 `out/runs/main/<timestamp>_experiment-1/`.
 
-The `--index-on` flag takes a path within `<output_dir>/index/` and symlinks the
-run's `outputs.json` along with every output that is a `File`, a `Directory`, or
-an array of them into it, giving results a stable location that does not change
-with each run's timestamp. The path is relative, cannot contain `.` or `..`
-components, and is used verbatim, so group results by a value of your own
-choosing by interpolating that value into the index path in your shell:
+These paths, the `_latest` symlink, and the exact placement of `--suffix` are
+part of the current internal layout and may change without deprecation. The
+documented JSON formats and `--index-on` behavior below are stable from
+executable `1.0`.
+
+The `--index-on` flag takes a path within `<output_dir>/index/` and creates
+entries for the run's `outputs.json` and every output that is a `File`, a
+`Directory`, or an array of them. This gives results a consistent location that
+does not change with each run's timestamp. The path is relative, cannot contain
+`.` or `..` components, and is used verbatim, so group results by a value of
+your own choosing by interpolating that value into the index path in your shell:
 
 ```shell
 sprocket run hello.wdl -t hello --index-on greeting
