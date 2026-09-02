@@ -85,10 +85,12 @@ cargo run --release
 allowing you to use tab completion for commands and arguments.
 
 ::: warning Warning
-The `sprocket` command line tool is currently under active development and is not yet
-considered stable. This means commands, flags, or arguments might change between
-versions. **You will need to regenerate the shell completion script using the
-steps below each time you update `sprocket`**.
+In the current `0.x` release series, commands, flags, or arguments may change
+without advance notice. From executable `1.0`, documented, non-experimental
+command interfaces follow the project's compatibility and deprecation policy.
+See [Project Status](/project-status) for details. Regenerate your shell
+completion script after every upgrade so that new or changed command interfaces
+are included.
 :::
 
 To generate a completion script, use the `completions` subcommand, specifying your shell:
