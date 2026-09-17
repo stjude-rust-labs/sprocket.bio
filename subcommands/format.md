@@ -26,7 +26,7 @@ formatter normalizes those forms:
 
 | Option | Values | Default | Behavior |
 |--------|--------|---------|----------|
-| `quote_style` | `"preserve"`, `"double"`, `"single"` | `"preserve"` | Preserves existing quotes or rewrites string literals to the selected quote style. Use `"double"` to retain the pre-v0.31 behavior. |
+| `quote_style` | `"preserve"`, `"double"`, `"single"` | `"preserve"` | Preserves existing quotes or rewrites string literals to the selected quote style. |
 | `reorder_sections` | Boolean | `false` | Reorders task and workflow sections when enabled. |
 | `upgrade_deprecations` | Boolean | `false` | Converts curly-brace command sections to heredoc sections and dollar-style placeholders to tilde-style placeholders when enabled. |
 
