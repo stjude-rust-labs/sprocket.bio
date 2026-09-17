@@ -34,11 +34,11 @@ except = ["ContainerUri"]
 After an initial document analysis, the language server reuses unchanged
 analysis results as you edit instead of analyzing the whole document again.
 
-## Test code lenses
+## Code lenses
 
-The analyzer provides code lenses for Sprocket test YAML files. Editors that
-support the corresponding Sprocket commands can show actions above a target to
-run all of its tests and above a test name to run that individual test.
+The analyzer provides code lenses that editors can show as actions next to
+relevant WDL and test definitions. In Sprocket test YAML files, these actions
+can run every test under a target or one individual test.
 
 ## Transports
 
