@@ -30,8 +30,7 @@ formatter normalizes those forms:
 | `reorder_sections` | Boolean | `false` | Reorders task and workflow sections when enabled. |
 | `upgrade_deprecations` | Boolean | `false` | Converts curly-brace command sections to heredoc sections and dollar-style placeholders to tilde-style placeholders when enabled. |
 
-For example, this configuration retains the formatter behavior from before
-v0.31:
+For example, this configuration normalizes all three forms:
 
 ```toml
 [format]
