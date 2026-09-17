@@ -403,21 +403,6 @@ Options:
           Print version
 ```
 
-The `-p, --parallelism` option overrides `test.parallelism`, which defaults to
-`50`. Both values must be greater than zero; Sprocket reports an error instead
-of starting the tests when either value is `0`.
-
-Test executions do not retry failed tasks, even when a task declares
-`runtime.maxRetries` or `requirements.maxRetries`.
-
-After the first Ctrl-C starts cancellation, Sprocket waits for executing tests
-to stop. Pressing Ctrl-C again terminates Sprocket immediately. When the Docker
-backend is active, Sprocket warns that running containers will remain and that
-files created by those containers may require elevated privileges to remove.
-
-Editors that support Sprocket's language-server code lenses can provide actions
-in test YAML files for running every test under a target or one individual test.
-
 ### Filtering which tests run
 
 Use `--target` (`-t`) to run only tests whose task or workflow name contains a
