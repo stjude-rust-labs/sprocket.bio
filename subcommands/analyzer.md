@@ -31,9 +31,6 @@ lint = true
 except = ["ContainerUri"]
 ```
 
-The former `[analyzer].except` setting is no longer accepted; move those entries
-to `[check].except`.
-
 After an initial document analysis, the language server reuses unchanged
 analysis results as you edit instead of analyzing the whole document again.
 
