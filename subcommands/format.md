@@ -79,10 +79,3 @@ The formatter automatically adds trailing commas to multiline lists (e.g.,
 `meta`, `parameter_meta`, and `runtime` sections). This is enabled by default
 and can be configured via the `trailing_commas` option in the `[format]`
 section of your `sprocket.toml`.
-
-## Newline style checks
-
-The `newline_style` setting and `--newline-style` flag accept `auto`, `unix`,
-and `windows`. If `sprocket format check` finds that only the newline style
-differs, it reports `incorrect newline style` instead of displaying an empty
-line-by-line diff.
