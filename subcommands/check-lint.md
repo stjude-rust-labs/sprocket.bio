@@ -105,18 +105,6 @@ sprocket lint -e UnusedInput
 
 This also suppresses the `UnusedInput` warning.
 
-### Formatting rules
-
-Quote style and section ordering are formatter settings:
-
-```toml
-[format]
-quote_style = "double"
-reorder_sections = true
-```
-
-Then run `sprocket format check` to enforce the configured style.
-
 ## Baselines
 
 Adopting `sprocket check` on an existing codebase often surfaces a large
