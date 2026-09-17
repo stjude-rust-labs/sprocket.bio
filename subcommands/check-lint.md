@@ -105,13 +105,16 @@ sprocket lint -e UnusedInput
 
 This also suppresses the `UnusedInput` warning.
 
-### Rule changes in v0.31
+### Validation and formatting rules
 
-`DoubleQuotes` and `SectionOrdering` are no longer lint rules. Remove those
-names from `#@ except` directives, `[check].except`, and `-e` options. An unknown
-rule name produces a diagnostic.
+`CommandSectionIndentation`, `DeprecatedObject`, `DeprecatedPlaceholder`,
+`DeprecatedRuntimeSection`, and `ExceptDirectiveValid` are validation rules, so
+they run under `sprocket check` without enabling lint rules.
+`ExceptDirectiveValid` checks that `#@ except` directives are placed where they
+can take effect. The `MetaSections` lint rule accepts documentation supplied
+through WDL doc comments.
 
-Use formatter configuration for the equivalent checks:
+Quote style and section ordering are formatter settings:
 
 ```toml
 [format]
@@ -120,13 +123,6 @@ reorder_sections = true
 ```
 
 Then run `sprocket format check` to enforce the configured style.
-
-`CommandSectionIndentation`, `DeprecatedObject`, `DeprecatedPlaceholder`,
-`DeprecatedRuntimeSection`, and `ExceptDirectiveValid` are now validation
-rules, so they run under `sprocket check` without enabling lint rules.
-`ExceptDirectiveValid` checks that `#@ except` directives are placed where they
-can take effect. The `MetaSections` lint rule also accepts documentation
-supplied through WDL doc comments.
 
 ## Baselines
 
