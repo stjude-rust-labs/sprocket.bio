@@ -295,10 +295,13 @@ build_bwa_db:
 ## Running unit tests
 
 ```text
+Runs unit tests for a WDL workspace
+
 Usage: sprocket dev test [OPTIONS] [SOURCE] [COMMAND]
 
 Commands:
   schema  Print the JSON schema for Sprocket test definition YAMLs to stdout
+  help    Print this message or the help of the given subcommand(s)
 
 Arguments:
   [SOURCE]
@@ -310,7 +313,7 @@ Options:
   -w, --workspace <WORKSPACE>
           Root of the workspace where the `test/` directory will be located. Test fixtures will be loaded from `<workspace>/test/fixtures/` if it is present.
 
-          If a `<workspace>/test/` directory does not exist, one will be created and it will contain a `runs/` directory for test executions.
+          If a `<workspace>/test/` directory does not exist, one will be created and it will contain a `runs/` directory for test executions, unless otherwise specified.
 
           If not specified and the `source` argument is a directory, it's assumed that directory is also the workspace. This can be specified in addition to a source directory if they are different.
 
@@ -358,6 +361,46 @@ Options:
 
       --no-status
           Do not print results as tests complete
+
+  -v, --verbose...
+          Increase logging verbosity
+
+  -m, --report-mode <MODE>
+          The report mode for any emitted diagnostics
+
+          Possible values:
+          - full:     Prints diagnostics as multiple lines
+          - one-line: Prints diagnostics as one line
+
+  -q, --quiet...
+          Decrease logging verbosity
+
+      --no-ignore
+          Ignore `.sprocketignore` files while discovering WDL documents
+
+      --color <COLOR>
+          Controls output colorization
+
+          Possible values:
+          - auto:   Automatically colorize output depending on output device
+          - always: Always colorize output
+          - never:  Never colorize output
+
+          [default: auto]
+
+  -c, --config <CONFIG>
+          Path to the configuration file
+
+  -s, --skip-config-search
+          Skip searching for and loading configuration files.
+
+          Only a configuration file specified as a command line argument will be used.
+
+  -h, --help
+          Print help (see a summary with '-h')
+
+  -V, --version
+          Print version
 ```
 
 ### Filtering which tests run

@@ -6,12 +6,38 @@ When running `sprocket format`, you must choose whether you want to `check`
 the files (useful for continuous integration), `overwrite` the files with their
 formatted versions, or `view` a single formatted document on STDOUT.
 
-There are a number of options for formatting that can be configured: either via
-`format` key in your `sprocket.toml` (see the `FormatConfig` struct in [the
-configuration source
-code](https://github.com/stjude-rust-labs/sprocket/blob/main/src/config.rs) for
-a full list of options) or via the various command line flags made available on
-the subcommand.
+Formatting can be configured through the `[format]` table in `sprocket.toml` or
+through the command-line flags shown by `sprocket format --help`. See the
+[`wdl-format` configuration
+source](https://github.com/stjude-rust-labs/sprocket/blob/main/crates/wdl-format/src/config.rs)
+for the complete list of settings.
+
+## Line fitting
+
+The formatter keeps short literal arrays, `if`/`then`/`else` expressions, and
+symbolic import clauses on one line when they fit within `max_line_length`.
+Longer expressions and clauses are split across lines.
+
+## Preserving source style
+
+Sprocket preserves quote style, task and workflow section order, and deprecated
+command or placeholder syntax by default. These settings control whether the
+formatter normalizes those forms:
+
+| Option | Values | Default | Behavior |
+|--------|--------|---------|----------|
+| `quote_style` | `"preserve"`, `"double"`, `"single"` | `"preserve"` | Preserves existing quotes or rewrites string literals to the selected quote style. |
+| `reorder_sections` | Boolean | `false` | Reorders task and workflow sections when enabled. |
+| `upgrade_deprecations` | Boolean | `false` | Converts curly-brace command sections to heredoc sections and dollar-style placeholders to tilde-style placeholders when enabled. |
+
+For example, this configuration normalizes all three forms:
+
+```toml
+[format]
+quote_style = "double"
+reorder_sections = true
+upgrade_deprecations = true
+```
 
 ## Input formatting
 
