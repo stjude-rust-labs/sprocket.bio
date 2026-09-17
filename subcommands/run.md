@@ -51,7 +51,9 @@ sprocket run example.wdl @hello_defaults.json main.name="Ari"
 >
 > The `@` prefix for input files is required. This follows the convention used
 > by tools such as `curl`, and it disambiguates input files from bare array
-> values (see [Array inputs](#array-inputs) below).
+> values (see [Array inputs](#array-inputs) below). If a bare input looks like a
+> JSON or YAML file, Sprocket reports the missing `@` prefix instead of an array
+> type mismatch.
 
 ### Array inputs
 
@@ -130,6 +132,19 @@ This produces the following output.
 }
 ```
 
+## Retries
+
+A task can request retries through `runtime.maxRetries` or
+`requirements.maxRetries`. The `run.task.retries` configuration setting
+provides the default when a task does not specify one.
+
+Pass `--disable-retries` to disable retries for every task in one run. This flag
+takes precedence over both `run.task.retries` and a task's `maxRetries` value.
+Setting `run.task.retries = 0` only changes the default; a task can still
+request retries. See the
+[configuration guide](/configuration/overview#task-retries) for the accepted
+configuration values and the equivalent server setting.
+
 ## Output directory
 
 By default, `sprocket run` writes all execution artifacts to `./out`. This can
@@ -169,3 +184,15 @@ sprocket run hello.wdl -t hello --index-on greeting
 For full details on the output directory structure, provenance database, and
 output indexing, see the
 [Provenance Tracking](/concepts/provenance) documentation.
+
+## Interrupting a run
+
+With the default `run.fail = "slow"` setting, the first Ctrl-C waits for
+executing tasks to complete. A second Ctrl-C asks those tasks to cancel, and a
+third terminates Sprocket immediately. When the Docker backend is active,
+Sprocket warns on the second Ctrl-C that running containers will remain and
+that files created by those containers may require elevated privileges to
+remove.
+
+Set `run.fail = "fast"` to skip the completion wait. In that mode, the first
+Ctrl-C starts task cancellation and the second terminates Sprocket.

@@ -26,35 +26,41 @@ essentially an alias for `sprocket check -l`.
 
 ## Exceptions
 
-Lint exceptions allow for individual lint rules to be ignored in certain contexts.
+Diagnostic exceptions allow individual validation or lint rules to be ignored
+in certain contexts.
 
 Given the following WDL document:
 
 ```wdl
 version 1.1
 
-workflow ThisIsNotSnakeCase {
-  String single_quoted_string = 'this string uses single quotes'
+workflow example {
+  input {
+    String unused_input
+  }
 }
 ```
 
-The `DoubleQuotes` and `SnakeCase` rules would trigger.
+The `UnusedInput` rule reports `unused_input`.
 
-There are multiple ways to add exceptions for these rules.
+There are multiple ways to add an exception for this rule.
 
 ### Source Comments
 
-Exception comments come in the form `#@ except: <RULES>`, where `RULES` is a comma-separated list of lint rules.
+Exception comments use `#@ except: <RULES>`, where `RULES` is a comma-separated
+list of rule IDs.
 
 The comments can either be applied to the entire document:
 
 ```wdl
-#@ except: DoubleQuotes, SnakeCase
+#@ except: UnusedInput
 
 version 1.1
 
-workflow ThisIsNotSnakeCase {
-  String single_quoted_string = 'this string uses single quotes'
+workflow example {
+  input {
+    String unused_input
+  }
 }
 ```
 
@@ -63,14 +69,15 @@ Or on individual items:
 ```wdl
 version 1.1
 
-#@ except: SnakeCase
-workflow ThisIsNotSnakeCase {
-  #@ except: DoubleQuotes
-  String single_quoted_string = 'this string uses single quotes'
+#@ except: UnusedInput
+workflow example {
+  input {
+    String unused_input
+  }
 }
 ```
 
-Running `sprocket lint` with either of these configurations will emit no warnings.
+Running `sprocket lint` with either form suppresses the `UnusedInput` warning.
 
 ### `sprocket.toml`
 
@@ -80,10 +87,11 @@ For example:
 
 ```toml
 [check]
-except = ["DoubleQuotes", "SnakeCase"]
+except = ["UnusedInput"]
 ```
 
-Running `sprocket lint` with this configuration will emit no warnings.
+Running `sprocket lint` with this configuration suppresses the `UnusedInput`
+warning.
 
 ### CLI Arguments
 
@@ -92,10 +100,33 @@ Exceptions can also be specified from the command line with the `-e` argument.
 For example, running:
 
 ```bash
-sprocket lint -e DoubleQuotes -e SnakeCase
+sprocket lint -e UnusedInput
 ```
 
-Will emit no warnings.
+This also suppresses the `UnusedInput` warning.
+
+### Rule changes in v0.31
+
+`DoubleQuotes` and `SectionOrdering` are no longer lint rules. Remove those
+names from `#@ except` directives, `[check].except`, and `-e` options. An unknown
+rule name produces a diagnostic.
+
+Use formatter configuration for the equivalent checks:
+
+```toml
+[format]
+quote_style = "double"
+reorder_sections = true
+```
+
+Then run `sprocket format check` to enforce the configured style.
+
+`CommandSectionIndentation`, `DeprecatedObject`, `DeprecatedPlaceholder`,
+`DeprecatedRuntimeSection`, and `ExceptDirectiveValid` are now validation
+rules, so they run under `sprocket check` without enabling lint rules.
+`ExceptDirectiveValid` checks that `#@ except` directives are placed where they
+can take effect. The `MetaSections` lint rule also accepts documentation
+supplied through WDL doc comments.
 
 ## Baselines
 

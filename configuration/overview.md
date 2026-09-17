@@ -147,6 +147,52 @@ memory_limit_behavior = "try_with_max"
 
 See the [check/lint](/subcommands/check-lint.md) page.
 
+## Task retries
+
+The `retries` setting supplies the default maximum number of retries for failed
+tasks. A task's `runtime.maxRetries` or `requirements.maxRetries` value
+overrides an integer default:
+
+```toml
+[run.task]
+retries = 2
+
+[server.engine.task]
+retries = 2
+```
+
+Use `"default"` for Sprocket's default or an integer from `0` through `99`.
+Setting the value to `0` does not override retries requested by a task. For a
+single local run, `sprocket run --disable-retries` disables all retries and
+overrides both the configuration and the task's `maxRetries` value.
+
+## Evaluation cache capacities
+
+Sprocket bounds several in-memory least-recently-used (LRU) caches. Every
+capacity defaults to `1000` and must be greater than zero.
+
+| Run setting | Server setting | Cached value and scope |
+|-------------|----------------|------------------------|
+| `run.digest_cache_capacity` | `server.engine.digest_cache_capacity` | File and directory digests calculated during one evaluation. |
+| `run.choice_cache_capacity` | `server.engine.choice_cache_capacity` | Enum choices created during one evaluation. |
+| `run.regex_cache_capacity` | `server.engine.regex_cache_capacity` | Compiled regular expressions used during one evaluation. |
+| `run.http.response_cache_capacity` | `server.engine.http.response_cache_capacity` | Responses cached for each HTTP operation during evaluation. |
+
+For example:
+
+```toml
+[run]
+digest_cache_capacity = 2000
+choice_cache_capacity = 2000
+regex_cache_capacity = 2000
+
+[run.http]
+response_cache_capacity = 2000
+```
+
+These settings do not affect the persistent HTTP download cache or Sprocket's
+[call cache](/configuration/cache).
+
 ## `sprocket dev doc` configuration
 
 See the [doc](/subcommands/doc.md#configuration) page.
@@ -154,4 +200,3 @@ See the [doc](/subcommands/doc.md#configuration) page.
 ## Module configuration
 
 See the [`sprocket dev module`](/subcommands/module.md#configuration) page.
-

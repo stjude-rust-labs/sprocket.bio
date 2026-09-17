@@ -20,6 +20,29 @@ editor) matches the output of [`sprocket format`](/subcommands/format). See the
 [configuration guide](/configuration/overview.md) for the available `[format]`
 options.
 
+Set `lint = true` under `[analyzer]` to enable lint rules. The analyzer and
+`sprocket check` share diagnostic exceptions from `[check].except`:
+
+```toml
+[analyzer]
+lint = true
+
+[check]
+except = ["ContainerUri"]
+```
+
+The former `[analyzer].except` setting is no longer accepted; move those entries
+to `[check].except`.
+
+After an initial document analysis, the language server reuses unchanged
+analysis results as you edit instead of analyzing the whole document again.
+
+## Test code lenses
+
+The analyzer provides code lenses for Sprocket test YAML files. Editors that
+support the corresponding Sprocket commands can show actions above a target to
+run all of its tests and above a test name to run that individual test.
+
 ## Transports
 
 At the time of writing, `sprocket analyzer` only supports the standard I/O
