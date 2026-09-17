@@ -105,14 +105,7 @@ sprocket lint -e UnusedInput
 
 This also suppresses the `UnusedInput` warning.
 
-### Validation and formatting rules
-
-`CommandSectionIndentation`, `DeprecatedObject`, `DeprecatedPlaceholder`,
-`DeprecatedRuntimeSection`, and `ExceptDirectiveValid` are validation rules, so
-they run under `sprocket check` without enabling lint rules.
-`ExceptDirectiveValid` checks that `#@ except` directives are placed where they
-can take effect. The `MetaSections` lint rule accepts documentation supplied
-through WDL doc comments.
+### Formatting rules
 
 Quote style and section ordering are formatter settings:
 
