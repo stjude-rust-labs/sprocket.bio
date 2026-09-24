@@ -1,10 +1,17 @@
-# Quickstart Checklist
+# Checklist
 
 This page is for people new to the Sprocket project who want to understand how
 to adopt it on their own project. Work through the items below to get your
 development environment, CI pipeline, and workflow execution set up.
 
 ## Development environment
+
+- [ ] **Learn WDL (if needed).** If you're new to the Workflow Description
+  Language, the OpenWDL
+  [Getting started](https://openwdl.org/docs/start/overview/) tutorial is a
+  fast-paced introduction to the language. For an in-depth course on building,
+  testing, and releasing production pipelines, see the
+  [Production guide](https://openwdl.org/docs/production/getting-started/).
 
 - [ ] **Install Sprocket.** Get the `sprocket` CLI on your machine via
   Homebrew, direct download, or from source. See the

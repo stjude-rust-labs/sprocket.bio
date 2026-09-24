@@ -9,6 +9,21 @@ document](/guided-tour/example.wdl){target="_self" download="example.wdl"} that
 has been specifically crafted for this walkthrough. Further, if you have not
 already, please follow [this guide](./installation.md) to install Sprocket.
 
+::: tip New to WDL?
+
+This guide assumes some familiarity with WDL. If you're just getting started,
+the OpenWDL project maintains two tutorials:
+
+- [Getting started](https://openwdl.org/docs/start/overview/) is a fast-paced
+  introduction that walks you through your first workflow and the core language
+  concepts.
+- [Production guide](https://openwdl.org/docs/production/getting-started/) is
+  an in-depth course that takes you from an empty directory to a tested,
+  released pipeline—covering Git, containers, testing, and CI along the way. No
+  prior WDL experience is needed.
+
+:::
+
 ## Ensuring high-quality code
 
 Using automation to ensure high-quality code both during development and through
