@@ -1,3 +1,7 @@
+---
+description: "Submit a WDL task or workflow to a running Sprocket server for remote execution with the sprocket dev server submit command."
+---
+
 # `sprocket dev server submit`
 
 > [!CAUTION]

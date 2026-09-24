@@ -1,3 +1,7 @@
+---
+description: "The current stability of Sprocket's commands and features, its release cadence, and how to upgrade between versions."
+---
+
 # Project Status
 
 Sprocket remains a pre-1.0 project, and as such, any part of its interface is

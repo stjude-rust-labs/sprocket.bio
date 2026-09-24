@@ -1,3 +1,7 @@
+---
+description: "An end-to-end guide to installing, configuring, and running Sprocket WDL workflows on an IBM Spectrum LSF cluster with Apptainer."
+---
+
 # Running Sprocket on an LSF cluster
 
 Sprocket is a workflow execution engine for the [Workflow Description

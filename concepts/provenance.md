@@ -1,3 +1,7 @@
+---
+description: "How Sprocket records every workflow run in a SQLite database and organizes outputs on disk so you can trace and reproduce your results."
+---
+
 # Provenance Tracking
 
 Sprocket automatically tracks all workflow executions in a SQLite database while

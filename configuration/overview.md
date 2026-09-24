@@ -1,3 +1,7 @@
+---
+description: "How Sprocket loads, merges, and resolves configuration files, plus options for linting, task retries, resource overrides, and caching."
+---
+
 # Configuration
 
 Sprocket has a number of facilities for including, excluding, initializing, and

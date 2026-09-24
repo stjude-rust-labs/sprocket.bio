@@ -1,3 +1,8 @@
+---
+title: Overview
+description: "Sprocket is a high-performance bioinformatics workflow engine built on WDL, with modern developer tools and a community-focused, open-source codebase."
+---
+
 ![Sprocket, by St. Jude Rust Labs](/repo-header.png)
 
 **Sprocket** is a bioinformatics workflow execution engine built on top of the

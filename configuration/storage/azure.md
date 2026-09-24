@@ -1,3 +1,7 @@
+---
+description: "Configure Sprocket to transfer workflow inputs and outputs to and from Azure Blob Storage."
+---
+
 # Azure Blob Storage
 
 Sprocket supports transferring files to and from [Azure Blob Storage](https://azure.microsoft.com/en-us/products/storage/blobs).

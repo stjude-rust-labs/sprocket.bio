@@ -1,3 +1,7 @@
+---
+description: "Sprocket reads and writes workflow files directly from Azure Blob Storage, Amazon S3, and Google Cloud Storage."
+---
+
 # Cloud Storage
 
 Sprocket has built-in support for transferring files to and from the following

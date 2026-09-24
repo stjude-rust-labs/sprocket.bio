@@ -1,3 +1,7 @@
+---
+description: "Render rich HTML documentation for a WDL workspace with the experimental sprocket dev doc command, and the conventions it uses."
+---
+
 # `sprocket dev doc`
 
 > [!CAUTION]

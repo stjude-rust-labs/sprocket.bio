@@ -1,3 +1,7 @@
+---
+description: "Configure Sprocket's HPC backend to run WDL tasks on an IBM Spectrum LSF cluster using Apptainer containers."
+---
+
 # LSF + Apptainer backend
 
 Sprocket contains a High-Performance Computing (HPC) backend targeting 

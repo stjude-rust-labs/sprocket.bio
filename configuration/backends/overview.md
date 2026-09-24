@@ -1,3 +1,7 @@
+---
+description: "Choose where Sprocket runs your WDL tasks: locally with Docker, on a TES server, or on an HPC cluster with LSF or Slurm and Apptainer."
+---
+
 # Execution Backends
 
 Sprocket evaluates a workflow locally and decomposes it into tasks. Sprocket dispatches

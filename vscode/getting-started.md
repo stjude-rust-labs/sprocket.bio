@@ -1,3 +1,8 @@
+---
+title: Visual Studio Code
+description: "Install the Sprocket extension for Visual Studio Code for WDL syntax highlighting, code snippets, and diagnostics from static analysis."
+---
+
 # Getting Started
 
 Sprocket provides an extension for the popular [Visual Studio

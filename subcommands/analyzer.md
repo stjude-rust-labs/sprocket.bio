@@ -1,3 +1,7 @@
+---
+description: "Run Sprocket's WDL language server (LSP) to power go to definition, diagnostics, completions, and more in your editor."
+---
+
 # `sprocket analyzer`
 
 The `analyzer` subcommand runs the [language server protocol (LSP)][lsp] server

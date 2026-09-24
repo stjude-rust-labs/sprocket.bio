@@ -1,3 +1,7 @@
+---
+description: "A hands-on tour of linting, validating, and running WDL with Sprocket, including editor integration, CI, and input templates."
+---
+
 # Guided Tour
 
 In this guide, we'll cover how to write, verify, and run WDL documents using

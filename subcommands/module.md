@@ -1,3 +1,7 @@
+---
+description: "Create, resolve, verify, sign, and inspect reusable WDL modules with the experimental sprocket dev module command."
+---
+
 # `sprocket dev module`
 
 > [!CAUTION]

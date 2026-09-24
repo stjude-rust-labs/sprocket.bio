@@ -1,3 +1,7 @@
+---
+description: "Validate WDL documents and report lint warnings with the sprocket check and sprocket lint commands, locally or in CI."
+---
+
 # `sprocket check` and `sprocket lint`
 
 The `check` and `lint` subcommands allow you to check a WDL file or set of WDL

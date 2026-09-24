@@ -1,3 +1,7 @@
+---
+description: "Automatically format WDL documents in a consistent style with the sprocket format command."
+---
+
 # `sprocket format`
 
 The `format` subcommand provides automated formatting of WDL documents.

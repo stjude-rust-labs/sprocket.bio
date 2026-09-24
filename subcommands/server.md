@@ -1,3 +1,7 @@
+---
+description: "Run Sprocket as an HTTP server to submit and monitor WDL workflows remotely through a REST API with sprocket dev server."
+---
+
 # `sprocket dev server`
 
 > [!CAUTION]

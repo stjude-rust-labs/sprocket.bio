@@ -1,3 +1,7 @@
+---
+description: "A step-by-step checklist for adopting Sprocket on your project: set up your editor, CI pipeline, and workflow execution environment."
+---
+
 # Checklist
 
 This page is for people new to the Sprocket project who want to understand how

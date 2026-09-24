@@ -1,3 +1,7 @@
+---
+description: "An end-to-end guide to installing, configuring, and running Sprocket WDL workflows on a Slurm cluster with Apptainer."
+---
+
 # Running Sprocket on a Slurm cluster
 
 Sprocket is a workflow execution engine for the [Workflow Description

@@ -1,0 +1,145 @@
+<!doctype html>
+<!-- Source for public/og-image.png. Regenerate with `pnpm og:image`. -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <style>
+    @font-face {
+      font-family: 'Karelia';
+      src: url('../../public/fonts/Karelia-Bold.otf') format('opentype');
+      font-weight: 700;
+    }
+
+    @font-face {
+      font-family: 'Karelia';
+      src: url('../../public/fonts/Karelia-Medium.otf') format('opentype');
+      font-weight: 500;
+    }
+
+    @font-face {
+      font-family: 'Inter';
+      src: url('../../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2') format('woff2');
+      font-weight: 100 900;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+    }
+
+    html,
+    body {
+      width: 1200px;
+      height: 630px;
+      overflow: hidden;
+    }
+
+    body {
+      position: relative;
+      background:
+        radial-gradient(60% 80% at 100% 0%, rgba(93, 21, 227, 0.32), transparent 70%),
+        radial-gradient(50% 60% at 0% 100%, rgba(40, 91, 214, 0.14), transparent 70%),
+        #070a19;
+      color: #ffffff;
+      font-family: 'Karelia', sans-serif;
+    }
+
+    .arcs {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 640px;
+      height: 640px;
+      opacity: 0.55;
+    }
+
+    .content {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      padding: 64px 80px 56px;
+    }
+
+    .logo {
+      height: 56px;
+      width: auto;
+      align-self: flex-start;
+    }
+
+    .title {
+      margin-top: auto;
+      font-weight: 700;
+      font-size: 80px;
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+
+    .wordmark {
+      background: linear-gradient(90deg, #e59cff, #ba9cff, #9cb2ff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .subtitle {
+      margin-top: 24px;
+      max-width: 36ch;
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+      font-size: 27px;
+      line-height: 1.35;
+      color: #a1a8c4;
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 40px;
+      padding-top: 22px;
+      border-top: 1px solid rgba(161, 168, 196, 0.18);
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 22px;
+      color: #d3d6e3;
+    }
+
+    .footer__org {
+      color: #7780a3;
+    }
+  </style>
+</head>
+<body>
+  <svg class="arcs" viewBox="0 0 600 600" aria-hidden="true">
+    <defs>
+      <linearGradient id="arc" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#e59cff" />
+        <stop offset="55%" stop-color="#ba9cff" />
+        <stop offset="100%" stop-color="#9cb2ff" />
+      </linearGradient>
+    </defs>
+    <g fill="none" stroke="url(#arc)" stroke-width="1.2">
+      <circle cx="600" cy="0" r="224" />
+      <circle cx="600" cy="0" r="268" />
+      <circle cx="600" cy="0" r="312" />
+      <circle cx="600" cy="0" r="356" />
+      <circle cx="600" cy="0" r="400" />
+      <circle cx="600" cy="0" r="444" />
+      <circle cx="600" cy="0" r="488" />
+      <circle cx="600" cy="0" r="532" />
+      <circle cx="600" cy="0" r="576" />
+    </g>
+  </svg>
+
+  <main class="content">
+    <img class="logo" src="../../public/sprocket-logo-dark.png" alt="Sprocket">
+    <h1 class="title">The Bioinformatics<br><span class="wordmark">Workflow Engine.</span></h1>
+    <p class="subtitle">Open source and built on WDL. Run locally, then scale to HPC or the cloud.</p>
+    <div class="footer">
+      <span>sprocket.bio</span>
+      <span class="footer__org">St. Jude Rust Labs</span>
+    </div>
+  </main>
+</body>
+</html>

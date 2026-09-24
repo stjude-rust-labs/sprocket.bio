@@ -1,3 +1,7 @@
+---
+description: "Speed up reruns with Sprocket's call cache, which reuses task results when a task is called again with the same inputs."
+---
+
 # Call Cache
 
 Sprocket has support for caching task execution results for later reuse when a

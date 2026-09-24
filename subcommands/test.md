@@ -1,3 +1,7 @@
+---
+description: "Write YAML unit tests for WDL tasks and workflows and run them with Sprocket's experimental sprocket dev test framework."
+---
+
 # `sprocket dev test`
 
 > [!CAUTION]

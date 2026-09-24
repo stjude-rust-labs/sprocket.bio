@@ -1,3 +1,7 @@
+---
+description: "Record the manifest checksums of the container images used by your WDL tasks in a sprocket.lock file with the experimental sprocket dev lock command."
+---
+
 # `sprocket dev lock`
 
 > [!CAUTION]

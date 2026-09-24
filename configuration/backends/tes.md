@@ -1,3 +1,7 @@
+---
+description: "Configure Sprocket to submit WDL tasks to a remote GA4GH Task Execution Service (TES) server."
+---
+
 # Task Execution Service (TES) Backend
 
 The [Task Execution Service (TES)](https://www.ga4gh.org/product/task-execution-service-tes/)

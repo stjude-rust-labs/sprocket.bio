@@ -1,3 +1,7 @@
+---
+description: "Configure Sprocket's Docker backend to run WDL tasks in containers on a local Docker daemon."
+---
+
 # Docker Execution Backend
 
 The Docker execution backend submits tasks to a local Docker daemon.

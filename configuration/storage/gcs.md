@@ -1,3 +1,7 @@
+---
+description: "Configure Sprocket to transfer workflow inputs and outputs to and from Google Cloud Storage."
+---
+
 # Google Cloud Storage
 
 Sprocket supports transferring files to and from [Google Cloud Storage](https://cloud.google.com/storage).

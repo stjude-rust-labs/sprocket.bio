@@ -1,3 +1,7 @@
+---
+description: "Generate a template input JSON file for any WDL task or workflow with the sprocket inputs command."
+---
+
 # `sprocket inputs`
 
 The `inputs` subcommand generates a template input JSON file for a given task or

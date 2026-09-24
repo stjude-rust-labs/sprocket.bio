@@ -1,3 +1,7 @@
+---
+description: "Initialize and inspect Sprocket configuration with the sprocket config command."
+---
+
 # `sprocket config`
 
 Sprocket has a number of configuration options that can be initialized or

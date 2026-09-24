@@ -1,3 +1,7 @@
+---
+description: "Configure Sprocket's HPC backend to run WDL tasks on a Slurm cluster using Apptainer containers."
+---
+
 # Slurm + Apptainer backend
 
 Sprocket contains a High-Performance Computing (HPC) backend targeting 

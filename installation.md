@@ -1,3 +1,7 @@
+---
+description: "Install Sprocket with Homebrew, a pre-built release binary, or a Docker image, or build it from source with Cargo or Nix."
+---
+
 # Installation
 
 If you're looking for the latest stable version of the `sprocket` command line

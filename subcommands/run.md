@@ -1,3 +1,7 @@
+---
+description: "Run WDL tasks and workflows with sprocket run: targets, inputs, execution backends, retries, and output directories."
+---
+
 # `sprocket run`
 
 Individual tasks and workflows can be run with the `sprocket run` subcommand. We

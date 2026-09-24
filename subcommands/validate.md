@@ -1,3 +1,7 @@
+---
+description: "Check that a set of inputs satisfies a WDL task or workflow before running it with the sprocket validate command."
+---
+
 # `sprocket validate`
 
 The `validate` subcommand allows you to validate that a set of inputs satisfies

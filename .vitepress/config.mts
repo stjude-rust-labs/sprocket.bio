@@ -8,10 +8,97 @@ const sprocketVersion = "0.31.0";
 
 const grammarUrl = "https://raw.githubusercontent.com/stjude-rust-labs/sprocket-vscode/refs/heads/main/syntaxes/wdl.tmGrammar.json";
 
+const siteUrl = "https://sprocket.bio";
+const siteDescription =
+  "Sprocket is an open-source bioinformatics workflow engine built on the Workflow Description Language (WDL). Run locally, then scale to HPC or the cloud.";
+
+// The social preview image. Regenerate it with `pnpm og:image`.
+const ogImage = {
+  url: `${siteUrl}/og-image.png`,
+  width: "1200",
+  height: "630",
+  alt: "Sprocket: The Bioinformatics Workflow Engine. Open source and built on WDL.",
+};
+
+// Maps a page's source path to its public, extensionless URL.
+function pageUrl(page: string) {
+  const path = page.replace(/(^|\/)index\.md$/, "$1").replace(/\.md$/, "");
+  return `${siteUrl}/${path}`;
+}
+
+const softwareJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "Sprocket",
+  description: siteDescription,
+  url: siteUrl,
+  image: ogImage.url,
+  applicationCategory: "DeveloperApplication",
+  operatingSystem: "macOS, Linux, Windows",
+  softwareVersion: sprocketVersion,
+  license: [
+    "https://github.com/stjude-rust-labs/sprocket/blob/main/LICENSE-APACHE",
+    "https://github.com/stjude-rust-labs/sprocket/blob/main/LICENSE-MIT",
+  ],
+  sameAs: ["https://github.com/stjude-rust-labs/sprocket"],
+  author: {
+    "@type": "Organization",
+    name: "St. Jude Rust Labs",
+    url: "https://github.com/stjude-rust-labs",
+    parentOrganization: {
+      "@type": "Organization",
+      name: "St. Jude Children's Research Hospital",
+      url: "https://www.stjude.org",
+    },
+  },
+};
+
 export default defineConfigWithTheme<SprocketThemeConfig>({
   title: "Sprocket | St. Jude Rust Labs",
-  description:
-    "A bioinformatics workflow engine built on top of the Workflow Description Language (WDL)",
+  description: siteDescription,
+  srcExclude: ["RELEASE.md"],
+  head: [
+    ["link", { rel: "icon", type: "image/png", href: "/favicon.png" }],
+    ["link", { rel: "apple-touch-icon", href: "/apple-touch-icon.png" }],
+    ["meta", { name: "theme-color", content: "#070a19" }],
+    ["meta", { property: "og:type", content: "website" }],
+    ["meta", { property: "og:site_name", content: "Sprocket" }],
+    ["meta", { property: "og:locale", content: "en_US" }],
+    ["meta", { property: "og:image", content: ogImage.url }],
+    ["meta", { property: "og:image:type", content: "image/png" }],
+    ["meta", { property: "og:image:width", content: ogImage.width }],
+    ["meta", { property: "og:image:height", content: ogImage.height }],
+    ["meta", { property: "og:image:alt", content: ogImage.alt }],
+    ["meta", { name: "twitter:card", content: "summary_large_image" }],
+    ["meta", { name: "twitter:image", content: ogImage.url }],
+    ["meta", { name: "twitter:image:alt", content: ogImage.alt }],
+  ],
+  transformHead({ page, title, description }) {
+    // VitePress emits the description unescaped, so it is set here instead.
+    const head: [string, Record<string, string>, string?][] = [
+      ["meta", { name: "description", content: description }],
+      ["meta", { property: "og:title", content: title }],
+      ["meta", { property: "og:description", content: description }],
+      ["meta", { name: "twitter:title", content: title }],
+      ["meta", { name: "twitter:description", content: description }],
+    ];
+    if (page === "404.md") return head;
+
+    const url = pageUrl(page);
+    head.push(
+      ["link", { rel: "canonical", href: url }],
+      ["meta", { property: "og:url", content: url }],
+    );
+    if (page === "index.md") {
+      head.push(["script", { type: "application/ld+json" }, JSON.stringify(softwareJsonLd)]);
+    }
+    return head;
+  },
+  sitemap: {
+    hostname: siteUrl,
+    // Match the extensionless canonical URLs.
+    transformItems: (items) => items.map((item) => ({ ...item, url: item.url.replace(/\.html$/, "") })),
+  },
   themeConfig: {
     sprocketVersion,
     nav: [
