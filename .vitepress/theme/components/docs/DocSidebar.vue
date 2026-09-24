@@ -2,7 +2,7 @@
 import { nextTick, ref, watch } from 'vue'
 import { useSidebar } from '../../composables/useSidebar'
 import SidebarGroup from './SidebarGroup.vue'
-import Icon from '../Icon.vue'
+import { XMarkIcon } from '@heroicons/vue/24/outline'
 
 const props = defineProps<{ open: boolean }>()
 const emit = defineEmits<{ close: [] }>()
@@ -47,7 +47,7 @@ watch(() => props.open, async (open) => {
       <span class="doc-sidebar__head-title">Documentation</span>
       <button ref="closeButton" type="button" class="doc-sidebar__close" aria-label="Close navigation"
         @click="emit('close')">
-        <Icon name="close" />
+        <XMarkIcon class="sp-icon-20" />
       </button>
     </div>
     <nav class="doc-sidebar__nav" aria-label="Documentation">

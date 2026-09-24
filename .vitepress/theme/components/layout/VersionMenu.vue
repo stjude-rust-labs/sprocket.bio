@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref, useId } from 'vue'
 import type { NavItem } from '../../types'
-import Icon from '../Icon.vue'
+import { ArrowTopRightOnSquareIcon, ChevronDownIcon } from '@heroicons/vue/24/outline'
 
 const props = defineProps<{ item: NavItem }>()
 
@@ -39,13 +39,13 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocumentClick))
     <button ref="button" type="button" class="version-menu__button" :aria-expanded="open" :aria-controls="menuId"
       @click="open = !open">
       {{ props.item.text }}
-      <Icon name="chevron-down" :size="14" class="version-menu__chevron" />
+      <ChevronDownIcon class="sp-icon-14 version-menu__chevron" />
     </button>
     <ul v-show="open" :id="menuId" class="version-menu__list">
       <li v-for="child in props.item.items" :key="child.link">
         <a :href="child.link" class="version-menu__link" target="_blank" rel="noreferrer" @click="close()">
           {{ child.text }}
-          <Icon name="external" :size="14" />
+          <ArrowTopRightOnSquareIcon class="sp-icon-14" />
         </a>
       </li>
     </ul>

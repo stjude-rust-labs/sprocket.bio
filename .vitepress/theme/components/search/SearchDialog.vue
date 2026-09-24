@@ -3,7 +3,7 @@ import { computed, nextTick, ref, shallowRef, watch } from 'vue'
 import { useRouter, withBase } from 'vitepress'
 import type MiniSearch from 'minisearch'
 import { useSidebar } from '../../composables/useSidebar'
-import Icon from '../Icon.vue'
+import { ArrowTurnDownLeftIcon, DocumentIcon, HashtagIcon, MagnifyingGlassIcon } from '@heroicons/vue/24/outline'
 
 interface Result {
   id: string
@@ -98,7 +98,7 @@ function onBackdropClick(event: MouseEvent) {
     @cancel.prevent="emit('close')" @click="onBackdropClick">
     <div class="search__panel">
       <div class="search__field">
-        <Icon name="search" :size="20" class="search__icon" />
+        <MagnifyingGlassIcon class="sp-icon-20 search__icon" />
         <input ref="input" v-model="query" type="search" class="search__input" placeholder="Search the docs"
           role="combobox" aria-label="Search the docs" aria-autocomplete="list" aria-controls="sp-search-results"
           :aria-expanded="results.length > 0"
@@ -114,12 +114,12 @@ function onBackdropClick(event: MouseEvent) {
         aria-label="Results">
         <li v-for="(result, i) in results" :id="`sp-search-result-${i}`" :key="result.id" role="option"
           class="search__result" :aria-selected="i === selected" @click="go(result)" @mousemove="selected = i">
-          <Icon :name="result.id.includes('#') ? 'hash' : 'document'" :size="18" class="search__result-icon" />
+          <component :is="result.id.includes('#') ? HashtagIcon : DocumentIcon" class="sp-icon-18 search__result-icon" />
           <span class="search__result-text">
             <span v-if="result.titles.length" class="search__crumb">{{ result.titles.join(' › ') }}</span>
             <span class="search__title">{{ result.title }}</span>
           </span>
-          <Icon name="enter" :size="16" class="search__enter" />
+          <ArrowTurnDownLeftIcon class="sp-icon-16 search__enter" />
         </li>
       </ul>
 

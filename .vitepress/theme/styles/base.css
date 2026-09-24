@@ -115,6 +115,35 @@ video {
   height: auto;
 }
 
+svg[data-slot='icon'] {
+  flex: none;
+}
+
+.sp-icon-14 {
+  width: 14px;
+  height: 14px;
+}
+
+.sp-icon-16 {
+  width: 16px;
+  height: 16px;
+}
+
+.sp-icon-18 {
+  width: 18px;
+  height: 18px;
+}
+
+.sp-icon-20 {
+  width: 20px;
+  height: 20px;
+}
+
+.sp-icon-22 {
+  width: 22px;
+  height: 22px;
+}
+
 button,
 input,
 optgroup,

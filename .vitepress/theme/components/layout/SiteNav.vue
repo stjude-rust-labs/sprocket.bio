@@ -2,7 +2,8 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { useData, useRoute } from 'vitepress'
 import type { SprocketThemeConfig } from '../../types'
-import Icon from '../Icon.vue'
+import { Bars3Icon, MagnifyingGlassIcon, XMarkIcon } from '@heroicons/vue/24/outline'
+import GitHubMark from '../GitHubMark.vue'
 import ThemeToggle from './ThemeToggle.vue'
 import VersionMenu from './VersionMenu.vue'
 import MobileMenu from './MobileMenu.vue'
@@ -41,7 +42,7 @@ watch(() => route.path, () => { menuOpen.value = false })
 
       <div class="site-nav__actions">
         <button type="button" class="site-nav__search" aria-label="Search docs" @click="emit('open-search')">
-          <Icon name="search" :size="18" />
+          <MagnifyingGlassIcon class="sp-icon-18" />
           <span class="site-nav__search-label">Search docs</span>
           <kbd class="site-nav__kbd">{{ shortcut }}</kbd>
         </button>
@@ -49,14 +50,14 @@ watch(() => route.path, () => { menuOpen.value = false })
           <VersionMenu v-for="menu in menus" :key="menu.text" :item="menu" />
           <a v-for="social in theme.socialLinks" :key="social.link" :href="social.link" class="site-nav__icon"
             target="_blank" rel="noreferrer" aria-label="Sprocket on GitHub">
-            <Icon name="github" />
+            <GitHubMark :size="20"/>
           </a>
           <ThemeToggle />
         </div>
         <button type="button" class="site-nav__icon site-nav__menu-button" :aria-expanded="menuOpen"
           aria-controls="sp-mobile-menu" :aria-label="menuOpen ? 'Close menu' : 'Open menu'"
           @click="menuOpen = !menuOpen">
-          <Icon :name="menuOpen ? 'close' : 'menu'" :size="22" />
+          <component :is="menuOpen ? XMarkIcon : Bars3Icon" class="sp-icon-22" />
         </button>
       </div>
     </div>

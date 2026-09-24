@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { withBase } from 'vitepress'
-import Icon from './Icon.vue'
+import { ArrowRightIcon, MagnifyingGlassIcon } from '@heroicons/vue/24/outline'
 
 defineEmits<{ 'open-search': [] }>()
 </script>
@@ -15,10 +15,10 @@ defineEmits<{ 'open-search': [] }>()
     <div class="not-found__actions">
       <a class="not-found__action not-found__action--primary" :href="withBase('/overview')">
         Read the docs
-        <Icon name="arrow-right" :size="16" />
+        <ArrowRightIcon class="sp-icon-16" />
       </a>
       <button type="button" class="not-found__action" @click="$emit('open-search')">
-        <Icon name="search" :size="16" />
+        <MagnifyingGlassIcon class="sp-icon-16" />
         Search
       </button>
       <a class="not-found__action" :href="withBase('/')">Go home</a>

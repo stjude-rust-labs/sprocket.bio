@@ -2,7 +2,7 @@
 import { computed, ref, useId, watch } from 'vue'
 import type { SidebarItem } from '../../types'
 import { containsActive, useSidebar } from '../../composables/useSidebar'
-import Icon from '../Icon.vue'
+import { ChevronRightIcon } from '@heroicons/vue/24/outline'
 
 const props = defineProps<{ item: SidebarItem; depth: number }>()
 const { current, isActive } = useSidebar()
@@ -22,7 +22,7 @@ watch(hasActive, (active) => {
     <button v-if="collapsible" type="button" class="sidebar-group__title sidebar-group__toggle"
       :aria-expanded="open" :aria-controls="listId" @click="open = !open">
       <span>{{ item.text }}</span>
-      <Icon name="chevron-right" :size="14" class="sidebar-group__chevron" />
+      <ChevronRightIcon class="sp-icon-14 sidebar-group__chevron" />
     </button>
     <p v-else class="sidebar-group__title">{{ item.text }}</p>
 

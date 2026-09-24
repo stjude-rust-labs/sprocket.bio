@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useData } from 'vitepress'
-import Icon from '../Icon.vue'
+import { MoonIcon, SunIcon } from '@heroicons/vue/24/outline'
 
 defineProps<{ labelled?: boolean }>()
 
@@ -16,8 +16,8 @@ onMounted(() => { mounted.value = true })
     :aria-label="labelled ? undefined : 'Dark theme'" :aria-pressed="mounted ? isDark : undefined"
     @click="isDark = !isDark">
     <span class="theme-toggle__icons" aria-hidden="true">
-      <Icon name="moon" class="theme-toggle__moon" />
-      <Icon name="sun" class="theme-toggle__sun" />
+      <MoonIcon class="sp-icon-20 theme-toggle__moon" />
+      <SunIcon class="sp-icon-20 theme-toggle__sun" />
     </span>
     <span v-if="labelled">Dark theme</span>
   </button>

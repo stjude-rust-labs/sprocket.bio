@@ -5,7 +5,7 @@ import { useSidebar } from '../../composables/useSidebar'
 import DocSidebar from './DocSidebar.vue'
 import DocOutline from './DocOutline.vue'
 import DocFooter from './DocFooter.vue'
-import Icon from '../Icon.vue'
+import { Bars3Icon } from '@heroicons/vue/24/outline'
 
 const route = useRoute()
 const { section, flat, isActive } = useSidebar()
@@ -32,7 +32,7 @@ watch(() => route.path, () => {
     <div class="doc-layout__bar">
       <button ref="menuButton" type="button" class="doc-layout__menu" :aria-expanded="open"
         aria-controls="sp-doc-sidebar" @click="open = true">
-        <Icon name="menu" :size="18" />
+        <Bars3Icon class="sp-icon-18" />
         Menu
       </button>
       <p v-if="section" class="doc-layout__crumb">

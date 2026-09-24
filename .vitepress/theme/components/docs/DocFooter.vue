@@ -3,7 +3,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useData } from 'vitepress'
 import type { SprocketThemeConfig } from '../../types'
 import { useSidebar } from '../../composables/useSidebar'
-import Icon from '../Icon.vue'
+import { ArrowLeftIcon, ArrowRightIcon, PencilIcon } from '@heroicons/vue/24/outline'
 
 const { theme, page } = useData<SprocketThemeConfig>()
 const { prev, next } = useSidebar()
@@ -25,7 +25,7 @@ const stamp = computed(() =>
   <footer class="doc-footer">
     <div class="doc-footer__meta">
       <a v-if="editUrl" :href="editUrl" class="doc-footer__edit" target="_blank" rel="noreferrer">
-        <Icon name="pencil" :size="16" />
+        <PencilIcon class="sp-icon-16" />
         {{ theme.editLink.text }}
       </a>
       <p v-if="stamp" class="doc-footer__updated">
@@ -35,11 +35,11 @@ const stamp = computed(() =>
 
     <nav v-if="prev || next" class="doc-footer__pager" aria-label="Pages">
       <a v-if="prev" :href="prev.link" class="doc-footer__page doc-footer__page--prev">
-        <span class="doc-footer__dir"><Icon name="arrow-left" :size="14" /> Previous</span>
+        <span class="doc-footer__dir"><ArrowLeftIcon class="sp-icon-14" /> Previous</span>
         <span class="doc-footer__title" v-html="prev.docFooterText ?? prev.text" />
       </a>
       <a v-if="next" :href="next.link" class="doc-footer__page doc-footer__page--next">
-        <span class="doc-footer__dir">Next <Icon name="arrow-right" :size="14" /></span>
+        <span class="doc-footer__dir">Next <ArrowRightIcon class="sp-icon-14" /></span>
         <span class="doc-footer__title" v-html="next.docFooterText ?? next.text" />
       </a>
     </nav>

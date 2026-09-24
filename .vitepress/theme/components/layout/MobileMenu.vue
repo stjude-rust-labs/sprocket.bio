@@ -2,7 +2,7 @@
 import { onBeforeUnmount, watch } from 'vue'
 import { useData } from 'vitepress'
 import type { SprocketThemeConfig } from '../../types'
-import Icon from '../Icon.vue'
+import { ArrowTopRightOnSquareIcon } from '@heroicons/vue/24/outline'
 import ThemeToggle from './ThemeToggle.vue'
 
 const props = defineProps<{ open: boolean; id: string }>()
@@ -37,13 +37,13 @@ onBeforeUnmount(() => {
             <li v-for="child in item.items" v-else :key="child.link">
               <a :href="child.link" class="mobile-menu__link" target="_blank" rel="noreferrer">
                 {{ child.text }} <span class="mobile-menu__meta">{{ item.text }}</span>
-                <Icon name="external" :size="16" />
+                <ArrowTopRightOnSquareIcon class="sp-icon-16" />
               </a>
             </li>
           </template>
           <li v-for="social in theme.socialLinks" :key="social.link">
             <a :href="social.link" class="mobile-menu__link" target="_blank" rel="noreferrer">
-              GitHub <Icon name="external" :size="16" />
+              GitHub <ArrowTopRightOnSquareIcon class="sp-icon-16" />
             </a>
           </li>
         </ul>
@@ -86,7 +86,7 @@ onBeforeUnmount(() => {
   color: var(--sp-text-3);
 }
 
-.mobile-menu__link .sp-icon {
+.mobile-menu__link svg {
   margin-left: auto;
   color: var(--sp-text-3);
 }
