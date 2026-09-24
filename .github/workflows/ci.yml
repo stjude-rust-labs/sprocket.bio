@@ -20,16 +20,19 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v5
+      - uses: actions/checkout@v7.0.1
+        with:
+          # Full history lets VitePress read each page's last-updated date from git.
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v6.1.0
         with:
           version: 10.x.x
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7.0.0
         with:
           node-version: "latest"
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile && npm run docs:build
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5.0.0
         with:
           name: "Project Documentation"
           path: ".vitepress/dist"
@@ -46,6 +49,6 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5.0.1
         with:
           artifact_name: "Project Documentation"

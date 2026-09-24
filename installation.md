@@ -2,7 +2,7 @@
 
 If you're looking for the latest stable version of the `sprocket` command line
 tool, you can download it through a [package manager](#package-managers),
-[download it from the release page](#download), use [Docker](#docker), or [build
+[download it from the release page](#direct-download), use [Docker](#docker-images), or [build
 it from source](#build-from-source).
 
 ## Package managers
@@ -36,7 +36,7 @@ docker run ghcr.io/stjude-rust-labs/sprocket:v0.31.0 -h
 ## Build from source
 
 There are also a number of options to build `sprocket` from source, including
-pulling in the released source from [crates.io](#cratesio) or downloading the
+pulling in the released source from [crates.io](#crates-io) or downloading the
 source directly from [GitHub](#github). 
 
 All methods for building `sprocket` from source require [Rust] and `cargo` to be

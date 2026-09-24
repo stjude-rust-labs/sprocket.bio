@@ -1,4 +1,4 @@
-![Sprocket Repository Header](/public/repo-header.png)
+![Sprocket, by St. Jude Rust Labs](/repo-header.png)
 
 **Sprocket** is a bioinformatics workflow execution engine built on top of the
 [Workflow Description Language](https://openwdl.org). The project has multiple
