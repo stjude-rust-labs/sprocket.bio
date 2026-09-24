@@ -1,62 +1,50 @@
 <script setup>
-import { ref, nextTick } from 'vue';
-
+import { nextTick, ref } from 'vue';
 
 const props = defineProps({
-  header: {
-    type: String,
-    default: ''
-  },
-  preformatted: {
-    type: Boolean,
-    default: false
-  },
-  value: {
-    type: String,
-    default: ''
-  }
+  label: { type: String, required: true },
+  lang: { type: String, default: '' },
+  code: { type: String, required: true },
+  html: { type: String, default: null }
 });
 
-const previewRef = ref(null);
-const codeRef = ref(null);
-const copyText = ref('Copy');
+const status = ref('');
+let resetTimer;
 
 const copyToClipboard = async () => {
+  clearTimeout(resetTimer);
+  let next;
+  try {
+    await navigator.clipboard.writeText(props.code);
+    next = 'Copied';
+  } catch {
+    next = 'Copy failed';
+  }
+  // Clear first so repeat copies are announced again.
+  status.value = '';
   await nextTick();
-  let text = '';
-
-  // Prefer the value prop; otherwise extract textContent from slot
-  if (codeRef.value) {
-    text = codeRef.value.textContent || '';
-  }
-
-  if (text) {
-    await navigator.clipboard.writeText(text);
-    copyText.value = 'Copied!';
-    setTimeout(() => {
-      copyText.value = 'Copy';
-    }, 3000);
-  }
+  status.value = next;
+  resetTimer = setTimeout(() => { status.value = ''; }, 2500);
 };
 </script>
 
 <template>
-  <div class="code-preview" ref="previewRef">
-    <div class="code-preview__header" v-if="header">
-      <span class="code-preview__header-text typo-caption3" style="color: var(--theme-blue-200);">{{ header }}</span>
+  <div class="code-preview">
+    <div class="code-preview__header">
+      <span class="code-preview__label">{{ label }}</span>
+      <span v-if="lang" class="code-preview__lang">{{ lang }}</span>
+      <button type="button" class="code-preview__copy" :aria-label="`Copy ${label.toLowerCase()} code`"
+        @click="copyToClipboard">
+        <img v-if="status === 'Copied'" src="/svg/heroicons-outline-check.svg" alt="" aria-hidden="true">
+        <img v-else src="/svg/heroicons-outline-document-duplicate.svg" alt="" aria-hidden="true">
+        <span v-if="status" class="code-preview__status" aria-hidden="true">{{ status }}</span>
+      </button>
+      <span class="code-preview__sr-only" role="status">{{ status }}</span>
     </div>
-    <button @click="copyToClipboard" class="code-preview__copy-button">
-      <img v-if="copyText === 'Copy'" src="/svg/heroicons-outline-document-duplicate.svg" alt="Copy"
-        class="code-preview__copy-icon">
-      <img v-else src="/svg/heroicons-outline-check.svg" alt="Copied" class="code-preview__copy-icon">
-    </button>
-    <div ref="codeRef">
-      <div v-if="$slots.default && preformatted" class="code-preview__block">
-        <div style="margin-top: -16px; margin-bottom: -16px" v-html="value"></div>
-      </div>
-      <pre style="margin-top: -16px; margin-bottom: -16px" class="code-preview__block"
-        v-else><code><div v-html="value"></div></code></pre>
-    </div>
+    <slot name="controls" />
+    <div v-if="html" class="code-preview__block" v-html="html"></div>
+    <pre v-else class="code-preview__block"><code>{{ code }}</code></pre>
+    <slot name="footer" />
   </div>
 </template>
 
@@ -65,41 +53,85 @@ const copyToClipboard = async () => {
   position: relative;
 }
 
-.code-preview__copy-button {
-  position: absolute;
-  top: 0;
-  right: 0;
-  padding: 0.1rem 0.25rem;
-  color: var(--theme-blue-100);
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.6rem;
-  transition: all 0.2s;
-}
-
-.code-preview__copy-button:hover {
-  background-color: rgba(0, 0, 0, 0.2);
-}
-
-.code-preview__copy-button:hover {
-  background-color: rgba(0, 0, 0, 0.4);
-}
-
 .code-preview__header {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  margin-bottom: 0.5rem;
+  gap: 0.625rem;
+  margin-bottom: 0.625rem;
 }
 
-.code-preview__block {
-  margin-top: 0;
-  margin-bottom: 0;
-  background: none;
-  color: var(--theme-blue-100);
-  font-family: "Fira Mono", "Menlo", "Monaco", "Consolas", monospace;
-  font-size: 1rem;
-  overflow-x: auto;
+.code-preview__label {
+  font-family: var(--sp-font-body);
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: var(--sp-term-text);
+}
+
+.code-preview__lang {
+  font-family: var(--sp-font-mono);
+  font-size: 0.6875rem;
+  line-height: 1;
+  padding: 0.25rem 0.4rem;
+  border-radius: 4px;
+  color: var(--sp-term-text-2);
+  background: var(--sp-term-chip-bg);
+}
+
+.code-preview__copy {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-width: 2rem;
+  min-height: 2rem;
+  padding: 0.375rem;
+  border-radius: 6px;
+  color: var(--sp-term-text-2);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.code-preview__copy img {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.code-preview__copy:hover {
+  background-color: var(--sp-term-hover);
+}
+
+.code-preview__copy:focus-visible {
+  outline: 2px solid var(--sp-term-focus);
+  outline-offset: 2px;
+}
+
+.code-preview__sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.code-preview__block,
+.code-preview__block :deep(pre) {
+  margin: 0;
+  background: none !important;
+  color: var(--sp-term-text);
+  font-family: var(--sp-font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.code-preview__block :deep(pre) {
+  overflow: visible;
+}
+
+.code-preview__block :deep(code) {
+  font-family: inherit;
 }
 </style>

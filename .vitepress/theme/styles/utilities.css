@@ -3,15 +3,15 @@
   ======================================== */
 
 .card {
-  background: rgba(22, 27, 43, 0.6);
-  border: 1px solid var(--theme-blue-300);
+  background: var(--sp-term-card-bg);
+  border: 1px solid var(--sp-term-card-border);
   border-radius: 6px;
   padding: 12px;
   transition: all 0.2s;
 }
 
 .card:hover {
-  border-color: var(--theme-violet-800);
+  border-color: var(--sp-term-card-border-hover);
 }
 
 /* ========================================

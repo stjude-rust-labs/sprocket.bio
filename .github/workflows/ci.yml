@@ -21,6 +21,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Full history lets VitePress read each page's last-updated date from git.
+          fetch-depth: 0
       - uses: pnpm/action-setup@v5
         with:
           version: 10.x.x

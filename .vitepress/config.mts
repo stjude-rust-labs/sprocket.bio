@@ -1,23 +1,23 @@
-import { defineConfig } from "vitepress";
+import { defineConfigWithTheme } from "vitepress";
+import type { SprocketThemeConfig } from "./theme/types";
 import axios from 'axios';
 import taskLists from 'markdown-it-task-lists';
 
+// The current Sprocket release, shown in the nav and used on the homepage.
+const sprocketVersion = "0.31.0";
+
 const grammarUrl = "https://raw.githubusercontent.com/stjude-rust-labs/sprocket-vscode/refs/heads/main/syntaxes/wdl.tmGrammar.json";
 
-export default defineConfig({
+export default defineConfigWithTheme<SprocketThemeConfig>({
   title: "Sprocket | St. Jude Rust Labs",
   description:
     "A bioinformatics workflow engine built on top of the Workflow Description Language (WDL)",
   themeConfig: {
-    logo: {
-      light: "/sprocket-logo.png",
-      dark: "/sprocket-logo-dark.png",
-    },
-    siteTitle: "",
+    sprocketVersion,
     nav: [
       { text: "Documentation", link: "/overview" },
       {
-        text: "v0.31.0",
+        text: `v${sprocketVersion}`,
         items: [
           {
             text: "Changelog",
@@ -109,19 +109,35 @@ export default defineConfig({
         items: [{ text: "Python Bindings", link: "/python-bindings", docFooterText: "API &gt; Python Bindings" }],
       },
     ],
+    editLink: {
+      pattern: "https://github.com/stjude-rust-labs/sprocket.bio/edit/main/:path",
+      text: "Edit this page on GitHub",
+    },
+    search: { provider: "local" },
     socialLinks: [
       { icon: "github", link: "https://github.com/stjude-rust-labs/sprocket" },
     ],
   },
   markdown: {
-    theme: 'github-dark',
+    theme: { light: 'github-light-default', dark: 'github-dark-default' },
+    container: {
+      infoLabel: 'Info',
+      noteLabel: 'Note',
+      tipLabel: 'Tip',
+      warningLabel: 'Warning',
+      dangerLabel: 'Danger',
+      detailsLabel: 'Details',
+      importantLabel: 'Important',
+      cautionLabel: 'Caution',
+    },
     shikiSetup: async (shiki) => {
       const response = await axios.get(grammarUrl);
       await shiki.loadLanguage(response.data);
     },
     config: (md) => {
-      md.use(taskLists);
+      md.use(taskLists, { label: true });
     },
   },
-  appearance: 'dark'
+  appearance: 'dark',
+  lastUpdated: true,
 });

@@ -3,16 +3,19 @@
   "scripts": {
     "docs:dev": "vitepress dev",
     "docs:build": "vitepress build",
-    "docs:preview": "vitepress preview"
+    "docs:preview": "vitepress preview",
+    "docs:a11y": "node scripts/a11y.mjs"
   },
   "devDependencies": {
     "markdown-it-task-lists": "^2.1.1",
+    "pa11y-ci": "^4.1.1",
     "vitepress": "^1.6.4",
     "vue": "^3.4.37"
   },
   "dependencies": {
+    "@fontsource-variable/inter": "^5.3.0",
     "axios": "^1.9.0",
-    "shiki": "^3.4.0",
-    "spinkit": "^2.0.1"
+    "minisearch": "^7.1.2",
+    "shiki": "^3.4.0"
   }
 }
