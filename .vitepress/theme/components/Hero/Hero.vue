@@ -1,6 +1,6 @@
 <script setup>
 import CodePreview from "./CodePreview.vue";
-import { computed, onMounted, ref } from "vue";
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useData } from "vitepress";
 
 const grammarUrl = "https://raw.githubusercontent.com/stjude-rust-labs/sprocket-vscode/refs/heads/main/syntaxes/wdl.tmGrammar.json";
@@ -67,7 +67,11 @@ const noteDecorations = (code, notes = []) => {
     return [{
       start: { line, character },
       end: { line, character: character + note.match.length },
-      properties: { class: "wdl-note", "data-note": String(index + 1) }
+      properties: {
+        class: "wdl-note",
+        "data-note": String(index + 1),
+        "aria-describedby": `hero-note-${index + 1}`
+      }
     }];
   });
 };
@@ -75,12 +79,84 @@ const noteDecorations = (code, notes = []) => {
 // Splits `inline code` out of note text.
 const noteParts = (text) => text.split("`").map((value, index) => ({ value, code: index % 2 === 1 }));
 
-const highlightNote = (event, index) => {
-  const card = event.currentTarget.closest(".hero__card");
+const setActiveNote = (card, index) => {
   card?.querySelectorAll(".wdl-note").forEach((el) => {
     el.classList.toggle("is-active", index !== null && el.dataset.note === String(index + 1));
   });
 };
+
+const highlightNote = (event, index) => setActiveNote(event.currentTarget.closest(".hero__card"), index);
+
+// On desktop screens too short to fit the notes list, the list is hidden and
+// each note shows as a tooltip on its marker instead. The heights are where
+// the full hero stops fitting at each column width.
+const compactNotesQuery =
+  "(min-width: 1175px) and (max-width: 1535px) and (max-height: 975px), (min-width: 1536px) and (max-height: 940px)";
+const compactNotes = ref(false);
+const tooltip = ref(null);
+let hideTimer;
+
+const showTooltip = (event) => {
+  if (!compactNotes.value) return;
+  const marker = event.target.closest?.(".wdl-note");
+  if (!marker) return;
+  clearTimeout(hideTimer);
+  const card = event.currentTarget;
+  const cardBox = card.getBoundingClientRect();
+  const markerBox = marker.getBoundingClientRect();
+  const index = Number(marker.dataset.note) - 1;
+  tooltip.value = {
+    index,
+    top: markerBox.bottom - cardBox.top + 6,
+    left: Math.max(16, Math.min(markerBox.left - cardBox.left - 8, cardBox.width - 304))
+  };
+  setActiveNote(card, index);
+};
+
+const hideTooltip = (card, delay = 0) => {
+  clearTimeout(hideTimer);
+  hideTimer = setTimeout(() => {
+    tooltip.value = null;
+    setActiveNote(card, null);
+  }, delay);
+};
+
+const keepTooltip = () => clearTimeout(hideTimer);
+
+// Leaving a marker waits briefly so the pointer can move onto the tooltip.
+const leaveMarker = (event) => {
+  const marker = event.target.closest?.(".wdl-note");
+  if (!marker || marker.contains(event.relatedTarget)) return;
+  hideTooltip(event.currentTarget, 150);
+};
+
+const syncMarkerFocus = (card) => {
+  card?.querySelectorAll(".wdl-note").forEach((el) => {
+    if (compactNotes.value) el.setAttribute("tabindex", "0");
+    else el.removeAttribute("tabindex");
+  });
+};
+
+let notesCard = null;
+const setNotesCard = (el) => { notesCard = el; };
+watch(compactNotes, (compact) => {
+  if (!compact) hideTooltip(notesCard);
+  nextTick(() => syncMarkerFocus(notesCard));
+});
+
+let media;
+const updateCompactNotes = () => { compactNotes.value = media.matches; };
+
+onMounted(() => {
+  media = window.matchMedia(compactNotesQuery);
+  updateCompactNotes();
+  media.addEventListener("change", updateCompactNotes);
+});
+
+onBeforeUnmount(() => {
+  media?.removeEventListener("change", updateCompactNotes);
+  clearTimeout(hideTimer);
+});
 
 const steps = ref([
   {
@@ -156,6 +232,8 @@ onMounted(async () => {
         decorations: noteDecorations(step.code, step.notes)
       });
     }
+    await nextTick();
+    syncMarkerFocus(notesCard);
   } catch (error) {
     console.warn("Sprocket hero: code highlighting unavailable", error);
   }
@@ -163,7 +241,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <section class="hero" aria-labelledby="hero-title">
+  <section class="hero" :class="{ 'hero--compact-notes': compactNotes }" aria-labelledby="hero-title">
     <svg class="hero__arcs" viewBox="0 0 600 600" aria-hidden="true" focusable="false">
       <defs>
         <linearGradient id="hero-arc-stroke" x1="0" y1="0" x2="1" y2="1">
@@ -228,12 +306,15 @@ onMounted(async () => {
           </div>
         </li>
         <li v-for="step in steps" :key="step.label" class="hero__step">
-          <div class="card hero__card">
+          <div v-if="step.notes" :ref="setNotesCard" class="card hero__card" @mouseover="showTooltip"
+            @mouseout="leaveMarker" @focusin="showTooltip" @focusout="hideTooltip($event.currentTarget)"
+            @keydown.esc="hideTooltip($event.currentTarget)">
             <CodePreview :label="step.label" :lang="step.lang" :code="step.code" :html="step.html">
-              <template v-if="step.notes && step.html" #footer>
+              <template v-if="step.html" #footer>
                 <ol class="hero__notes" aria-label="What this task does">
-                  <li v-for="(note, index) in step.notes" :key="note.match" class="hero__note"
-                    @mouseenter="highlightNote($event, index)" @mouseleave="highlightNote($event, null)">
+                  <li v-for="(note, index) in step.notes" :id="`hero-note-${index + 1}`" :key="note.match"
+                    class="hero__note" @mouseenter="highlightNote($event, index)"
+                    @mouseleave="highlightNote($event, null)">
                     <span class="hero__note-marker" aria-hidden="true">{{ index + 1 }}</span>
                     <span>
                       <template v-for="(part, i) in noteParts(note.text)" :key="i">
@@ -245,6 +326,20 @@ onMounted(async () => {
                 </ol>
               </template>
             </CodePreview>
+            <div v-if="compactNotes && tooltip" class="hero__tooltip" aria-hidden="true"
+              :style="{ top: `${tooltip.top}px`, left: `${tooltip.left}px` }" @mouseenter="keepTooltip"
+              @mouseleave="hideTooltip($event.currentTarget.closest('.hero__card'), 150)">
+              <span class="hero__note-marker">{{ tooltip.index + 1 }}</span>
+              <span>
+                <template v-for="(part, i) in noteParts(step.notes[tooltip.index].text)" :key="i">
+                  <code v-if="part.code">{{ part.value }}</code>
+                  <template v-else>{{ part.value }}</template>
+                </template>
+              </span>
+            </div>
+          </div>
+          <div v-else class="card hero__card">
+            <CodePreview :label="step.label" :lang="step.lang" :code="step.code" :html="step.html" />
           </div>
         </li>
       </ol>
@@ -419,10 +514,16 @@ onMounted(async () => {
 /* ========================================
   Headline
   ======================================== */
+.hero__intro {
+  container-type: inline-size;
+}
+
 .hero__title {
   font-family: var(--sp-font-display);
   font-weight: 700;
   font-size: clamp(2.625rem, 1.5rem + 3.2vw, 4.5rem);
+  /* Also capped by the column width so "The Bioinformatics" stays on one line. */
+  font-size: clamp(2.625rem, min(1.5rem + 3.2vw, 11.5cqi), 4.5rem);
   line-height: 0.98;
   letter-spacing: -0.03em;
   text-wrap: balance;
@@ -556,8 +657,37 @@ onMounted(async () => {
 }
 
 .hero__card {
+  position: relative;
   padding: 0.875rem 1rem 1rem;
   background: var(--sp-term-card-bg-strong);
+}
+
+.hero__tooltip {
+  position: absolute;
+  z-index: 2;
+  width: 18rem;
+  display: grid;
+  grid-template-columns: 1rem minmax(0, 1fr);
+  gap: 0.5rem;
+  align-items: start;
+  padding: 0.625rem 0.75rem;
+  border: 1px solid var(--sp-term-card-border);
+  border-radius: 6px;
+  background: var(--sp-term-bg);
+  box-shadow: var(--sp-shadow-window);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--sp-term-text-2);
+}
+
+.hero__tooltip .hero__note-marker {
+  margin-top: 0.125rem;
+}
+
+.hero__tooltip code {
+  font-family: var(--sp-font-mono);
+  font-size: 0.95em;
+  color: var(--sp-term-text);
 }
 
 @media (min-width: 640px) {
@@ -566,9 +696,66 @@ onMounted(async () => {
   }
 }
 
+/* On desktop the hero should fit in one screen (e.g. a 15" MacBook Air), so
+   the vertical rhythm is tightened; min-height still centers it on taller
+   screens. */
 @media (min-width: 1175px) {
   .hero {
-    padding: 4.5rem 0;
+    padding: 1.5rem 0;
+  }
+
+  .hero__card {
+    padding: 0.75rem 1rem 0.875rem;
+  }
+
+  .hero__card :deep(.code-preview__header) {
+    margin-bottom: 0.5rem;
+  }
+
+  .hero__steps {
+    gap: 0.75rem;
+  }
+
+  .hero__step::before {
+    top: 1.46875rem;
+  }
+
+  .hero__step:not(:last-child)::after {
+    top: 1.8125rem;
+    height: calc(100% + 0.75rem);
+  }
+
+  .hero__card :deep(.code-preview__block),
+  .hero__card :deep(.code-preview__block pre) {
+    line-height: 1.45;
+  }
+
+  .hero__notes {
+    margin-top: 0.625rem;
+    padding-top: 0.625rem;
+    gap: 0.125rem;
+  }
+
+  .hero--compact-notes {
+    padding: 0.75rem 0;
+  }
+
+  .hero--compact-notes .hero__card :deep(.code-preview__block),
+  .hero--compact-notes .hero__card :deep(.code-preview__block pre) {
+    line-height: 1.4;
+  }
+
+  .hero--compact-notes .hero__notes {
+    display: none;
+  }
+
+  .hero--compact-notes .hero__card :deep(.wdl-note) {
+    cursor: help;
+  }
+
+  .hero--compact-notes .hero__card :deep(.wdl-note:focus-visible) {
+    outline: 2px solid var(--sp-term-focus);
+    outline-offset: 2px;
   }
 
   .hero__content {

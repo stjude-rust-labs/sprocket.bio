@@ -166,12 +166,20 @@ watch(() => route.path, () => {
 }
 
 @media (min-width: 1200px) {
+  /* The two flexible columns keep the content equidistant from the sidebar and
+     the outline. */
   .doc-layout__main {
-    grid-template-columns: minmax(0, var(--sp-content-max)) var(--sp-outline-width);
-    gap: 3rem;
+    grid-template-columns:
+      minmax(3rem, 1fr) minmax(0, var(--sp-content-max)) minmax(3rem, 1fr) var(--sp-outline-width);
+    padding-left: 0;
+  }
+
+  .doc-layout__content {
+    grid-column: 2;
   }
 
   .doc-layout__outline {
+    grid-column: 4;
     display: block;
     position: sticky;
     top: calc(var(--sp-nav-height) + 3rem);
