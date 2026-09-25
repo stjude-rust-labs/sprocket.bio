@@ -27,6 +27,9 @@ interfaces as stable:
   `inputs.json` and `outputs.json` formats produced by stable commands; and
 - documented `--index-on` behavior on stable commands.
 
+The `sprocket.toml` file itself is optional. Adding a new documented key is a
+compatible change when its default preserves existing behavior.
+
 Do not parse human-readable output. Its wording, layout, colors, progress
 indicators, diagnostics, and log messages may change without deprecation. Use
 documented machine-readable JSON, exit statuses, and stable APIs for automation.
@@ -38,6 +41,17 @@ module commands remain under `dev`, test definitions while `test` remains under
 `wdl-*` Rust crates, any separately released Python bindings, the internal
 `runs/` layout, `_latest`, task attempt directories, and the `sprocket.db`
 schema.
+
+The exact layout produced by `sprocket format` is also outside the stable
+contract and may change in any release. A file that passes
+`sprocket format check` may need to be reformatted after an upgrade. The
+`format` subcommands, their options, documented formatting configuration keys,
+and the meanings of their exit statuses remain stable.
+
+When a `dev` command graduates, its `sprocket dev` form remains available as a
+deprecated alias. The alias writes a warning to stderr that names the stable
+command. It remains available for at least 90 days after its first deprecation
+notice and until at least the second subsequent minor release.
 
 The `sprocket.db` schema is internal and is not backward compatible. Sprocket
 may change it when a bundled forward migration can safely upgrade existing
