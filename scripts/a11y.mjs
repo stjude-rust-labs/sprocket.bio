@@ -35,6 +35,11 @@ async function htmlFiles(dir) {
   return nested.flat()
 }
 
+// Redirect stubs are not pages; they carry this marker so the crawl can skip them.
+async function isRedirectStub(file) {
+  return (await readFile(file, 'utf8')).includes('<meta name="sprocket-redirect"')
+}
+
 const server = createServer(async (req, res) => {
   const url = new URL(req.url, 'http://localhost')
   const pathname = decodeURIComponent(url.pathname)
@@ -43,13 +48,22 @@ const server = createServer(async (req, res) => {
     res.writeHead(403).end()
     return
   }
+  const requested = file
   try {
     if ((await stat(file)).isDirectory()) file = join(file, 'index.html')
     await stat(file)
   } catch {
-    res.writeHead(404, { 'content-type': types['.html'] })
-    createReadStream(join(root, '404.html')).pipe(res)
-    return
+    // GitHub Pages serves `/foo` from `foo.html`, which is how the site's clean
+    // URLs resolve in production.
+    try {
+      const fallback = `${requested.replace(/\/$/, '')}.html`
+      await stat(fallback)
+      file = fallback
+    } catch {
+      res.writeHead(404, { 'content-type': types['.html'] })
+      createReadStream(join(root, '404.html')).pipe(res)
+      return
+    }
   }
   res.writeHead(200, { 'content-type': types[extname(file)] ?? 'application/octet-stream' })
   const theme = url.searchParams.get('theme')
@@ -66,7 +80,12 @@ const server = createServer(async (req, res) => {
 await new Promise((done) => server.listen(0, '127.0.0.1', done))
 const origin = `http://127.0.0.1:${server.address().port}`
 
-const pages = (await htmlFiles(root))
+const files = await htmlFiles(root)
+const crawlable = []
+for (const file of files) {
+  if (!(await isRedirectStub(file))) crawlable.push(file)
+}
+const pages = crawlable
   .map((file) => `/${relative(root, file).split(sep).join('/')}`.replace(/(^|\/)index\.html$/, '$1'))
   .sort()
 
@@ -90,7 +109,8 @@ const dir = await mkdtemp(join(tmpdir(), 'pa11y-'))
 const configPath = join(dir, 'pa11yci.json')
 await writeFile(configPath, JSON.stringify(config, null, 2))
 
-console.log(`Checking ${pages.length} pages in dark and light mode from ${root}\n`)
+console.log(`Checking ${pages.length} pages in dark and light mode from ${root}`)
+console.log(`Skipped ${files.length - crawlable.length} redirect stubs\n`)
 
 const code = await new Promise((done) => {
   const child = spawn('pa11y-ci', ['--config', configPath], { stdio: 'inherit', shell: process.platform === 'win32' })

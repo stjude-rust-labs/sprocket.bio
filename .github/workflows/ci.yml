@@ -32,6 +32,8 @@ jobs:
           node-version: "latest"
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile && npm run docs:build
+      - name: Check the redirect stubs
+        run: pnpm docs:check-redirects
       - uses: actions/upload-pages-artifact@v5.0.0
         with:
           name: "Project Documentation"

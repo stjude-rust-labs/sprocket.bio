@@ -79,12 +79,12 @@ Alternatively, if a Rust toolchain is available, you can install from source:
 cargo install sprocket --locked
 ```
 
-> [!TIP]
->
-> If your site uses [environment modules](https://modules.readthedocs.io/),
-> consider creating a module file for Sprocket so users can load it with
-> `module load sprocket`. [Spack](https://spack.io/) is another common option
-> for managing software on HPC clusters.
+::: tip
+If your site uses [environment modules](https://modules.readthedocs.io/),
+consider creating a module file for Sprocket so users can load it with
+`module load sprocket`. [Spack](https://spack.io/) is another common option
+for managing software on HPC clusters.
+:::
 
 ## Setting up a shared configuration
 
@@ -111,7 +111,7 @@ that all users inherit. There are two recommended approaches:
 
 Users can still override settings by placing their own `sprocket.toml` in their
 working directory or by passing `--config` on the command line. See the
-[configuration overview](/configuration/overview) for the full load order and
+[configuration overview](/concepts/configuration) for the full load order and
 precedence rules.
 
 ## Configuring the backend
@@ -139,6 +139,11 @@ job_name_prefix = "sprocket"
 interval = 30
 ```
 
+This is a minimal configuration. For every option the backend accepts —
+including short-task, GPU, and FPGA partitions, `max_concurrency`, extra
+`sbatch` and `apptainer` arguments, and conditional `sbatch` arguments — see
+the [Slurm + Apptainer backend reference](/reference/backends/slurm).
+
 ### Resource limit behavior
 
 Each partition can declare the largest CPU and memory allocation it supports:
@@ -165,7 +170,8 @@ memory_limit_behavior = "deny"
 
 If `max_cpu_per_task` and `max_memory_per_task` are not set on a partition,
 these settings have no effect and Sprocket submits the task's resource request
-as-is.
+as-is. Both settings are documented with the rest of the task options in the
+[configuration guide](/concepts/configuration#overriding-task-cpu-and-memory-requirements).
 
 ## Running your first workflow
 
@@ -279,7 +285,8 @@ image_cache_dir = "/shared/containers/cache"
 ```
 
 When set, Sprocket stores pulled `.sif` images in this directory and reuses
-them for subsequent runs, avoiding repeated downloads.
+them for subsequent runs, avoiding repeated downloads. See
+[containers](/concepts/containers) for how Sprocket resolves and caches images.
 
 Alternatively, you can pre-pull images to a shared location using
 `apptainer pull` and reference the local SIF path in your WDL `container`
@@ -323,8 +330,21 @@ squeue -u $USER
 
 ### Inspecting run output
 
-Each task attempt writes its files to
-`out/runs/<target>/<timestamp>/attempts/<n>/`:
+Where a task attempt writes its files depends on what you ran. When you run a
+task directly, the attempts sit at the top level of the run directory:
+
+```
+out/runs/<target>/<timestamp>/attempts/<n>/
+```
+
+When you run a workflow, each task call gets its own directory under `calls/`
+and the attempts sit inside it:
+
+```
+out/runs/<target>/<timestamp>/calls/<task_call_id>/attempts/<n>/
+```
+
+Either way, an attempt directory contains the following:
 
 | File | Contents |
 |------|----------|
@@ -333,10 +353,14 @@ Each task attempt writes its files to
 | `stderr` | Standard error from the task |
 | `work/` | The task's working directory, containing any output files |
 
+The Slurm backend also writes the submission script it generated
+(`sbatch_command`) and the Slurm job identifier (`job_id`) next to those files.
+
 When troubleshooting a failed task, start with `stderr` and `command` to
-understand what ran and what went wrong. See the [provenance
-tracking](/concepts/provenance) documentation for a full description of the
-run directory structure.
+understand what ran and what went wrong. See [directory
+structure](/concepts/provenance#directory-structure) for a full description of
+the run directory layout, and [troubleshooting](/guides/troubleshooting) for a
+step-by-step way to work through a failed run.
 
 ### Common issues
 
@@ -362,8 +386,14 @@ run directory structure.
   `"singularity"` or a full path to the binary if it is not named
   `apptainer` or is not on `PATH`.
 
+See [troubleshooting](/guides/troubleshooting) for errors that are not specific
+to Slurm, and the backend's [known
+issues](/reference/backends/slurm#known-issues) for limitations to be aware of.
+
 ### Getting help
 
 If you run into problems or have feedback, join the [OpenWDL
 Slack](https://join.slack.com/t/openwdl/shared_invite/zt-ctmj4mhf-cFBNxIiZYs6SY9HgM9UAVw)
-and reach out in the `#sprocket` channel.
+and reach out in the `#sprocket` channel. See [community and
+support](/about/community) for the other places you can ask questions and
+report issues.

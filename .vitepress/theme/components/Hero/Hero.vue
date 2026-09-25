@@ -268,7 +268,7 @@ onMounted(async () => {
           thousands of parallel workflows.
         </p>
         <div class="hero__actions">
-          <a href="/overview" class="typo-btn hero__btn hero__btn--primary">
+          <a href="/getting-started/introduction" class="typo-btn hero__btn hero__btn--primary">
             Explore documentation
             <span aria-hidden="true">→</span>
           </a>
@@ -299,7 +299,7 @@ onMounted(async () => {
                     <a :href="install.link.href">{{ install.link.text }}</a>
                     <span aria-hidden="true"> · </span>
                   </template>
-                  <a href="/installation">All options</a>
+                  <a href="/getting-started/installation">All options</a>
                 </p>
               </template>
             </CodePreview>

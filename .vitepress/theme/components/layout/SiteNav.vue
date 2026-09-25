@@ -37,7 +37,7 @@ watch(() => route.path, () => { menuOpen.value = false })
 
       <nav class="site-nav__links" aria-label="Main">
         <a v-for="item in links" :key="item.link" :href="item.link" class="site-nav__link"
-          :class="{ 'is-active': isDocs && item.link === '/overview' }">{{ item.text }}</a>
+          :class="{ 'is-active': isDocs && item.link?.startsWith('/') }">{{ item.text }}</a>
       </nav>
 
       <div class="site-nav__actions">
