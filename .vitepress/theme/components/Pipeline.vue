@@ -112,13 +112,13 @@ const problems = [
 ]
 
 const platforms = [
-  { icon: '/svg/macos.svg', label: 'macOS' },
+  { icon: '/svg/macos.svg', iconLight: '/svg/macos-light.svg', label: 'macOS' },
   { icon: '/svg/linux.svg', label: 'Linux' },
   { icon: '/svg/windows.svg', label: 'Windows' }
 ]
 
 const storage = [
-  { icon: '/svg/aws.svg', label: 'Amazon S3' },
+  { icon: '/svg/aws.svg', iconLight: '/svg/aws-light.svg', label: 'Amazon S3' },
   { icon: '/svg/azure.svg', label: 'Azure Blob Storage' },
   { icon: '/svg/google-cloud.svg', label: 'Google Cloud Storage' }
 ]
@@ -384,7 +384,9 @@ onBeforeUnmount(() => {
               </p>
               <ul class="stage__chips" aria-label="Develop on">
                 <li v-for="platform in platforms" :key="platform.label" class="chip">
-                  <img :src="platform.icon" alt="" class="chip__icon">{{ platform.label }}
+                  <img :src="platform.icon" alt="" class="chip__icon"
+                    :class="{ 'chip__icon--dark': platform.iconLight }"><img v-if="platform.iconLight"
+                    :src="platform.iconLight" alt="" class="chip__icon chip__icon--light">{{ platform.label }}
                 </li>
               </ul>
               <a href="/getting-started/guided-tour" class="typo-btn stage__link">Take the guided tour <span
@@ -418,7 +420,9 @@ onBeforeUnmount(() => {
               </p>
               <ul class="stage__chips" aria-label="Cloud storage">
                 <li v-for="service in storage" :key="service.label" class="chip">
-                  <img :src="service.icon" alt="" class="chip__icon">{{ service.label }}
+                  <img :src="service.icon" alt="" class="chip__icon"
+                    :class="{ 'chip__icon--dark': service.iconLight }"><img v-if="service.iconLight"
+                    :src="service.iconLight" alt="" class="chip__icon chip__icon--light">{{ service.label }}
                 </li>
               </ul>
               <a href="/reference/backends/overview" class="typo-btn stage__link">Configure a backend <span
@@ -683,6 +687,18 @@ onBeforeUnmount(() => {
   width: 1rem;
   height: 1rem;
   object-fit: contain;
+}
+
+.chip__icon--light {
+  display: none;
+}
+
+:global(html:not(.dark) .chip__icon--dark) {
+  display: none;
+}
+
+:global(html:not(.dark) .chip__icon--light) {
+  display: block;
 }
 
 .stage__link {
