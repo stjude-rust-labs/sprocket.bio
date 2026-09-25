@@ -33,6 +33,9 @@ const copyToClipboard = async () => {
     <div class="code-preview__header">
       <span class="code-preview__label">{{ label }}</span>
       <span v-if="lang" class="code-preview__lang">{{ lang }}</span>
+      <div class="code-preview__actions">
+        <slot name="actions" />
+      </div>
       <button type="button" class="code-preview__copy" :aria-label="`Copy ${label.toLowerCase()} code`"
         @click="copyToClipboard">
         <img v-if="status === 'Copied'" src="/svg/heroicons-outline-check.svg" alt="" aria-hidden="true">
@@ -42,7 +45,8 @@ const copyToClipboard = async () => {
       <span class="code-preview__sr-only" role="status">{{ status }}</span>
     </div>
     <slot name="controls" />
-    <div v-if="html" class="code-preview__block" v-html="html"></div>
+    <slot v-if="$slots.body" name="body" />
+    <div v-else-if="html" class="code-preview__block" v-html="html"></div>
     <pre v-else class="code-preview__block"><code>{{ code }}</code></pre>
     <slot name="footer" />
   </div>
@@ -77,8 +81,21 @@ const copyToClipboard = async () => {
   background: var(--sp-term-chip-bg);
 }
 
-.code-preview__copy {
+.code-preview__actions {
   margin-left: auto;
+  display: flex;
+  align-items: center;
+}
+
+.code-preview__actions:empty {
+  display: none;
+}
+
+.code-preview__actions:empty + .code-preview__copy {
+  margin-left: auto;
+}
+
+.code-preview__copy {
   display: inline-flex;
   align-items: center;
   gap: 0.375rem;

@@ -1,5 +1,6 @@
 <script setup>
 import CodePreview from "./CodePreview.vue";
+import { ArrowPathIcon, PauseIcon, PlayIcon } from "@heroicons/vue/20/solid";
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useData } from "vitepress";
 
@@ -90,8 +91,14 @@ const highlightNote = (event, index) => setActiveNote(event.currentTarget.closes
 // On desktop screens too short to fit the notes list, the list is hidden and
 // each note shows as a tooltip on its marker instead. The heights are where
 // the full hero stops fitting at each column width.
+// Evenly spaced arcs in pixels, treating the motion toggle's edge as arc zero
+// so every gap, including the first, is the same. 47.5 is the centre of the
+// toggle's 1px border (48px box).
+const ARC_GAP = 56;
+const arcRadii = Array.from({ length: 13 }, (_, k) => 47.5 + (k + 1) * ARC_GAP);
+
 const compactNotesQuery =
-  "(min-width: 1175px) and (max-width: 1535px) and (max-height: 975px), (min-width: 1536px) and (max-height: 940px)";
+  "(min-width: 1175px) and (max-width: 1279px) and (max-height: 1030px), (min-width: 1280px) and (max-width: 1535px) and (max-height: 1011px), (min-width: 1536px) and (max-height: 993px)";
 const compactNotes = ref(false);
 const tooltip = ref(null);
 let hideTimer;
@@ -195,9 +202,178 @@ task say_hello {
     label: "Run",
     lang: "bash",
     code: 'sprocket run example.wdl --target say_hello greeting="Hello"',
-    html: null
+    html: null,
+    animated: true
   }
 ]);
+
+// ========================================
+// Motion: the Run card types its command and prints the output once, and the
+// arcs ripple continuously. The toggle pauses both, and reduced motion turns
+// both off (CSS shows the finished Run card before this script runs).
+// ========================================
+const runCode = steps.value[1].code;
+const plainTokens = [{ content: runCode, color: null, start: 0 }];
+let highlightedTokens = null;
+const runTokens = ref(plainTokens);
+
+const runPhase = ref("idle");
+const typedChars = ref(0);
+const outputLines = ref(0);
+const hasPlayed = ref(false);
+const tadaKey = ref(0);
+
+const paused = ref(false);
+const reducedMotion = ref(false);
+const runInView = ref(false);
+const pageVisible = ref(true);
+const canRun = computed(() => !paused.value && !reducedMotion.value && runInView.value && pageVisible.value);
+
+const visibleText = (token) => token.content.slice(0, Math.max(0, typedChars.value - token.start));
+
+// A pausable timeline: pausing keeps the time left on the current step, and a
+// generation number drops callbacks from a run that has since been restarted.
+let timer = null;
+let deadline = 0;
+let remaining = 0;
+let pending = null;
+let generation = 0;
+
+const suspend = () => {
+  if (!timer) return;
+  clearTimeout(timer);
+  timer = null;
+  remaining = Math.max(0, deadline - performance.now());
+};
+
+const resume = () => {
+  if (!pending || timer || !canRun.value) return;
+  const current = generation;
+  deadline = performance.now() + remaining;
+  timer = setTimeout(() => {
+    timer = null;
+    if (current !== generation) return;
+    const next = pending;
+    pending = null;
+    next();
+  }, remaining);
+};
+
+const schedule = (step, delay) => {
+  pending = step;
+  remaining = delay;
+  resume();
+};
+
+// Slight, repeatable variation so the typing doesn't feel mechanical.
+const typingDelay = (index) => 28 + ((index * 7) % 5) * 6;
+
+const typeNext = () => {
+  typedChars.value += 1;
+  if (typedChars.value < runCode.length) {
+    schedule(typeNext, typingDelay(typedChars.value));
+  } else {
+    runPhase.value = "running";
+    schedule(printNext, 650);
+  }
+};
+
+const printNext = () => {
+  outputLines.value += 1;
+  if (outputLines.value < 3) {
+    schedule(printNext, 110);
+  } else {
+    finishRun();
+  }
+};
+
+const finishRun = () => {
+  runPhase.value = "done";
+  hasPlayed.value = true;
+  tadaKey.value += 1;
+};
+
+const startRun = () => {
+  generation += 1;
+  clearTimeout(timer);
+  timer = null;
+  pending = null;
+  // Tokens are fixed for a run so late highlighting can't restyle it midway.
+  runTokens.value = highlightedTokens ?? plainTokens;
+  typedChars.value = 0;
+  outputLines.value = 0;
+  runPhase.value = "typing";
+  schedule(typeNext, 400);
+};
+
+const showFinalRun = () => {
+  generation += 1;
+  clearTimeout(timer);
+  timer = null;
+  pending = null;
+  runTokens.value = highlightedTokens ?? plainTokens;
+  typedChars.value = runCode.length;
+  outputLines.value = 3;
+  runPhase.value = "done";
+};
+
+watch(canRun, (running) => {
+  if (!running) return suspend();
+  if (runPhase.value === "idle") startRun();
+  else resume();
+});
+
+// Confetti thrown from the 🎉, spread up and out. Fixed values keep the SSR
+// and client renders identical.
+const confettiColors = ["var(--sp-wordmark-start)", "var(--sp-wordmark-middle)", "var(--sp-wordmark-end)", "var(--sp-term-focus)"];
+const confetti = Array.from({ length: 18 }, (_, index) => {
+  const angle = (-200 + index * (220 / 17)) * (Math.PI / 180);
+  const distance = 56 + ((index * 37) % 5) * 11;
+  return {
+    "--x": `${Math.round(Math.cos(angle) * distance)}px`,
+    "--y": `${Math.round(Math.sin(angle) * distance)}px`,
+    "--r": `${((index * 83) % 360) - 180}deg`,
+    "--delay": `${(index % 4) * 25}ms`,
+    "--color": confettiColors[index % confettiColors.length],
+    "--w": index % 3 === 0 ? "6px" : "4px",
+    "--h": index % 3 === 0 ? "6px" : "9px",
+    "--radius": index % 3 === 0 ? "50%" : "1px"
+  };
+});
+
+const togglePaused = () => { paused.value = !paused.value; };
+const replayRun = () => startRun();
+
+let runObserver;
+let motionQuery;
+const updateReducedMotion = () => {
+  reducedMotion.value = motionQuery.matches;
+  if (reducedMotion.value) showFinalRun();
+};
+const updatePageVisible = () => { pageVisible.value = document.visibilityState !== "hidden"; };
+
+const setRunCard = (el) => {
+  if (!el || runObserver || typeof IntersectionObserver === "undefined") return;
+  runObserver = new IntersectionObserver(([entry]) => { runInView.value = entry.isIntersecting; }, { threshold: 0.15 });
+  runObserver.observe(el);
+};
+
+onMounted(() => {
+  motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+  motionQuery.addEventListener("change", updateReducedMotion);
+  document.addEventListener("visibilitychange", updatePageVisible);
+  updatePageVisible();
+  if (typeof IntersectionObserver === "undefined") runInView.value = true;
+  updateReducedMotion();
+});
+
+onBeforeUnmount(() => {
+  generation += 1;
+  clearTimeout(timer);
+  runObserver?.disconnect();
+  motionQuery?.removeEventListener("change", updateReducedMotion);
+  document.removeEventListener("visibilitychange", updatePageVisible);
+});
 
 // Plain code renders immediately; highlighting upgrades it once Shiki and the
 // WDL grammar are available, and silently stays plain if either fails.
@@ -226,11 +402,25 @@ onMounted(async () => {
     }
 
     for (const step of steps.value) {
+      if (step.animated) continue;
       step.html = highlighter.codeToHtml(step.code, {
         lang: step.lang,
         theme: "github-dark",
         decorations: noteDecorations(step.code, step.notes)
       });
+    }
+
+    let start = 0;
+    highlightedTokens = highlighter
+      .codeToTokens(runCode, { lang: "bash", theme: "github-dark" })
+      .tokens.flat()
+      .map((token) => {
+        const entry = { content: token.content, color: token.color ?? null, start };
+        start += token.content.length;
+        return entry;
+      });
+    if (runPhase.value === "idle" || runPhase.value === "done") {
+      runTokens.value = highlightedTokens;
     }
     await nextTick();
     syncMarkerFocus(notesCard);
@@ -241,8 +431,9 @@ onMounted(async () => {
 </script>
 
 <template>
-  <section class="hero" :class="{ 'hero--compact-notes': compactNotes }" aria-labelledby="hero-title">
-    <svg class="hero__arcs" viewBox="0 0 600 600" aria-hidden="true" focusable="false">
+  <section class="hero" :class="{ 'hero--compact-notes': compactNotes, 'hero--paused': paused }"
+    aria-labelledby="hero-title">
+    <svg class="hero__arcs" aria-hidden="true" focusable="false">
       <defs>
         <linearGradient id="hero-arc-stroke" x1="0" y1="0" x2="1" y2="1">
           <stop offset="0%" stop-color="var(--sp-hero-arc-start)" />
@@ -250,10 +441,16 @@ onMounted(async () => {
           <stop offset="100%" stop-color="var(--sp-hero-arc-end)" />
         </linearGradient>
       </defs>
-      <g fill="none" stroke="url(#hero-arc-stroke)" stroke-width="1">
-        <circle v-for="i in 9" :key="i" cx="600" cy="0" :r="180 + i * 44" />
+      <g class="hero__ripple" fill="none" stroke="url(#hero-arc-stroke)" stroke-width="1">
+        <circle v-for="(r, i) in arcRadii" :key="r" cx="100%" cy="0" :r="r" :style="{ '--i': i }" />
       </g>
     </svg>
+    <button type="button" class="hero__motion-toggle" :title="`${paused ? 'Play' : 'Pause'} animation`"
+      @click="togglePaused">
+      <PlayIcon v-if="paused" aria-hidden="true" />
+      <PauseIcon v-else aria-hidden="true" />
+      <span class="hero__sr-only">{{ paused ? "Play" : "Pause" }} animation</span>
+    </button>
 
     <div class="container hero__content">
       <div class="hero__intro">
@@ -278,6 +475,7 @@ onMounted(async () => {
             Join us on Slack
           </a>
         </div>
+
       </div>
 
       <ol class="hero__steps" aria-label="Get started in three steps">
@@ -336,6 +534,54 @@ onMounted(async () => {
                   <template v-else>{{ part.value }}</template>
                 </template>
               </span>
+            </div>
+          </div>
+          <div v-else-if="step.animated" :ref="setRunCard" class="card hero__card">
+            <CodePreview :label="step.label" :lang="step.lang" :code="step.code">
+              <template #actions>
+                <button v-if="hasPlayed && !paused && !reducedMotion" type="button" class="hero__replay"
+                  :aria-disabled="runPhase !== 'done'" @click="runPhase === 'done' && replayRun()">
+                  <ArrowPathIcon aria-hidden="true" />
+                  <span>Replay</span>
+                </button>
+              </template>
+              <template #body>
+                <div class="hero__run" :class="`hero__run--${runPhase}`">
+                  <!-- The finished output, invisible, reserves the card's final height. -->
+                  <div class="hero__run-screen hero__run-screen--final" aria-hidden="true">
+                    <div class="hero__run-line"><span class="hero__run-prompt">$ </span><span
+                        v-for="token in runTokens" :key="token.start" :style="{ color: token.color }">{{
+                        token.content }}</span></div>
+                    <div class="hero__run-line">{</div>
+                    <div class="hero__run-line">{{ "  " }}<span class="hero__run-key">"say_hello.out"</span>: <span
+                        class="hero__run-string">"Hello, world!"</span></div>
+                    <div class="hero__run-line">}</div>
+                  </div>
+                  <div class="hero__run-screen hero__run-screen--live" aria-hidden="true">
+                    <div class="hero__run-line"><span class="hero__run-prompt">$ </span><span
+                        v-for="token in runTokens" :key="token.start" :style="{ color: token.color }">{{
+                        visibleText(token) }}</span><span v-if="runPhase === 'idle' || runPhase === 'typing'"
+                        class="hero__run-caret"></span></div>
+                    <div v-if="runPhase === 'running'" class="hero__run-line"><span class="hero__run-caret"></span>
+                    </div>
+                    <div v-if="outputLines >= 1" class="hero__run-line">{</div>
+                    <div v-if="outputLines >= 2" class="hero__run-line">{{ "  " }}<span
+                        class="hero__run-key">"say_hello.out"</span>: <span
+                        class="hero__run-string">"Hello, world!"</span></div>
+                    <div v-if="outputLines >= 3" class="hero__run-line">}</div>
+                  </div>
+                  <pre class="hero__sr-only"><code>$ {{ step.code }}
+{
+  "say_hello.out": "Hello, world!"
+}</code></pre>
+                </div>
+              </template>
+            </CodePreview>
+            <div v-if="tadaKey" :key="tadaKey" class="hero__tada" aria-hidden="true">
+              <div class="hero__tada-burst">
+                <span v-for="(piece, index) in confetti" :key="index" class="hero__confetti" :style="piece"></span>
+                <span class="hero__tada-emoji">🎉</span>
+              </div>
             </div>
           </div>
           <div v-else class="card hero__card">
@@ -500,9 +746,38 @@ onMounted(async () => {
   top: 0;
   right: 0;
   width: min(80vw, 760px);
-  height: auto;
-  opacity: 0.28;
+  height: min(80vw, 760px);
   pointer-events: none;
+  /* Centred on the corner the arcs radiate from, so each arc fades evenly
+     and the outermost reaches zero. */
+  -webkit-mask-image: radial-gradient(circle farthest-side at 100% 0, #000 8%, transparent 96%);
+  mask-image: radial-gradient(circle farthest-side at 100% 0, #000 8%, transparent 96%);
+}
+
+/* A slow wave travels outward across the arcs every few seconds. */
+.hero__ripple circle {
+  opacity: 0.28;
+  animation: hero-ripple 6s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 0.16s);
+}
+
+@keyframes hero-ripple {
+  0%,
+  26%,
+  100% {
+    opacity: 0.28;
+  }
+
+  11% {
+    opacity: 0.7;
+  }
+}
+
+.hero--paused .hero__ripple circle,
+.hero--paused .hero__run-caret,
+.hero--paused .hero__tada-emoji,
+.hero--paused .hero__confetti {
+  animation-play-state: paused;
 }
 
 .hero__content {
@@ -605,6 +880,43 @@ onMounted(async () => {
   border-color: var(--sp-home-button-secondary-hover-border);
 }
 
+/* A quarter circle in the corner the arcs radiate from, like one more arc
+   inside the smallest. */
+.hero__motion-toggle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  display: grid;
+  place-items: start end;
+  /* Pixels, so its edge stays on the arc grid. */
+  width: 48px;
+  height: 48px;
+  padding: 0.75rem;
+  border: 1px solid var(--sp-home-button-secondary-border);
+  border-width: 0 0 1px 1px;
+  border-bottom-left-radius: 100%;
+  background: var(--sp-home-button-secondary-bg);
+  color: var(--sp-text-1);
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.hero__motion-toggle svg {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.hero__motion-toggle:hover {
+  background: var(--sp-home-button-secondary-hover-bg);
+  border-color: var(--sp-home-button-secondary-hover-border);
+}
+
+.hero__motion-toggle:focus-visible {
+  outline: 2px solid var(--sp-focus);
+  outline-offset: -3px;
+}
+
 .hero__slack-icon {
   display: inline-block;
   width: 1.2em;
@@ -660,6 +972,188 @@ onMounted(async () => {
   position: relative;
   padding: 0.875rem 1rem 1rem;
   background: var(--sp-term-card-bg-strong);
+}
+
+/* ========================================
+  Run card: types the command, then prints the output
+  ======================================== */
+.hero__replay {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-height: 2rem;
+  padding: 0.375rem 0.5rem;
+  border-radius: 6px;
+  color: var(--sp-term-text-2);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: background-color 0.2s, opacity 0.2s;
+}
+
+.hero__replay svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.hero__replay:hover {
+  background-color: var(--sp-term-hover);
+}
+
+.hero__replay:focus-visible {
+  outline: 2px solid var(--sp-term-focus);
+  outline-offset: 2px;
+}
+
+.hero__replay[aria-disabled="true"] {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.hero__replay[aria-disabled="true"]:hover {
+  background-color: transparent;
+}
+
+.hero__run {
+  display: grid;
+  color: var(--sp-term-text);
+  font-family: var(--sp-font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.hero__run-screen {
+  grid-area: 1 / 1;
+  min-width: 0;
+}
+
+.hero__run-screen--final {
+  visibility: hidden;
+}
+
+.hero__run-prompt {
+  color: var(--sp-term-token-prompt);
+  user-select: none;
+}
+
+.hero__run-key {
+  color: var(--sp-term-token-key);
+}
+
+.hero__run-string {
+  color: var(--sp-term-token-string);
+}
+
+.hero__run-caret {
+  display: inline-block;
+  width: 0.55em;
+  height: 1.15em;
+  margin-left: 1px;
+  vertical-align: text-bottom;
+  background: var(--sp-term-text-2);
+  animation: hero-caret 1.1s steps(1) infinite;
+}
+
+.hero__run--typing .hero__run-caret {
+  animation: none;
+}
+
+@keyframes hero-caret {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* When the run finishes, a 🎉 pops up beside the output and throws confetti,
+   kept within the card. */
+.hero__tada {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.hero__tada-burst {
+  position: absolute;
+  right: 1.25rem;
+  bottom: 0.75rem;
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.hero__tada-emoji {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 1.875rem;
+  line-height: 1;
+  animation: hero-tada 2.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes hero-tada {
+  0% {
+    opacity: 0;
+    transform: scale(0.2) rotate(-30deg);
+  }
+
+  18% {
+    opacity: 1;
+    transform: scale(1.25) rotate(8deg);
+  }
+
+  30%,
+  75% {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(0.9) rotate(0);
+  }
+}
+
+.hero__confetti {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--w);
+  height: var(--h);
+  margin: calc(var(--h) / -2) 0 0 calc(var(--w) / -2);
+  border-radius: var(--radius);
+  background: var(--color);
+  opacity: 0;
+  animation: hero-confetti 1.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(120ms + var(--delay));
+}
+
+@keyframes hero-confetti {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0) scale(0.4);
+  }
+
+  60% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(var(--x), calc(var(--y) + 28px)) rotate(var(--r)) scale(1);
+  }
+}
+
+.hero__sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 .hero__tooltip {
@@ -726,7 +1220,8 @@ onMounted(async () => {
   }
 
   .hero__card :deep(.code-preview__block),
-  .hero__card :deep(.code-preview__block pre) {
+  .hero__card :deep(.code-preview__block pre),
+  .hero__run {
     line-height: 1.45;
   }
 
@@ -741,7 +1236,8 @@ onMounted(async () => {
   }
 
   .hero--compact-notes .hero__card :deep(.code-preview__block),
-  .hero--compact-notes .hero__card :deep(.code-preview__block pre) {
+  .hero--compact-notes .hero__card :deep(.code-preview__block pre),
+  .hero--compact-notes .hero__run {
     line-height: 1.4;
   }
 
@@ -758,10 +1254,12 @@ onMounted(async () => {
     outline-offset: 2px;
   }
 
+  /* Leaves room for the motion toggle in the corner. */
   .hero__content {
     grid-template-columns: minmax(0, 1fr) minmax(0, 30rem);
     align-items: center;
     gap: 3.5rem;
+    padding-right: 3rem;
   }
 }
 
@@ -769,6 +1267,7 @@ onMounted(async () => {
   .hero__content {
     grid-template-columns: minmax(0, 1fr) minmax(0, 36rem);
     gap: 4.5rem;
+    padding-right: 3.5rem;
   }
 }
 
@@ -786,6 +1285,23 @@ onMounted(async () => {
 
   .hero__btn--primary span {
     transition: none;
+  }
+
+  .hero__ripple circle,
+  .hero__run-caret {
+    animation: none;
+  }
+
+  /* Show the finished Run card, even before the script has run. */
+  .hero__run-screen--final {
+    visibility: visible;
+  }
+
+  .hero__run-screen--live,
+  .hero__motion-toggle,
+  .hero__replay,
+  .hero__tada {
+    display: none;
   }
 }
 </style>
