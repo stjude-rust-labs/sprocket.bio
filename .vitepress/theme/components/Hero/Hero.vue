@@ -562,7 +562,7 @@ onMounted(async () => {
                         v-for="token in runTokens" :key="token.start" :style="{ color: token.color }">{{
                         visibleText(token) }}</span><span v-if="runPhase === 'idle' || runPhase === 'typing'"
                         class="hero__run-caret"></span></div>
-                    <div v-if="runPhase === 'running'" class="hero__run-line"><span class="hero__run-caret"></span>
+                    <div v-if="runPhase === 'running' && outputLines === 0" class="hero__run-line"><span class="hero__run-caret"></span>
                     </div>
                     <div v-if="outputLines >= 1" class="hero__run-line">{</div>
                     <div v-if="outputLines >= 2" class="hero__run-line">{{ "  " }}<span
