@@ -67,7 +67,7 @@ onBeforeUnmount(() => {
         <div class="engine__intro">
           <p class="typo-body1 engine__subtitle">Sprocket is built for speed and efficiency, orchestrating complex
             WDL-based workflows with the power of high-performance computing.</p>
-          <a href="/overview" class="typo-btn engine__link">
+          <a href="/getting-started/introduction" class="typo-btn engine__link">
             Explore documentation <span aria-hidden="true">→</span>
           </a>
         </div>

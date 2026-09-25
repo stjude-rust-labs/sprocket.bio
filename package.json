@@ -5,6 +5,8 @@
     "docs:build": "vitepress build",
     "docs:preview": "vitepress preview",
     "docs:a11y": "node scripts/a11y.mjs",
+    "docs:check-redirects": "node scripts/check-redirects.mjs",
+    "reference": "node scripts/generate-reference.mjs",
     "og:image": "node scripts/og-image/render.mjs"
   },
   "devDependencies": {

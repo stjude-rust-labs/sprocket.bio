@@ -114,6 +114,11 @@
   margin-top: 0;
 }
 
+/* Avoid single-word last lines in running text. */
+.sp-doc :is(p, li, td, blockquote, figcaption) {
+  text-wrap: pretty;
+}
+
 .sp-doc strong {
   font-weight: 600;
   color: var(--sp-text-strong);

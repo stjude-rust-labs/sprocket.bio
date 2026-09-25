@@ -5,8 +5,8 @@ import Engine from './Engine.vue'
 import Community from './Community.vue'
 
 const links = [
-  { text: 'Documentation', href: '/overview' },
-  { text: 'Installation', href: '/installation' },
+  { text: 'Documentation', href: '/getting-started/introduction' },
+  { text: 'Installation', href: '/getting-started/installation' },
   { text: 'Changelog', href: 'https://github.com/stjude-rust-labs/sprocket/blob/main/CHANGELOG.md' },
   { text: 'GitHub', href: 'https://github.com/stjude-rust-labs/sprocket' },
   { text: 'Slack', href: 'https://join.slack.com/t/openwdl/shared_invite/zt-ctmj4mhf-cFBNxIiZYs6SY9HgM9UAVw' }

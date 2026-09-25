@@ -284,7 +284,7 @@ onBeforeUnmount(() => {
                 exits with a non-zero code, so the same check can guard your CI, and <code>sprocket format</code>
                 keeps every file in one style.
               </p>
-              <a href="/subcommands/check-lint" class="typo-btn stage__link">Read about check and lint <span
+              <a href="/reference/cli/check-lint" class="typo-btn stage__link">Read about check and lint <span
                   aria-hidden="true">→</span></a>
             </div>
             <div class="stage__artifact window">
@@ -318,7 +318,7 @@ onBeforeUnmount(() => {
                 and lists validation and lint problems as you edit. It also adds WDL syntax highlighting and
                 snippets. For Neovim, use <code>sprocket.nvim</code>.
               </p>
-              <a href="/vscode/getting-started" class="typo-btn stage__link">Set up the editor extension <span
+              <a href="/integrations/vscode" class="typo-btn stage__link">Set up the editor extension <span
                   aria-hidden="true">→</span></a>
             </div>
             <figure class="stage__artifact window problems"
@@ -387,7 +387,7 @@ onBeforeUnmount(() => {
                   <img :src="platform.icon" alt="" class="chip__icon">{{ platform.label }}
                 </li>
               </ul>
-              <a href="/guided-tour" class="typo-btn stage__link">Take the guided tour <span
+              <a href="/getting-started/guided-tour" class="typo-btn stage__link">Take the guided tour <span
                   aria-hidden="true">→</span></a>
             </div>
             <div class="stage__artifact window">
@@ -421,7 +421,7 @@ onBeforeUnmount(() => {
                   <img :src="service.icon" alt="" class="chip__icon">{{ service.label }}
                 </li>
               </ul>
-              <a href="/configuration/backends/overview" class="typo-btn stage__link">Configure a backend <span
+              <a href="/reference/backends/overview" class="typo-btn stage__link">Configure a backend <span
                   aria-hidden="true">→</span></a>
             </div>
             <div class="stage__artifact window">
@@ -496,7 +496,7 @@ onBeforeUnmount(() => {
                 from Python with <code>sprocket-bio</code>, use the <code>wdl</code> crate in Rust, or submit runs
                 to the experimental Sprocket server over its REST API.
               </p>
-              <a href="/python-bindings" class="typo-btn stage__link">Start with the Python bindings <span
+              <a href="/integrations/python" class="typo-btn stage__link">Start with the Python bindings <span
                   aria-hidden="true">→</span></a>
             </div>
             <div class="stage__artifact window">

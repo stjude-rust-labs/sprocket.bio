@@ -9,6 +9,8 @@ After a new Sprocket release, perform the following steps:
    changed subcommands, CLI flags, configuration options, and features, as well as
    regenerating any embedded `sprocket <command> --help` output that has changed.
 3. Update the Sprocket version in `.vitepress/config.mts`.
-4. Update the version references in `installation.md`.
-5. Commit and push the release branch, then open a ready pull request to `main`.
+4. Regenerate the reference pages with
+   `pnpm reference /path/to/sprocket` using the new release binary.
+5. Update the version references in `getting-started/installation.md`.
+6. Commit and push the release branch, then open a ready pull request to `main`.
    Merge only after all required checks and reviews pass.

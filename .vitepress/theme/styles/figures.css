@@ -1,0 +1,130 @@
+/**
+ * Documentation figures
+ * --------------------------------------------------------------------------
+ * Shared primitives for the hand-authored inline SVG diagrams that live in
+ * .vitepress/theme/components/figures. Every colour comes from a semantic
+ * token so the figures follow the light and dark themes.
+ *
+ * Each figure ships two layouts: a wide one for the content column and a
+ * narrow, stacked one for phones. The wide layouts use a 720 unit viewBox in
+ * a ~640px column, so they render at ~0.89x; their type sizes are scaled up
+ * to compensate. The narrow layouts are drawn 1:1 at 320 units.
+ *
+ * Type sizes are set once here, per layout, through custom properties so the
+ * same role reads at the same size in every figure.
+ */
+
+.sp-figure {
+  margin: 2rem 0;
+}
+
+.sp-figure__body {
+  display: flex;
+  justify-content: center;
+}
+
+.sp-figure svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  font-family: var(--sp-font-body);
+
+  --sp-fig-size-title: 16px;
+  --sp-fig-size-label: 15px;
+  --sp-fig-size-note: 13.5px;
+}
+
+.sp-figure svg.sp-fig--wide {
+  max-width: var(--sp-content-max);
+}
+
+.sp-figure svg.sp-fig--narrow {
+  display: none;
+  max-width: 20rem;
+
+  --sp-fig-size-title: 14px;
+  --sp-fig-size-label: 13px;
+  --sp-fig-size-note: 12px;
+}
+
+@media (max-width: 700px) {
+  .sp-figure svg.sp-fig--wide {
+    display: none;
+  }
+
+  .sp-figure svg.sp-fig--narrow {
+    display: block;
+  }
+}
+
+.sp-figure figcaption {
+  margin-top: 0.875rem;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--sp-text-3);
+}
+
+/* SVG primitives ---------------------------------------------------------- */
+
+.sp-fig-panel {
+  fill: var(--sp-bg-soft);
+  stroke: var(--sp-border-strong);
+  stroke-width: 1.25;
+}
+
+.sp-fig-box {
+  fill: var(--sp-bg-elev);
+  stroke: var(--sp-border-strong);
+  stroke-width: 1.25;
+}
+
+.sp-fig-box--accent {
+  fill: var(--sp-accent-soft);
+  stroke: var(--sp-accent);
+  stroke-width: 1.5;
+}
+
+.sp-fig-group {
+  fill: none;
+  stroke: var(--sp-border-strong);
+  stroke-width: 1.25;
+  stroke-dasharray: 5 4;
+}
+
+.sp-fig-title {
+  fill: var(--sp-text-strong);
+  font-size: var(--sp-fig-size-title);
+  font-weight: 600;
+}
+
+.sp-fig-label {
+  fill: var(--sp-text-1);
+  font-size: var(--sp-fig-size-label);
+}
+
+.sp-fig-note {
+  fill: var(--sp-text-3);
+  font-size: var(--sp-fig-size-note);
+}
+
+.sp-fig-note--accent {
+  fill: var(--sp-accent);
+}
+
+.sp-fig-mono {
+  fill: var(--sp-text-1);
+  font-family: var(--sp-font-mono);
+  font-size: var(--sp-fig-size-note);
+}
+
+.sp-fig-edge {
+  fill: none;
+  stroke: var(--sp-border-strong);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.sp-fig-arrow {
+  fill: var(--sp-border-strong);
+}

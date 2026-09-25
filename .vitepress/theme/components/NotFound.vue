@@ -13,7 +13,7 @@ defineEmits<{ 'open-search': [] }>()
       The link may be out of date, or the page may have moved.
     </p>
     <div class="not-found__actions">
-      <a class="not-found__action not-found__action--primary" :href="withBase('/overview')">
+      <a class="not-found__action not-found__action--primary" :href="withBase('/getting-started/introduction')">
         Read the docs
         <ArrowRightIcon class="sp-icon-16" />
       </a>

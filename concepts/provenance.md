@@ -6,23 +6,24 @@ description: "How Sprocket records every workflow run in a SQLite database and o
 
 Sprocket automatically tracks all workflow executions in a SQLite database while
 maintaining an organized filesystem structure for outputs. Both `sprocket run`
-and `sprocket dev server` share the same execution engine and output structure, so
+and `sprocket dev server` share the same
+[execution engine](/concepts/execution-model) and output structure, so
 the concepts described here apply equally to both commands.
 
-> [!NOTE]
->
-> Provenance is a well-established research area within scientific workflow
-> systems. Formal models such as the
-> [W3C PROV](https://www.w3.org/TR/prov-overview/) family and its
-> workflow-oriented extension
-> [ProvONE](https://purl.dataone.org/provone-v1-dev) define rich vocabularies
-> for describing data lineage, activity chains, and agent relationships (cf.
-> [Ludäscher et al., 2016](https://link.springer.com/chapter/10.1007/978-3-319-40226-0_7);
-> [Deelman et al., 2018](https://journals.sagepub.com/doi/abs/10.1177/1094342017704893)).
-> Sprocket uses the term "provenance" more loosely here to describe its
-> execution tracking capabilities—recording what was run, with which inputs,
-> when, and by whom—rather than implementing the full data lineage and
-> dependency tracking described in those formal models.
+::: info Note
+Provenance is a well-established research area within scientific workflow
+systems. Formal models such as the
+[W3C PROV](https://www.w3.org/TR/prov-overview/) family and its
+workflow-oriented extension
+[ProvONE](https://purl.dataone.org/provone-v1-dev) define rich vocabularies
+for describing data lineage, activity chains, and agent relationships (cf.
+[Ludäscher et al., 2016](https://link.springer.com/chapter/10.1007/978-3-319-40226-0_7);
+[Deelman et al., 2018](https://journals.sagepub.com/doi/abs/10.1177/1094342017704893)).
+Sprocket uses the term "provenance" more loosely here to describe its
+execution tracking capabilities—recording what was run, with which inputs,
+when, and by whom—rather than implementing the full data lineage and
+dependency tracking described in those formal models.
+:::
 
 For design details, see [RFC #3](https://github.com/stjude-rust-labs/rfcs/pull/3).
 
@@ -40,7 +41,9 @@ history of inputs, outputs, and individual task attempts. This structure is
 append-only—Sprocket never modifies or removes previous runs—so it serves as
 a reliable audit trail. When a workflow is run multiple times, each execution
 receives its own timestamped directory, and the complete set of attempts is
-always available for inspection.
+always available for inspection. The internal layout of `runs/` is not a
+stable interface, though; see
+[Querying execution history](#querying-execution-history).
 
 The **`index/`** directory is an optional, user-curated view layered on top of
 the runs. When the `--index-on` flag is provided, Sprocket creates symlinks
@@ -148,11 +151,11 @@ without needing to know the exact timestamp.
 ls out/runs/my_workflow/_latest/
 ```
 
-> [!NOTE]
->
-> On Windows, creating symlinks may require administrator privileges or
-> Developer Mode. If symlink creation fails, the `_latest` symlink will be
-> omitted but workflow execution will continue normally.
+::: info Note
+On Windows, creating symlinks may require administrator privileges or
+Developer Mode. If symlink creation fails, the `_latest` symlink will be
+omitted but workflow execution will continue normally.
+:::
 
 ## Provenance database
 
@@ -161,6 +164,15 @@ The `sprocket.db` SQLite database tracks all workflow executions, including:
 - **Sessions**: Groups of related workflow submissions.
 - **Runs**: Individual workflow executions with inputs, outputs, and status.
 - **Tasks**: Individual task executions within a workflow run.
+
+::: warning Do not read the database directly
+`sprocket.db` is internal to Sprocket. Its schema is not covered by any
+backwards compatibility guarantee and may change in any release, without
+notice or a migration path for outside tools. Don't query it with SQLite
+tools or build scripts, dashboards, or other integrations on top of it. Use
+the `sprocket dev server` [run management commands](/reference/cli/dev/server#managing-runs)
+or the [REST API](/reference/rest-api) instead.
+:::
 
 ## Run contents
 
@@ -172,7 +184,7 @@ the following:
 | `output.log` | Log of all messages emitted during the run |
 | `inputs.json` | Serialized inputs provided for the run |
 | `outputs.json` | Serialized outputs produced by the run |
-| `apptainer-images/` | Cached SIF container images pulled during the run (Apptainer backends only) |
+| `apptainer-images/` | Cached SIF container images pulled during the run (Apptainer backends only; see [Containers](/concepts/containers#image-caching)) |
 | `tmp/` | Temporary files used during input localization |
 | `attempts/` | Directory containing attempt subdirectories (task runs) |
 | `calls/` | Directory containing per-task-call subdirectories (workflow runs) |
@@ -249,16 +261,27 @@ sprocket run pipeline_b.wdl -o ./pipeline-b-out ...
 
 ### Querying execution history
 
-The REST API (available via `sprocket dev server start`) is the recommended way to query
-execution history. The API provides endpoints for listing sessions, runs, and
-tasks with filtering capabilities. See the
-[server documentation](/subcommands/server) for endpoint details and the
-interactive Swagger UI at `/api/v1/swagger-ui` for exploration.
+Use Sprocket to query execution history, not the files it writes. There are two
+supported ways:
 
-Avoid parsing the `runs/` directory structure directly for programmatic access.
-The layout within `runs/` is an implementation detail that may evolve, whereas
-the API provides a stable interface. The `index/` directory, on the other hand,
-is user-assembled via `--index-on` and is designed to be consumed directly.
+- The `sprocket dev server` [run management commands](/reference/cli/dev/server#managing-runs)
+  (`status`, `inspect`, `cancel`, and `retry`).
+- The [REST API](/reference/rest-api), available via `sprocket dev server start`.
+  It has endpoints for listing sessions, runs, and tasks with filtering. See the
+  [server documentation](/reference/cli/dev/server) for endpoint details and the
+  interactive Swagger UI at `/api/v1/swagger-ui` for exploration.
+
+::: warning The database and `runs/` layout are internal
+Neither the [provenance database](#provenance-database) nor the internal
+structure of the `runs/` directory is covered by backwards compatibility
+guarantees. File names, directory nesting, and the database schema are
+implementation details that may change in any release. Don't parse `runs/` or
+query `sprocket.db` in scripts, pipelines, or other tools; anything built on them
+may break when you upgrade Sprocket.
+:::
+
+The `index/` directory, on the other hand, is user-assembled via `--index-on`
+and is designed to be consumed directly.
 
 ### Backing up provenance data
 
