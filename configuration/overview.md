@@ -8,9 +8,8 @@ resolving configuration.
 While configuration is something we intend to put more effort into solving in
 the future, our existing documentation on what configuration options exist is
 lacking at the moment. You can expect this documentation to be updated as we
-make progress in that area. In the meantime, the best way to see what options
-are available is to [look at the `Config` struct in the source
-code](https://github.com/stjude-rust-labs/sprocket/blob/main/src/config.rs).
+make progress in that area. In the meantime, run `sprocket config schema` to see
+the options and types supported by your installed version.
 
 ## Load order
 
@@ -43,7 +42,7 @@ channels (listed in order of the relative priority during loading).
 
 To determine how your configuration resolves in your current environment, you can use
 the `sprocket config resolve` to print it. The default configuration can be written out
-using the `sprocket config init` command.
+using the `sprocket config default` command.
 
 ## Incremental application
 
@@ -59,7 +58,7 @@ working directory.
 
 ```toml
 [format]
-indentation_size = 4
+indent = 4
 
 [check]
 except = ['ContainerUri']
@@ -70,26 +69,27 @@ environment variable.
 
 ```toml
 [format]
-indentation_size = 2
+indent = 2
 
 [check]
 except = ['SnakeCase']
 ```
 
 The configuration provided by `$SPROCKET_CONFIG` would take priority over the
-configuration in your home directory (as defined in the list at the top of this guide),
-leaving you with the following final configuration.
+configuration in your current working directory, leaving you with the following
+final configuration.
 
 ```toml
 [format]
 # Because this is a single-value configuration setting, the value provided in
-# your home directory is overwritten by the one in provided in
+# your current working directory is overwritten by the one provided in
 # `$SPROCKET_CONFIG`.
-indentation_size = 2
+indent = 2
 
 [check]
 # Because this is a list configuration setting, the values provided in
-# `$SPROCKET_CONFIG` are appended to those provided in your home directory.
+# `$SPROCKET_CONFIG` are appended to those provided in your current working
+# directory.
 except = ['ContainerUri', 'SnakeCase']
 ```
 
@@ -149,4 +149,3 @@ See the [check/lint](/subcommands/check-lint.md) page.
 ## `sprocket dev doc` configuration
 
 See the [doc](/subcommands/doc.md#configuration) page.
-

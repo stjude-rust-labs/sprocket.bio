@@ -6,12 +6,23 @@ When running `sprocket format`, you must choose whether you want to `check`
 the files (useful for continuous integration), `overwrite` the files with their
 formatted versions, or `view` a single formatted document on STDOUT.
 
+::: warning Compatibility
+The exact layout produced by the formatter may change in any release. A file
+that passes `sprocket format check` in one release may fail in a later release
+until you reformat it. The `format` subcommands, their options, configuration
+keys documented on this site, and the meanings of their exit statuses remain
+stable from Sprocket `1.0`.
+:::
+
 There are a number of options for formatting that can be configured: either via
-`format` key in your `sprocket.toml` (see the `FormatConfig` struct in [the
-configuration source
-code](https://github.com/stjude-rust-labs/sprocket/blob/main/src/config.rs) for
-a full list of options) or via the various command line flags made available on
-the subcommand.
+the `format` key in your `sprocket.toml` or via command-line options. Run
+`sprocket config schema` to see the complete set of formatting keys and types
+supported by your installed Sprocket version.
+
+`sprocket format check` exits with status `0` when every checked file matches
+the current formatter. It exits with status `1` when a file needs reformatting
+or the check cannot complete, and status `2` when the command line or one of its
+arguments is invalid.
 
 ## Input formatting
 
