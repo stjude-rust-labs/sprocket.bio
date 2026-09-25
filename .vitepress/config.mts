@@ -155,7 +155,7 @@ const softwareJsonLd = {
 export default defineConfigWithTheme<SprocketThemeConfig>({
   title: "Sprocket | St. Jude Rust Labs",
   description: siteDescription,
-  srcExclude: ["RELEASE.md"],
+  srcExclude: ["README.md", "RELEASE.md"],
   cleanUrls: true,
   head: [
     ["link", { rel: "icon", type: "image/png", href: "/favicon.png" }],
