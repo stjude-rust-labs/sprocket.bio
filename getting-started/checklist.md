@@ -68,7 +68,8 @@ development environment, CI pipeline, and workflow execution set up.
 - [ ] **Add the GitHub Action.** Add the
   [Sprocket GitHub Action](https://github.com/stjude-rust-labs/sprocket-action)
   to your CI pipeline so that linting and formatting are checked on every pull
-  request.
+  request. If the formatting check starts failing after an upgrade, reformat your
+  files.
 
 - [ ] **Validate inputs in CI.** Run
   [`sprocket validate`](/reference/cli/validate) against the input files you

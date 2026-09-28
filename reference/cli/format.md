@@ -10,12 +10,24 @@ When running `sprocket format`, you must choose whether you want to `check`
 the files (useful for continuous integration), `overwrite` the files with their
 formatted versions, or `view` a single formatted document on STDOUT.
 
+::: warning Compatibility
+The formatter's output may change in any release, so a file that passes
+`sprocket format check` may fail after an upgrade until you reformat it. The
+subcommands, options, documented configuration keys, and exit statuses are
+stable from Sprocket `1.0`.
+:::
+
 Formatting can be configured through the
 [`[format]` table](/reference/configuration#format) in `sprocket.toml` or
 through the command-line flags shown by `sprocket format --help`. See the
 [`wdl-format` configuration
 source](https://github.com/stjude-rust-labs/sprocket/blob/main/crates/wdl-format/src/config.rs)
 for the complete list of settings.
+
+`sprocket format check` exits with status `0` when every checked file matches
+the current formatter. It exits with status `1` when a file needs reformatting
+or the check cannot complete, and status `2` when the command line or one of its
+arguments is invalid.
 
 ## Line fitting
 

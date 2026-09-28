@@ -44,7 +44,7 @@ export const redirects: Redirect[] = [
     from: "/project-status",
     to: "/about/project-status",
     anchors: {
-      ...same("/about/project-status", ["project-status", "stability-across-the-project", "release-cadence", "upgrading-between-versions"]),
+      ...same("/about/project-status", ["project-status", "release-cadence", "upgrading-between-versions"]),
       "getting-help": "/about/community#community-and-support",
     },
   },
