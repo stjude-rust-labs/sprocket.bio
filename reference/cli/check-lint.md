@@ -176,34 +176,64 @@ Select lint tags with `tags` and exclude individual rule IDs or whole tags with
 | `except` | List | `[]` | Exclude rule IDs or tags from running. |
 
 For example, to enable all lint rules except
-[`ContainerUri`](/reference/lint-rules#containeruri):
+`MutableContainerTag`:
 
 ```toml
 [check]
 tags = ["All"]
-except = ["ContainerUri"]
+except = ["MutableContainerTag"]
 ```
 
 The equivalent command-line options are the repeatable `--tag <TAG>` and
 `-e, --except <RULE>` options. Command-line values are additive with values
 loaded from configuration files.
 
-## Rule configuration
+## Rule severity
 
-Some lints can be configured in the [sprocket config file] under the
-`check.lint` table. See the
-[lint and validation rule reference](/reference/lint-rules) for supported
-options and the
-[source rules list](https://github.com/stjude-rust-labs/sprocket/blob/main/crates/wdl-lint/RULES.md)
-for the source documentation.
-
-For example,
-[`ExpectedRuntimeKeys`](/reference/lint-rules#expectedruntimekeys) can be
-configured to ignore certain keys with the `allowed_runtime_keys` option:
+Every analysis and lint rule can be configured in a `[check.rules.<RULE>]` table
+in the [sprocket config file]. Each table accepts a `severity` of `off`, `note`,
+or `warning`:
 
 ```toml
-[check.lint]
+[check.rules.UnusedInput]
+severity = "note"
+
+[check.rules.MetaSections]
+severity = "warning"
+
+[check.rules.DoubleQuotes]
+severity = "off"
+```
+
+Severities can also be set from the command line with the repeatable
+`--warn <RULE>` and `--note <RULE>` options. Command-line severities override
+the configuration file, `--warn` takes precedence over `--note`, and `--except`
+takes precedence over both.
+
+A severity never opts a lint rule in: lint tags, `--except`, and a severity of
+`off` still decide which lint rules run.
+
+## Rule options
+
+Some lint rules have additional options, which are set in the rule's table.
+`sprocket explain <RULE>` lists the options for a rule. See the
+[lint and validation rule reference](/reference/lint-rules) for details on each
+rule.
+
+| Rule | Option | Description |
+|------|--------|-------------|
+| `BashSetSyntax` | `bash_set_options` | Options that must be set in `command` sections |
+| `DeclarationName` | `allowed_names` | Names to ignore |
+| `SnakeCase` | `allowed_names` | Names to ignore |
+| `UnknownRuntimeKeys` | `allowed_runtime_keys` | Runtime keys to ignore |
+
+For example, to ignore the `foo` runtime key:
+
+```toml
+[check.rules.UnknownRuntimeKeys]
 allowed_runtime_keys = ["foo"]
 ```
+
+`SnakeCase` and `DeclarationName` each have their own `allowed_names` list.
 
 [sprocket config file]: /concepts/configuration

@@ -34,11 +34,11 @@ the `except` list under `[check]`:
 lint = true
 
 [check]
-except = ["ContainerUri"]
+except = ["MutableContainerTag"]
 ```
 
 This example suppresses the
-[`ContainerUri`](/reference/lint-rules#containeruri) rule.
+`MutableContainerTag` rule.
 
 After an initial document analysis, the language server reuses unchanged
 analysis results as you edit instead of analyzing the whole document again.
