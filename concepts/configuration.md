@@ -48,7 +48,7 @@ channels (listed in order of the relative priority during loading).
 
 To determine how your configuration resolves in your current environment, you can use
 the `sprocket config resolve` to print it. The default configuration can be written out
-using the `sprocket config init` command.
+using the `sprocket config default` command.
 
 ## Incremental application
 
@@ -64,7 +64,7 @@ working directory.
 
 ```toml
 [format]
-indentation_size = 4
+indent = 4
 
 [check]
 except = ['ContainerUri']
@@ -75,7 +75,7 @@ environment variable.
 
 ```toml
 [format]
-indentation_size = 2
+indent = 2
 
 [check]
 except = ['SnakeCase']
@@ -90,7 +90,7 @@ top of this guide), leaving you with the following final configuration.
 # Because this is a single-value configuration setting, the value provided in
 # your current working directory is overwritten by the one provided in
 # `$SPROCKET_CONFIG`.
-indentation_size = 2
+indent = 2
 
 [check]
 # Because this is a list configuration setting, the values provided in

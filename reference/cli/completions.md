@@ -11,13 +11,9 @@ description: "Reference for the sprocket completions command and how to enable s
 allowing you to use tab completion for commands and arguments.
 
 ::: warning Warning
-The interfaces of established commands are relatively settled, but Sprocket is
-still pre-1.0: commands, flags, and arguments can change between versions, and
-they change most often for the experimental commands under the `dev` namespace
-(see [project status](/about/project-status#stability-across-the-project)).
-**You will need to regenerate the shell completion script using the steps below
-each time you update `sprocket`**, so that completions match the version you
-have installed.
+Regenerate your shell completion script after every upgrade so that it matches
+your installed version. See [Project Status](/about/project-status) for how
+command interfaces change over time.
 :::
 
 To generate a completion script, use the `completions` subcommand, specifying your shell:

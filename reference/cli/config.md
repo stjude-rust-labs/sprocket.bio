@@ -7,8 +7,8 @@ description: "Initialize and inspect Sprocket configuration with the sprocket co
 Sprocket has a number of configuration options that can be initialized or
 interrogated using the `config` subcommand.
 
-`sprocket config init` generates a default configuration object and prints it to
-standard out — you can use this as the basis for customizing a Sprocket
+`sprocket config default` generates a default configuration object and prints it
+to standard out — you can use this as the basis for customizing a Sprocket
 configuration file.
 
 `sprocket config resolve` loads configuration in [the order specified on the
