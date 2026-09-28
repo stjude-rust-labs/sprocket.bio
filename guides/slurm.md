@@ -1,3 +1,7 @@
+---
+description: "An end-to-end guide to installing, configuring, and running Sprocket WDL workflows on a Slurm cluster with Apptainer."
+---
+
 # Running Sprocket on a Slurm cluster
 
 Sprocket is a workflow execution engine for the [Workflow Description
@@ -12,11 +16,6 @@ process of getting Sprocket running on a Slurm cluster: installing the binary,
 configuring the backend, running your first workflow, and tuning for production
 use. By the end, you will have Sprocket submitting containerized WDL tasks as
 Slurm jobs.
-
-> [!WARNING]
->
-> The Slurm + Apptainer backend is experimental, and its behavior and
-> configuration may change between Sprocket releases.
 
 ## Prerequisites
 
@@ -80,12 +79,12 @@ Alternatively, if a Rust toolchain is available, you can install from source:
 cargo install sprocket --locked
 ```
 
-> [!TIP]
->
-> If your site uses [environment modules](https://modules.readthedocs.io/),
-> consider creating a module file for Sprocket so users can load it with
-> `module load sprocket`. [Spack](https://spack.io/) is another common option
-> for managing software on HPC clusters.
+::: tip
+If your site uses [environment modules](https://modules.readthedocs.io/),
+consider creating a module file for Sprocket so users can load it with
+`module load sprocket`. [Spack](https://spack.io/) is another common option
+for managing software on HPC clusters.
+:::
 
 ## Setting up a shared configuration
 
@@ -112,7 +111,7 @@ that all users inherit. There are two recommended approaches:
 
 Users can still override settings by placing their own `sprocket.toml` in their
 working directory or by passing `--config` on the command line. See the
-[configuration overview](/configuration/overview) for the full load order and
+[configuration overview](/concepts/configuration) for the full load order and
 precedence rules.
 
 ## Configuring the backend
@@ -121,10 +120,6 @@ The following example configures Sprocket to use Slurm + Apptainer as its
 default backend. This is a good starting point for a shared `sprocket.toml`:
 
 ```toml
-# Enable experimental features (required for the Slurm backend).
-[run]
-experimental_features_enabled = true
-
 # Use the Slurm + Apptainer backend.
 [run.backends.default]
 type = "slurm_apptainer"
@@ -136,43 +131,18 @@ default_slurm_partition.name = "compute"
 default_slurm_partition.max_cpu_per_task = 64
 default_slurm_partition.max_memory_per_task = "96 GB"
 
-# Optional: dedicated partition for short tasks.
-# short_task_slurm_partition.name = "short"
-
-# Optional: dedicated partition for GPU tasks.
-# gpu_slurm_partition.name = "gpu"
-
-# Optional: dedicated partition for FPGA tasks.
-# fpga_slurm_partition.name = "fpga"
-
-# Additional arguments passed to `sbatch` when submitting jobs.
-# For example, set a default time limit for all jobs.
-# extra_sbatch_args = ["--time=60"]
-
-# Additional arguments passed to `apptainer exec`.
-# For example, pass `--nv` to enable GPU support inside containers.
-# extra_apptainer_exec_args = ["--nv"]
-
-# Maximum number of concurrent `sbatch` processes the backend will spawn to
-# queue tasks. Defaults to `10`. Consider raising this for large-scale
-# workflow execution.
-# max_concurrency = 10
-
 # Prefix added to every Slurm job name. Useful for identifying Sprocket jobs
 # in `squeue` output.
-# job_name_prefix = "sprocket"
+job_name_prefix = "sprocket"
 
 # Task monitor polling interval in seconds. Defaults to `30`.
-# interval = 30
-
-# Path to the Apptainer (or Singularity) executable. Defaults to `"apptainer"`.
-# Set to `"singularity"` or a full path if the executable is not on `PATH`.
-# executable = "apptainer"
-
-# Shared directory for caching pulled `.sif` images across runs. When unset,
-# images are stored per-run and not shared.
-# image_cache_dir = "/shared/containers/cache"
+interval = 30
 ```
+
+This is a minimal configuration. For every option the backend accepts —
+including short-task, GPU, and FPGA partitions, `max_concurrency`, extra
+`sbatch` and `apptainer` arguments, and conditional `sbatch` arguments — see
+the [Slurm + Apptainer backend reference](/reference/backends/slurm).
 
 ### Resource limit behavior
 
@@ -200,7 +170,8 @@ memory_limit_behavior = "deny"
 
 If `max_cpu_per_task` and `max_memory_per_task` are not set on a partition,
 these settings have no effect and Sprocket submits the task's resource request
-as-is.
+as-is. Both settings are documented with the rest of the task options in the
+[configuration guide](/concepts/configuration#overriding-task-cpu-and-memory-requirements).
 
 ## Running your first workflow
 
@@ -255,7 +226,9 @@ out/
             ├── outputs.json
             └── attempts/
                 └── 0/
+                    ├── sbatch_command
                     ├── command
+                    ├── job_id
                     ├── stdout
                     ├── stderr
                     └── work/
@@ -287,7 +260,8 @@ The `run.workflow.scatter.concurrency` setting controls how many elements within
 `scatter` block are evaluated concurrently. The default is `1000`:
 
 ```toml
-run.workflow.scatter.concurrency = 1000
+[run.workflow.scatter]
+concurrency = 1000
 ```
 
 Setting scatter concurrency too high can put pressure on the scheduler by
@@ -306,12 +280,13 @@ The preferred way to share images across runs is to set `image_cache_dir` in
 your backend configuration:
 
 ```toml
-[run.backends.default]
+[run.backends.default.apptainer]
 image_cache_dir = "/shared/containers/cache"
 ```
 
 When set, Sprocket stores pulled `.sif` images in this directory and reuses
-them for subsequent runs, avoiding repeated downloads.
+them for subsequent runs, avoiding repeated downloads. See
+[containers](/concepts/containers) for how Sprocket resolves and caches images.
 
 Alternatively, you can pre-pull images to a shared location using
 `apptainer pull` and reference the local SIF path in your WDL `container`
@@ -355,8 +330,21 @@ squeue -u $USER
 
 ### Inspecting run output
 
-Each task attempt writes its files to
-`out/runs/<target>/<timestamp>/attempts/<n>/`:
+Where a task attempt writes its files depends on what you ran. When you run a
+task directly, the attempts sit at the top level of the run directory:
+
+```
+out/runs/<target>/<timestamp>/attempts/<n>/
+```
+
+When you run a workflow, each task call gets its own directory under `calls/`
+and the attempts sit inside it:
+
+```
+out/runs/<target>/<timestamp>/calls/<task_call_id>/attempts/<n>/
+```
+
+Either way, an attempt directory contains the following:
 
 | File | Contents |
 |------|----------|
@@ -365,10 +353,14 @@ Each task attempt writes its files to
 | `stderr` | Standard error from the task |
 | `work/` | The task's working directory, containing any output files |
 
+The Slurm backend also writes the submission script it generated
+(`sbatch_command`) and the Slurm job identifier (`job_id`) next to those files.
+
 When troubleshooting a failed task, start with `stderr` and `command` to
-understand what ran and what went wrong. See the [provenance
-tracking](/concepts/provenance) documentation for a full description of the
-run directory structure.
+understand what ran and what went wrong. See [directory
+structure](/concepts/provenance#directory-structure) for a full description of
+the run directory layout, and [troubleshooting](/guides/troubleshooting) for a
+step-by-step way to work through a failed run.
 
 ### Common issues
 
@@ -390,12 +382,18 @@ run directory structure.
   on the `PATH` for Slurm jobs. If Apptainer is provided via an environment
   module, it must be loaded in the user's environment before running
   `sprocket run` so that the job inherits the correct `PATH`. You can also
-  set the `executable` option in `[run.backends.default]` to
+  set the `executable` option in `[run.backends.default.apptainer]` to
   `"singularity"` or a full path to the binary if it is not named
   `apptainer` or is not on `PATH`.
+
+See [troubleshooting](/guides/troubleshooting) for errors that are not specific
+to Slurm, and the backend's [known
+issues](/reference/backends/slurm#known-issues) for limitations to be aware of.
 
 ### Getting help
 
 If you run into problems or have feedback, join the [OpenWDL
 Slack](https://join.slack.com/t/openwdl/shared_invite/zt-ctmj4mhf-cFBNxIiZYs6SY9HgM9UAVw)
-and reach out in the `#sprocket` channel.
+and reach out in the `#sprocket` channel. See [community and
+support](/about/community) for the other places you can ask questions and
+report issues.

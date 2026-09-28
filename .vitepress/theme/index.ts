@@ -1,18 +1,16 @@
-// https://vitepress.dev/guide/custom-theme
-import { h } from 'vue'
 import type { Theme } from 'vitepress'
-import DefaultTheme from 'vitepress/theme'
-import 'spinkit/spinkit.min.css'
+import Layout from './Layout.vue'
+import ExecArchitectureFigure from './components/figures/ExecArchitectureFigure.vue'
+import ExecTaskAttemptFigure from './components/figures/ExecTaskAttemptFigure.vue'
+import ExecWorkflowGraphFigure from './components/figures/ExecWorkflowGraphFigure.vue'
 import './style.css'
 
 export default {
-  extends: DefaultTheme,
-  Layout: () => {
-    return h(DefaultTheme.Layout, null, {
-      // https://vitepress.dev/guide/extending-default-theme#layout-slots
-    })
+  Layout,
+  // Figures used from Markdown have to be registered globally.
+  enhanceApp({ app }) {
+    app.component('ExecArchitectureFigure', ExecArchitectureFigure)
+    app.component('ExecWorkflowGraphFigure', ExecWorkflowGraphFigure)
+    app.component('ExecTaskAttemptFigure', ExecTaskAttemptFigure)
   },
-  enhanceApp({ app, router, siteData }) {
-    // ...
-  }
 } satisfies Theme

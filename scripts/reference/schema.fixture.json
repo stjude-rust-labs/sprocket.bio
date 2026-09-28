@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "example": {
+      "$ref": "#/$defs/Example"
+    }
+  },
+  "$defs": {
+    "Example": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/NullableString"
+        },
+        "mode": {
+          "$ref": "#/$defs/Mode"
+        },
+        "weights": {
+          "$ref": "#/$defs/Weights"
+        }
+      }
+    },
+    "NullableString": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "Mode": {
+      "type": "string",
+      "enum": [
+        "fast",
+        "safe"
+      ]
+    },
+    "Weights": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "integer"
+      }
+    },
+    "Recursive": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string"
+        },
+        "child": {
+          "$ref": "#/$defs/Recursive"
+        }
+      }
+    }
+  }
+}

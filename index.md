@@ -1,9 +1,3 @@
 ---
-layout: page
-sidebar: false
+layout: home
 ---
-<script setup>
-    import HomePage from './.vitepress/theme/components/Homepage.vue'
-</script>
-
-<HomePage />

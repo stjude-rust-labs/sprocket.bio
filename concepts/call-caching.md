@@ -1,0 +1,226 @@
+---
+description: "Speed up reruns with Sprocket's call cache, which reuses task results when a task is called again with the same inputs."
+---
+
+# Call Cache
+
+Sprocket has support for caching task execution results for later reuse when a
+task is called again with the same inputs.
+
+By reusing a cached task execution result, a previously failed workflow run can
+be resumed at the point of failure without having to rerun every task that
+previously succeeded.
+
+## Enabling the call cache
+
+By default, the use of the call cache is disabled (i.e. `off`).
+
+To enable Sprocket to use the call cache, add the following to your `sprocket.toml` file:
+
+```toml
+[run.task]
+cache = "on"
+```
+
+The `on` setting makes all tasks eligible for caching by default unless a task
+is hinted as being _not_ [`cacheable`](#the-cacheable-hint).
+
+Additionally, the call cache supports an `explicit` mode where only the tasks
+explicitly hinted as being [`cacheable`](#the-cacheable-hint) are eligible for
+caching.
+
+To enable this mode, add the following to your `sprocket.toml`:
+
+```toml
+[run.task]
+cache = "explicit"
+```
+
+::: tip Note
+A task's execution must succeed on the very first attempt for it to be eligible
+for the cache.
+
+If the task's execution is retried by Sprocket, the resulting task execution
+will not be cached even if it succeeds.
+
+As a task can change the evaluated command between retry attempts in WDL 1.2+,
+retries are not cached to prevent storing a mismatched command digest.
+:::
+
+## Call cache directory
+
+By default, the call cache is maintained in a subdirectory of the user's
+operating system cache directory:
+
+|Platform | Default Call Cache Directory                                      | Example                                       |
+| ------- | ----------------------------------------------------------------- | --------------------------------------------- |
+| Linux   | `$XDG_CACHE_HOME/sprocket/calls` or `$HOME/.cache/sprocket/calls` | /home/alice/.cache/sprocket/calls             |
+| macOS   | `$HOME/Library/Caches/sprocket/calls`                             | /Users/Alice/Library/Caches/sprocket/calls    |
+| Windows | `%LOCALAPPDATA%\sprocket\calls`                                   | C:\Users\Alice\AppData\Local\sprocket\calls   |
+
+The location of the call cache directory can be modified by adding the
+following to your `sprocket.toml`:
+
+```toml
+[run.task]
+cache_dir = "<path-to-cache>"
+```
+
+## The `cacheable` hint
+
+When call caching is set to `on` in your `sprocket.toml`, all tasks will be
+eligible for caching by default.
+
+To opt-out of caching for a specific task, set the `cacheable` hint to `false`:
+
+```wdl
+hints {
+    cacheable: false
+}
+```
+
+When call caching is set to `explicit` in your `sprocket.toml`, no task will be
+eligible for caching by default.
+
+To opt-in to caching a specific task, set the `cacheable` hint to `true`:
+
+```wdl
+hints {
+    cacheable: true
+}
+```
+
+For WDL versions before 1.2, substitute the `runtime` section in lieu of the
+`hints` section above.
+
+## Disabling the call cache for a run
+
+The call cache can be disabled for a specific invocation of `sprocket run` by
+specifying the `--no-call-cache` option:
+
+```bash
+$ sprocket run --no-call-cache ...
+```
+
+## Content digests
+
+The call cache makes use of content digests to detect changes to input files
+and previous output files.
+
+By default, content digests for files are calculated using a _weak_ digest that
+is based only off of file metadata (such as file size and last modified time)
+and not the actual content of the file.
+
+Calculating a weak digest is very fast as only the file's metadata needs to be 
+read. However, a file can be explicitly modified in such a way that, even 
+though the content of the file has changed, the _weak_ digest of the file does 
+not. This may lead to Sprocket using a call cache entry when instead it should 
+have been invalidated and the task executed again.
+
+Alternatively, a _strong_ digest may be used which is based off of hashing the 
+file's content with a cryptographic hash function. A _strong_ digest 
+guarantees that Sprocket will detect a change to the file's content itself, 
+even if metadata of the file remains unchanged. As the hash function must read 
+every byte in the file, calculating a _strong_ digest for very large files may 
+greatly impact performance.
+
+A _strongish_ digest offers a middle ground between the two: it hashes the
+file's size, last modified time, and the first 10 MiB of the file's contents.
+This catches changes to the beginning of a file that a _weak_ digest would miss,
+without paying the cost of reading very large files in full. As an analogy, it
+plays a similar role to Cromwell's `fingerprint` call caching strategy.
+
+You may choose which digest mode to use via the `run.task.digests` setting in 
+`sprocket.toml`. Valid values are `"weak"` (the default), `"strongish"`, and 
+`"strong"`:
+
+```toml
+[run.task]
+digests = "strong"
+```
+
+## Call cache lookup
+
+A call cache entry is looked up with the following:
+
+* The URI to the document containing the task.
+* The name of the task.
+* The evaluated _values_ of the task's `input` section.
+* The execution backend used for the task.
+
+If any of the above change, Sprocket will treat it as a different cache entry.
+
+## Call cache invalidation
+
+Additionally, a call cache entry is _invalidated_ if any of the following are
+modified:
+
+* The evaluated `command` of the task.
+* The `container` used by the task, either from the `requirements` section of
+  the task or the default used by Sprocket.
+* The `shell` used by the task, either from `sprocket.toml` or the default used
+  by Sprocket.
+* The evaluated `requirements` section of the task (WDL 1.2+).
+* The evaluated `hints` section of the task (WDL 1.2+).
+* The evaluated `runtime` section of the task (WDL < 1.2).
+* The _content_ of the `File` and `Directory` inputs to the task.
+
+A call cache entry points at the location of the previously successful run,
+specifically:
+
+* The location of the `stdout` file from the task's execution.
+* The location of the `stderr` file from the task's execution.
+* The location of the working directory from the task's execution.
+
+As a result, if the run directory of the cache entry no longer exists (or is
+modified), the cache entry is _invalidated_.
+
+Sprocket will log a message indicating which of the above have been modified
+when it detects a change.
+
+## Cache exclusion options
+
+::: warning Warning
+Excluding fields from cache checking can lead to incorrect reuse of results.
+Ensure any excluded fields do not impact the result of a task.
+:::
+
+You can exclude specific requirements, hints, or inputs from cache key
+computation. This is useful for dynamic resource allocation (where CPU or
+memory may vary between runs) or inputs that do not affect a task's output.
+
+These options are configured under `[run.task]` in your `sprocket.toml`:
+
+```toml
+[run.task]
+excluded_cache_requirements = ["cpu", "memory"]
+excluded_cache_hints = ["maxRetries"]
+excluded_cache_inputs = ["runtime_param"]
+```
+
+- `excluded_cache_requirements` — requirement keys to ignore when checking
+  cache validity. Exclusions apply retroactively to existing cache entries
+  since requirements do not affect the cache key digest.
+- `excluded_cache_hints` — hint keys to ignore when checking cache validity.
+  Like requirements, exclusions apply retroactively to existing cache entries.
+- `excluded_cache_inputs` — input keys to ignore when checking cache validity.
+  Because inputs contribute to the cache key digest, changes to this list will
+  trigger reruns of any affected tasks.
+
+::: warning Warning
+The call cache will not detect changes to the _image_ used for the task's
+execution.
+
+If the `container` requirement of the task is _mutable_ (i.e. it uses a
+_mutable_ tag), the image associated with that tag may change and not cause a
+call cache entry to be invalidated. See
+[containers](/concepts/containers#pinning-images) for how to pin an image to a
+digest.
+:::
+
+## Logged messages
+
+Sprocket will log an `INFO` level message indicating when it reuses or
+invalidates a call cache entry.
+
+Use the `-v` option to Sprocket to enable the output of these messages.
