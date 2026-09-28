@@ -188,7 +188,9 @@ The equivalent command-line options are the repeatable `--tag <TAG>` and
 `-e, --except <RULE>` options. Command-line values are additive with values
 loaded from configuration files.
 
-## Rule severity
+## Rule configuration
+
+### Severity
 
 Every analysis and lint rule can be configured in a `[check.rules.<RULE>]` table
 in the [sprocket config file]. Each table accepts a `severity` of `off`, `note`,
@@ -213,7 +215,7 @@ takes precedence over both.
 A severity never opts a lint rule in: lint tags, `--except`, and a severity of
 `off` still decide which lint rules run.
 
-## Rule options
+### Options
 
 Some lint rules have additional options, which are set in the rule's table.
 `sprocket explain <RULE>` lists the options for a rule. See the
