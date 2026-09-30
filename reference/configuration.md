@@ -88,12 +88,12 @@ Configuration for the `check` and `lint` commands.
 
 **See also:** [Check and lint command](/reference/cli/check-lint).
 
-### `except` {#check-except}
+### `disable` {#check-disable}
 
 - **Type:** array of string
 - **Default:** `[]`
 
-Rule IDs or tags to except from running.
+Rule IDs or tags to disable from running.
 
 This list is also honored by the `analyzer` subcommand.
 
@@ -124,13 +124,6 @@ Hide diagnostics with `note` severity.
 - **Default:** `false`
 
 Hide diagnostics with `warning` and `note` severity.
-
-### `tags` {#check-tags}
-
-- **Type:** array of string
-- **Default:** `[]`
-
-Set of lint tags to opt into. Leave this empty to use the default set of tags.
 
 ### `baseline` {#check-baseline}
 

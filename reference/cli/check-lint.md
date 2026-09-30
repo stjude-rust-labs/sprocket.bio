@@ -98,7 +98,7 @@ For example:
 
 ```toml
 [check]
-disabled = ["UnusedInput"]
+disable = ["UnusedInput"]
 ```
 
 Running `sprocket lint` with this configuration suppresses the `UnusedInput`
