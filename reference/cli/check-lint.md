@@ -92,13 +92,13 @@ Running `sprocket lint` with either form suppresses the `UnusedInput` warning.
 ### `sprocket.toml`
 
 In the [sprocket config file], the `check` table accepts a list of rule IDs or
-tags to except.
+tags to disable.
 
 For example:
 
 ```toml
 [check]
-except = ["UnusedInput"]
+disabled = ["UnusedInput"]
 ```
 
 Running `sprocket lint` with this configuration suppresses the `UnusedInput`
@@ -107,12 +107,12 @@ warning.
 ### CLI arguments
 
 Exceptions can also be specified from the command line with the repeatable
-`-e, --except <RULE>` option. The value can be a rule ID or tag.
+`-o, --off <RULE>` option. The value can be a rule ID or tag.
 
 For example, running:
 
 ```shell
-sprocket lint -e UnusedInput
+sprocket lint -o UnusedInput
 ```
 
 This also suppresses the `UnusedInput` warning.
@@ -165,29 +165,6 @@ regenerate the baseline.
 The Sprocket LSP also respects `sprocket-baseline.toml`, so baselined
 diagnostics are suppressed in the editor as well as in CI.
 
-## Filtering lint rules
-
-Select lint tags with `tags` and exclude individual rule IDs or whole tags with
-`except` in the `[check]` section of `sprocket.toml`:
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `tags` | List | `[]` | Opt into lint tags. An empty list uses the default set of tags. |
-| `except` | List | `[]` | Exclude rule IDs or tags from running. |
-
-For example, to enable all lint rules except
-`MutableContainerTag`:
-
-```toml
-[check]
-tags = ["All"]
-except = ["MutableContainerTag"]
-```
-
-The equivalent command-line options are the repeatable `--tag <TAG>` and
-`-e, --except <RULE>` options. Command-line values are additive with values
-loaded from configuration files.
-
 ## Rule configuration
 
 ### Severity
@@ -208,12 +185,9 @@ severity = "off"
 ```
 
 Severities can also be set from the command line with the repeatable
-`--warn <RULE>` and `--note <RULE>` options. Command-line severities override
-the configuration file, `--warn` takes precedence over `--note`, and `--except`
+`--warn <RULE>`, `--note <RULE>`, and `--off <RULE>` options. Command-line severities override
+the configuration file, `--warn` takes precedence over `--note`, and `--off`
 takes precedence over both.
-
-A severity never opts a lint rule in: lint tags, `--except`, and a severity of
-`off` still decide which lint rules run.
 
 ### Options
 

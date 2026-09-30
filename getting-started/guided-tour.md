@@ -127,10 +127,10 @@ warning[UnusedInput]: unused input `color`
    │                ^^^^^
 ```
 
-Specific lint rules can be ignored with multiple invocations of the `-e` flag.
+Specific lint rules can be ignored with multiple invocations of the `-o, --off` flag.
 
 ```shell
-sprocket lint example.wdl -e MutableContainerTag -e MetaSections
+sprocket lint example.wdl -o MutableContainerTag -o MetaSections
 ```
 
 This leaves a single diagnostic, which is that `color` is an unused workflow
