@@ -27,14 +27,14 @@ options.
 Set `lint = true` under `[analyzer]`, or pass `--lint`, to enable
 [lint rules](/reference/lint-rules). The analyzer and
 [`sprocket check`](/reference/cli/check-lint) share diagnostic exceptions from
-the `except` list under `[check]`:
+the `disabled` list under `[check]`:
 
 ```toml
 [analyzer]
 lint = true
 
 [check]
-except = ["MutableContainerTag"]
+disabled = ["MutableContainerTag"]
 ```
 
 This example suppresses the
