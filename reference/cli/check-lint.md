@@ -107,12 +107,12 @@ warning.
 ### CLI arguments
 
 Exceptions can also be specified from the command line with the repeatable
-`-o, --off <RULE>` option. The value can be a rule ID or tag.
+`--off <RULE>` option. The value can be a rule ID or tag.
 
 For example, running:
 
 ```shell
-sprocket lint -o UnusedInput
+sprocket lint --off UnusedInput
 ```
 
 This also suppresses the `UnusedInput` warning.
@@ -180,7 +180,7 @@ severity = "note"
 [check.rules.MetaSections]
 severity = "warning"
 
-[check.rules.DoubleQuotes]
+[check.rules.MutableContainerTag]
 severity = "off"
 ```
 

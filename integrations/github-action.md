@@ -93,7 +93,7 @@ with:
     action: check
     lint: true
     ignore-patterns: template,test
-    except: TrailingComma,MutableContainerTag
+    except: UnusedInput,MutableContainerTag
 ```
 
 The action `lint` can be specified and is equivalent to specifying
@@ -104,7 +104,7 @@ uses: stjude-rust-labs/sprocket-action@main
 with:
     action: lint
     ignore-patterns: template,test
-    except: TrailingComma,MutableContainerTag
+    except: UnusedInput,MutableContainerTag
 ```
 
 ### `validate`
