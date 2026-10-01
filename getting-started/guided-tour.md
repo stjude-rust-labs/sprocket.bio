@@ -104,7 +104,7 @@ note[MetaSections]: task `say_hello` is missing both `meta` and `parameter_meta`
   │
   = fix: add both the `meta` and `parameter_meta` sections
 
-note[ContainerUri]: container URI uses a mutable tag
+note[MutableContainerTag]: container URI uses a mutable tag
    ┌─ example.wdl:18:20
    │
 18 │         container: "ubuntu:latest"
@@ -127,10 +127,10 @@ warning[UnusedInput]: unused input `color`
    │                ^^^^^
 ```
 
-Specific lint rules can be ignored with multiple invocations of the `-e` flag.
+Specific lint rules can be ignored with multiple invocations of the `--off` flag.
 
 ```shell
-sprocket lint example.wdl -e ContainerUri -e MetaSections
+sprocket lint example.wdl --off MutableContainerTag --off MetaSections
 ```
 
 This leaves a single diagnostic, which is that `color` is an unused workflow

@@ -67,7 +67,7 @@ working directory.
 indent = 4
 
 [check]
-except = ['ContainerUri']
+except = ['MutableContainerTag']
 ```
 
 And the following in a configuration file pointed to by the `$SPROCKET_CONFIG`
@@ -96,7 +96,7 @@ indent = 2
 # Because this is a list configuration setting, the values provided in
 # `$SPROCKET_CONFIG` are appended to those provided in your current working
 # directory.
-except = ['ContainerUri', 'SnakeCase']
+except = ['MutableContainerTag', 'SnakeCase']
 ```
 
 ## Skipping configuration search

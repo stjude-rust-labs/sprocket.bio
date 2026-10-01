@@ -92,13 +92,13 @@ Running `sprocket lint` with either form suppresses the `UnusedInput` warning.
 ### `sprocket.toml`
 
 In the [sprocket config file], the `check` table accepts a list of rule IDs or
-tags to except.
+tags to disable.
 
 For example:
 
 ```toml
 [check]
-except = ["UnusedInput"]
+disable = ["UnusedInput"]
 ```
 
 Running `sprocket lint` with this configuration suppresses the `UnusedInput`
@@ -107,12 +107,12 @@ warning.
 ### CLI arguments
 
 Exceptions can also be specified from the command line with the repeatable
-`-e, --except <RULE>` option. The value can be a rule ID or tag.
+`--off <RULE>` option. The value can be a rule ID or tag.
 
 For example, running:
 
 ```shell
-sprocket lint -e UnusedInput
+sprocket lint --off UnusedInput
 ```
 
 This also suppresses the `UnusedInput` warning.
@@ -165,45 +165,51 @@ regenerate the baseline.
 The Sprocket LSP also respects `sprocket-baseline.toml`, so baselined
 diagnostics are suppressed in the editor as well as in CI.
 
-## Filtering lint rules
-
-Select lint tags with `tags` and exclude individual rule IDs or whole tags with
-`except` in the `[check]` section of `sprocket.toml`:
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `tags` | List | `[]` | Opt into lint tags. An empty list uses the default set of tags. |
-| `except` | List | `[]` | Exclude rule IDs or tags from running. |
-
-For example, to enable all lint rules except
-[`ContainerUri`](/reference/lint-rules#containeruri):
-
-```toml
-[check]
-tags = ["All"]
-except = ["ContainerUri"]
-```
-
-The equivalent command-line options are the repeatable `--tag <TAG>` and
-`-e, --except <RULE>` options. Command-line values are additive with values
-loaded from configuration files.
-
 ## Rule configuration
 
-Some lints can be configured in the [sprocket config file] under the
-`check.lint` table. See the
-[lint and validation rule reference](/reference/lint-rules) for supported
-options and the
-[source rules list](https://github.com/stjude-rust-labs/sprocket/blob/main/crates/wdl-lint/RULES.md)
-for the source documentation.
+### Severity
 
-For example,
-[`ExpectedRuntimeKeys`](/reference/lint-rules#expectedruntimekeys) can be
-configured to ignore certain keys with the `allowed_runtime_keys` option:
+Every analysis and lint rule can be configured in a `[check.rules.<RULE>]` table
+in the [sprocket config file]. Each table accepts a `severity` of `off`, `note`,
+or `warning`:
 
 ```toml
-[check.lint]
+[check.rules.UnusedInput]
+severity = "note"
+
+[check.rules.MetaSections]
+severity = "warning"
+
+[check.rules.MutableContainerTag]
+severity = "off"
+```
+
+Severities can also be set from the command line with the repeatable
+`--warn <RULE>`, `--note <RULE>`, and `--off <RULE>` options. Command-line severities override
+the configuration file, `--warn` takes precedence over `--note`, and `--off`
+takes precedence over both.
+
+### Options
+
+Some lint rules have additional options, which are set in the rule's table.
+`sprocket explain <RULE>` lists the options for a rule. See the
+[lint and validation rule reference](/reference/lint-rules) for details on each
+rule.
+
+| Rule | Option | Description |
+|------|--------|-------------|
+| `BashSetSyntax` | `bash_set_options` | Options that must be set in `command` sections |
+| `DeclarationName` | `allowed_names` | Names to ignore |
+| `SnakeCase` | `allowed_names` | Names to ignore |
+| `UnknownRuntimeKeys` | `allowed_runtime_keys` | Runtime keys to ignore |
+
+For example, to ignore the `foo` runtime key:
+
+```toml
+[check.rules.UnknownRuntimeKeys]
 allowed_runtime_keys = ["foo"]
 ```
+
+`SnakeCase` and `DeclarationName` each have their own `allowed_names` list.
 
 [sprocket config file]: /concepts/configuration

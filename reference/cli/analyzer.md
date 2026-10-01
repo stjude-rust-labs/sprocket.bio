@@ -27,18 +27,18 @@ options.
 Set `lint = true` under `[analyzer]`, or pass `--lint`, to enable
 [lint rules](/reference/lint-rules). The analyzer and
 [`sprocket check`](/reference/cli/check-lint) share diagnostic exceptions from
-the `except` list under `[check]`:
+the `disable` list under `[check]`:
 
 ```toml
 [analyzer]
 lint = true
 
 [check]
-except = ["ContainerUri"]
+disable = ["MutableContainerTag"]
 ```
 
 This example suppresses the
-[`ContainerUri`](/reference/lint-rules#containeruri) rule.
+`MutableContainerTag` rule.
 
 After an initial document analysis, the language server reuses unchanged
 analysis results as you edit instead of analyzing the whole document again.
