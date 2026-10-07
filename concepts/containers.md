@@ -58,11 +58,11 @@ A tag such as `ubuntu:latest` is _mutable_: the image it points at can be
 replaced at any time, so two runs months apart can run different software. A
 digest (e.g., `ubuntu@sha256:...`) always refers to one specific image.
 
-Sprocket's [`ContainerUri`](/reference/lint-rules#containeruri) lint rule flags
+Sprocket's `MutableContainerTag` lint rule flags
 mutable tags and suggests the digest form instead:
 
 ```txt
-note[ContainerUri]: container URI uses a mutable tag
+note[MutableContainerTag]: container URI uses a mutable tag
    ┌─ example.wdl:18:20
    │
 18 │         container: "ubuntu:latest"
