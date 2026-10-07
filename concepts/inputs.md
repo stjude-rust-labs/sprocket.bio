@@ -3,7 +3,7 @@ title: Inputs and Targets
 description: "How Sprocket resolves the target to run and the inputs it receives, including key=value pairs, input files, and array inputs."
 ---
 
-<!-- Sources: `sprocket run --help`, `sprocket validate --help`, and `sprocket dev server submit --help` from Sprocket v0.31.0 (ec33b7cc3) -->
+<!-- Sources: `sprocket run --help`, `sprocket validate --help`, and `sprocket dev server submit --help` from Sprocket v0.32.0 (70e29d31d) -->
 
 # Inputs and Targets
 

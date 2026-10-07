@@ -2,7 +2,7 @@
 description: "Install the sprocket-bio package from PyPI to parse and analyze WDL documents programmatically from Python."
 ---
 
-<!-- Sources: https://pypi.org/project/sprocket-bio/ (0.31.0), https://github.com/stjude-rust-labs/sprocket@v0.31.0 (python/sprocket_bio) -->
+<!-- Sources: https://pypi.org/project/sprocket-bio/ (0.32.0), https://github.com/stjude-rust-labs/sprocket@v0.32.0 (python/sprocket_bio) -->
 
 # Python Bindings
 
@@ -30,7 +30,7 @@ many common platforms and Python versions. If you install `sprocket-bio` on a pl
 not have a precompiled wheel, you will need the latest stable release of the [Rust
 compiler](https://rust-lang.org/) in order to build from source.
 
-Release 0.31.0 ships wheels for CPython 3.10 through 3.15 (including the
+Release 0.32.0 ships wheels for CPython 3.10 through 3.15 (including the
 free-threaded builds) and PyPy 3.11, covering macOS on x86-64 and Apple silicon,
 `manylinux` and `musllinux` on x86-64 and aarch64, and Windows on x86-64 and
 ARM64.

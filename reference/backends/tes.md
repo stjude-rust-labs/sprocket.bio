@@ -19,16 +19,21 @@ running a workflow on it, see the [Run with TES](/guides/tes) guide.
 
 ## Authentication
 
-The TES backend supports two authentication schemes to communicate with the TES
-API server:
+The TES backend supports three authentication schemes to communicate with the 
+TES API server:
 
 * Basic HTTP authentication (i.e. username and password)
-* Bearer token (i.e. a token sent in the HTTP `Authorization` header)
+* Bearer token (i.e. a token sent directly in the HTTP `Authorization` header)
+* [OAuth device code flow](https://auth0.com/docs/get-started/authentication-and-authorization-flow/device-authorization-flow)
 
-The TES backend does not currently support authentication schemes such as
-OAuth; if the TES API server requires a bearer token, the token itself must be
-derived through external means and specified verbatim in Sprocket's
-configuration.
+Note that for OAuth authentication, each invocation of Sprocket will perform 
+its own device authorization upon startup; access tokens granted by the OAuth 
+service are not persisted locally and will not be reused between Sprocket 
+executions.
+
+It is recommended to use OAuth authentication in conjunction with the
+`dev server` command so that a single device authorization can be shared 
+between many different workflow runs.
 
 ## Task inputs
 
@@ -71,15 +76,18 @@ The TES backend supports the following configuration:
 ```toml
 [run.backends.default]
 type = "tes"
-# The URL of the TES API server
-url = "<tes-server-url>"
-# The cloud storage URL where Sprocket will upload inputs
-inputs = "<cloud-storage-url>"
-# The cloud storage URL where the TES API server will upload outputs
-outputs = "<cloud-storage-url>"
-# The polling interval for task status updates (defaults to 1 second)
-interval = 60
-# The number of retries after encountering an error communicating with the TES server (defaults to 0 retries)
+# The task execution service API endpoint.
+service = "<service-url>"
+# The cloud storage URL where Sprocket will upload inputs; the URL must end 
+# with a slash.
+inputs = "<inputs-url>"
+# The cloud storage URL where the TES API server will upload outputs; the URL 
+# must end with a slash.
+outputs = "<outputs-url>"
+# The polling interval for task status updates (defaults to 30 second).
+interval = 30
+# The number of retries after encountering an error communicating with the TES 
+# server (defaults to 0 retries).
 retries = 0
 
 # If basic authentication is required:
@@ -92,6 +100,35 @@ password = "<password>"
 [run.backends.default.auth]
 type = "bearer"
 token = "<token>"
+
+# If OAuth authentication is required:
+[run.backends.default.auth]
+type = "oauth"
+# The OAuth client identifier for the service being accessed.
+client_id = "<client-identifier>"
+# The optional OAuth client secret.
+client_secret = "<client-secret>"
+# The optional audience for the service being accessed; defaults to the base 
+# URL of the task execution service.
+audience = "<audience>"
+# The authorization endpoint for the OAuth service.
+authorization = "<authorization-url>"
+# The token endpoint for the OAuth service.
+token = "<token-url>"
+# The list of scopes to request for authorization.
+#
+# For example, a scope of `offline_access` is common for acquiring an OAuth 
+# refresh token.
+scopes = ["<scope1>", "<scope2>", "..."]
+# Whether or not a refresh token is required; if `true` and the OAuth token 
+# endpoint does not issue a refresh token, an error is returned.
+#
+# Sprocket will automatically handle refreshing an access token if a refresh 
+# token was issued by the OAuth service.
+#
+# Note: this setting is ignored for `[server.engine...]` configuration sections 
+# as it is always required for the `dev server` command.
+require_refresh = false
 ```
 
 ::: warning

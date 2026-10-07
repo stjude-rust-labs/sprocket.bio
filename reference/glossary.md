@@ -103,7 +103,7 @@ Lint rules have tags and are enabled by `sprocket lint` or `sprocket check
 
 The experimental `sprocket.lock` file written by `sprocket dev lock`. It records
 container image manifest checksums and the time they were resolved. Sprocket
-0.31.0 does not yet consume this file during a run. See
+0.32.0 does not yet consume this file during a run. See
 [`sprocket dev lock`](/reference/cli/dev/lock).
 
 ## LSP / analyzer

@@ -16,7 +16,7 @@ suppress, or baseline rules when checking WDL, see
 
 ## Usage
 
-Sprocket 0.31.0 supports these forms:
+Sprocket 0.32.0 supports these forms:
 
 ```txt
 sprocket explain <RULE>
