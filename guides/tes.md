@@ -25,7 +25,8 @@ a workflow, and what to check while it runs.
   through the same API.
 
 - **Credentials for that server**, if it requires them. Sprocket supports basic
-  authentication and bearer tokens (see [Authentication](#authentication)).
+  authentication, bearer tokens, and OAuth device code flow (see 
+  [Authentication](#authentication)).
 
 - **A cloud storage location** that both you and the TES server can read and
   write. Sprocket uploads inputs to it and asks the server to write outputs
@@ -65,12 +66,12 @@ paths in detail.
 
 ## Authentication
 
-The TES backend supports two schemes:
+The TES backend supports three authentication schemes:
 
 - **Basic authentication** with a username and password.
 - **A token sent in the HTTP `Authorization` header**, configured with
-  `type = "bearer"`. Sprocket does not perform an OAuth exchange; obtain the
-  token by other means and put its value in the configuration.
+  `type = "bearer"`.
+- **OAuth device authorization* using an OAuth service.
 
 Storage credentials are separate from TES credentials. Configure them with the
 environment variables described on each storage page (for example
@@ -90,14 +91,14 @@ data through Amazon S3:
 ```toml
 [run.backends.default]
 type = "tes"
-# The URL of the TES API server.
-url = "https://tes.example.org"
+# The task execution service API endpoint.
+service = "https://tes.example.org"
 # Where Sprocket uploads inputs. The path must end with a slash.
 inputs = "s3://my-bucket/sprocket/inputs/"
 # Where the TES server uploads outputs. The path must end with a slash.
 outputs = "s3://my-bucket/sprocket/outputs/"
 # How often, in seconds, Sprocket polls the server for task status.
-interval = 5
+interval = 30
 # How many times to retry a failed request to the TES server.
 retries = 3
 
@@ -110,18 +111,50 @@ password = "<password>"
 
 Sprocket validates this section before the run starts:
 
-- `url`, `inputs`, and `outputs` are all required.
-- `url` must use HTTPS unless you also set `insecure = true`.
+- `service`, `inputs`, and `outputs` are all required.
+- `service` must use HTTPS unless you also set `insecure = true`.
 - `inputs` and `outputs` must use a supported cloud storage URL scheme, and
   both paths must end with a slash.
 - `max_concurrency`, if set, cannot be zero.
 
-For a token instead of a username and password, replace the `auth` table:
+To use token authentication instead, replace the `auth` table with:
 
 ```toml
 [run.backends.default.auth]
 type = "bearer"
 token = "<token>"
+```
+
+To use OAuth authentication instead, replace the `auth` table with:
+
+```toml
+[run.backends.default.auth]
+type = "oauth"
+# The OAuth client identifier for the service being accessed.
+client_id = "<client-identifier>"
+# The optional OAuth client secret.
+client_secret = "<client-secret>"
+# The optional audience for the service being accessed; defaults to the base 
+# URL of the task execution service.
+audience = "<audience>"
+# The authorization endpoint for the OAuth service.
+authorization = "<authorization-url>"
+# The token endpoint for the OAuth service.
+token = "<token-url>"
+# The list of scopes to request for authorization.
+#
+# For example, a scope of `offline_access` is common for acquiring an OAuth 
+# refresh token.
+scopes = ["<scope1>", "<scope2>", "..."]
+# Whether or not a refresh token is required; if `true` and the OAuth token 
+# endpoint does not issue a refresh token, an error is returned.
+#
+# Sprocket will automatically handle refreshing an access token if a refresh 
+# token was issued by the OAuth service.
+#
+# Note: this setting is ignored for `[server.engine...]` configuration sections 
+# as it is always required for the `dev server` command.
+require_refresh = false
 ```
 
 Every key the backend accepts is listed in the [configuration file
