@@ -165,7 +165,7 @@ export const redirects: Redirect[] = [
     from: "/subcommands/check-lint",
     to: "/reference/cli/check-lint",
     anchors: {
-      ...same("/reference/cli/check-lint", ["sprocket-check-and-sprocket-lint", "exceptions", "source-comments", "sprocket-toml", "cli-arguments", "baselines", "generating-a-baseline", "stale-entries", "editor-integration", "filtering-lint-rules", "rule-configuration"]),
+      ...same("/reference/cli/check-lint", ["sprocket-check-and-sprocket-lint", "exceptions", "source-comments", "sprocket-toml", "cli-arguments", "baselines", "generating-a-baseline", "stale-entries", "editor-integration", "rule-configuration", "severity", "options"]),
     },
   },
   {
