@@ -8,7 +8,7 @@ import { dirname, join } from 'node:path';
 import { redirects } from "./redirects.mts";
 
 // The current Sprocket release, shown in the nav and used on the homepage.
-const sprocketVersion = "0.31.0";
+const sprocketVersion = "0.32.0";
 
 const grammarUrl = "https://raw.githubusercontent.com/stjude-rust-labs/sprocket-vscode/refs/heads/main/syntaxes/wdl.tmGrammar.json";
 

@@ -54,7 +54,7 @@ jobs:
 ::: tip
 The action is also tagged to match Sprocket releases, so you can pin a version
 instead of tracking `main` — for example,
-`stjude-rust-labs/sprocket-action@v0.31.0`.
+`stjude-rust-labs/sprocket-action@v0.32.0`.
 :::
 
 If an existing repository has more diagnostics than you can fix at once,

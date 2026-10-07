@@ -957,7 +957,7 @@ export function generateReference(binary) {
     );
   }
 
-  const defaults = command(binary, ["config", "init"]);
+  const defaults = command(binary, ["config", "default"]);
   const rules = loadRules(binary);
   const tags = arrayFrom(
     parseJson(
