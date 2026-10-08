@@ -64,8 +64,8 @@ default_lsf_queue.max_memory_per_task = "96 GB"`
     icon: '/svg/tfs.svg',
     code: `[run.backends.default]
 type = "tes"
-# The URL of the TES API server
-url = "<tes-server-url>"
+# The task execution service API endpoint.
+service = "<service-url>"
 # The cloud storage URL where Sprocket will upload inputs
 inputs = "<cloud-storage-url>"
 # The cloud storage URL where the TES API server will upload outputs
