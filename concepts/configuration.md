@@ -64,7 +64,7 @@ directory.
 indent = 4
 
 [check]
-except = ['MutableContainerTag']
+disable = ['MutableContainerTag']
 ```
 
 And the following in a configuration file pointed to by the `$SPROCKET_CONFIG` environment variable.
@@ -74,7 +74,7 @@ And the following in a configuration file pointed to by the `$SPROCKET_CONFIG` e
 indent = 2
 
 [check]
-except = ['SnakeCase']
+disable = ['NamingConvention']
 ```
 
 The configuration provided by `$SPROCKET_CONFIG` would take priority over the configuration in your
@@ -92,7 +92,7 @@ indent = 2
 # Because this is a list configuration setting, the values provided in
 # `$SPROCKET_CONFIG` are appended to those provided in your current working
 # directory.
-except = ['MutableContainerTag', 'SnakeCase']
+disable = ['MutableContainerTag', 'NamingConvention']
 ```
 
 ## Skipping configuration search
