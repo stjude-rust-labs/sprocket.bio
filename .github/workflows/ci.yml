@@ -17,6 +17,13 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  markdown:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: rvben/rumdl@v0
+        with:
+          command: fmt-check
   build:
     runs-on: ubuntu-latest
     steps:
