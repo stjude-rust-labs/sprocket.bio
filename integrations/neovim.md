@@ -5,32 +5,31 @@ description: "Set up WDL language support in Neovim with the sprocket.nvim plugi
 
 <!-- Sources: https://github.com/stjude-rust-labs/sprocket.nvim@5bcd86d57b8264e2d6854c29d9d7177ecc3a7322 -->
 
-# Neovim
+## Neovim
 
-[`sprocket.nvim`](https://github.com/stjude-rust-labs/sprocket.nvim) provides
-WDL support for Neovim, powered by the Sprocket language server
+[`sprocket.nvim`](https://github.com/stjude-rust-labs/sprocket.nvim) provides WDL support for
+Neovim, powered by the Sprocket language server
 ([`sprocket analyzer`](/reference/cli/analyzer)).
 
 The plugin includes:
 
-* **LSP integration.** Completions, diagnostics, hover documentation,
-  go-to-definition, and references powered by Sprocket.
+* **LSP integration.** Completions, diagnostics, hover documentation, go-to-definition, and
+  references powered by Sprocket.
 * **Syntax highlighting.** WDL 1.0 through 1.3, via Vim regex patterns.
-* **Document formatting.** Format WDL files on save or on demand, through the
-  language server or the [`sprocket format`](/reference/cli/format) command.
+* **Document formatting.** Format WDL files on save or on demand, through the language server or the
+  [`sprocket format`](/reference/cli/format) command.
 * **Commands.** Validate, lint, and format files without leaving Neovim.
-* **Statusline component.** Show language server status in your statusline
-  (lualine and similar).
-* **Plugin integrations.** Works with `nvim-autopairs` for auto-closing
-  `<<<`/`>>>` and `~{`/`}` pairs, and with `Comment.nvim` for `#` comments.
+* **Statusline component.** Show language server status in your statusline (lualine and similar).
+* **Plugin integrations.** Works with `nvim-autopairs` for auto-closing `<<<`/`>>>` and `~{`/`}`
+  pairs, and with `Comment.nvim` for `#` comments.
 
-## Requirements
+### Requirements
 
 * Neovim 0.11 or greater.
-* The `sprocket` binary. See [Installation](/getting-started/installation), or
-  let the plugin install it for you.
+* The `sprocket` binary. See [Installation](/getting-started/installation), or let the plugin
+  install it for you.
 
-## Installation
+### Installation
 
 Install the plugin with your package manager of choice:
 
@@ -63,11 +62,11 @@ lua require("sprocket").setup({})
 
 :::
 
-### Installing Sprocket
+#### Installing Sprocket
 
-Download the latest release from [GitHub
-Releases](https://github.com/stjude-rust-labs/sprocket/releases) and make sure
-`sprocket` is on your `PATH`:
+Download the latest release from
+[GitHub Releases](https://github.com/stjude-rust-labs/sprocket/releases) and make sure `sprocket` is
+on your `PATH`:
 
 ```shell
 # Example for macOS/Linux
@@ -76,10 +75,10 @@ tar -xzf sprocket-*.tar.gz
 mv sprocket ~/.local/bin/
 ```
 
-Alternatively, enable `auto_install` in the plugin configuration to download the
-binary automatically.
+Alternatively, enable `auto_install` in the plugin configuration to download the binary
+automatically.
 
-## Configuration
+### Configuration
 
 All options, with their defaults:
 
@@ -112,10 +111,10 @@ require("sprocket").setup({
 })
 ```
 
-Setting `server.lint = true` turns on the [lint
-rules](/reference/cli/check-lint) in addition to analysis diagnostics.
+Setting `server.lint = true` turns on the [lint rules](/reference/cli/check-lint) in addition to
+analysis diagnostics.
 
-### Example with keymaps
+#### Example with keymaps
 
 ```lua
 {
@@ -151,12 +150,12 @@ rules](/reference/cli/check-lint) in addition to analysis diagnostics.
 }
 ```
 
-## Commands
+### Commands
 
 All commands use the `:Sprocket` prefix:
 
 | Command | Description |
-|---|---|
+| --- | --- |
 | `:Sprocket info` | Show version, binary path, and server status. |
 | `:Sprocket restart` | Restart the language server. |
 | `:Sprocket stop` | Stop the language server. |
@@ -167,10 +166,9 @@ All commands use the `:Sprocket` prefix:
 | `:Sprocket format [path]` | Format a WDL file. |
 | `:Sprocket log` | Open the language server log file for debugging. |
 
-## Statusline
+### Statusline
 
-Add the status component to your statusline to see language server status at a
-glance:
+Add the status component to your statusline to see language server status at a glance:
 
 ```lua
 -- lualine.nvim
@@ -184,11 +182,11 @@ require("lualine").setup({
 Icons indicate server status:
 
 * 󰗡 Running normally
-*  Warning
-*  Error
+* Warning
+* Error
 * 󰑮 Starting or loading
 
-## Health check
+### Health check
 
 Run `:checkhealth sprocket` to verify your setup. The health check reports:
 
@@ -199,15 +197,15 @@ Run `:checkhealth sprocket` to verify your setup. The health check reports:
 * Optional dependencies (`nvim-cmp`).
 * The current configuration.
 
-## Optional dependencies
+### Optional dependencies
 
 | Plugin | Benefit |
-|---|---|
+| --- | --- |
 | [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) + [cmp-nvim-lsp](https://github.com/hrsh7th/cmp-nvim-lsp) | Enhanced completion with LSP integration. |
 | [nvim-autopairs](https://github.com/windwp/nvim-autopairs) | Auto-close `<<<`/`>>>`, `~{`/`}`, and `${`/`}` pairs. |
 | [Comment.nvim](https://github.com/numToStr/Comment.nvim) | Toggle comments with `gc` mappings. |
 
-## Troubleshooting
+### Troubleshooting
 
 **The language server does not start.**
 
@@ -228,9 +226,8 @@ Run `:checkhealth sprocket` to verify your setup. The health check reports:
 2. Update Sprocket: `:Sprocket update`.
 3. Check the log: `:Sprocket log`.
 
-## Contributing
+### Contributing
 
-Contributions are welcome. File issues, request features, or open a pull request
-in the [`stjude-rust-labs/sprocket.nvim`](https://github.com/stjude-rust-labs/sprocket.nvim)
-repository. The plugin is licensed under either the Apache License 2.0 or the
-MIT license, at your option.
+Contributions are welcome. File issues, request features, or open a pull request in the
+[`stjude-rust-labs/sprocket.nvim`](https://github.com/stjude-rust-labs/sprocket.nvim) repository.
+The plugin is licensed under either the Apache License 2.0 or the MIT license, at your option.

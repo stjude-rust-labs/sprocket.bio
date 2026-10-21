@@ -1,0 +1,9 @@
+flavor = "gfm"
+line-length = 100
+extend-enable = ["MD060"]
+
+[MD013]
+code-blocks = false
+code-spans = false
+reflow = true
+reflow-mode = "normalize"
