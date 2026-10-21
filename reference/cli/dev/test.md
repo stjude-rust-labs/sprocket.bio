@@ -304,13 +304,15 @@ assertions:
 ```
 
 In the example, the second argument to the script is the field of the output JSON which holds the
-BAM we want to quick check. We parse the BAM's path out of the supplied JSON using `jq` and then run
+BAM we want to quick check. We
+[parse the BAM's path out of the supplied JSON using `jq`](https://jqlang.org/) and then run
 `samtools` on the new file.
 
 ##### Calling other executables from Bash
 
 Bash is great for its portability, but its often not the language we want to write our tests in. You
-may want to write a Python script that uses the `pySAM` library to do even more advanced checks on
+may want to write a Python script that uses the
+[`pysam` module](https://pysam.readthedocs.io/en/stable/api.html) to do even more advanced checks on
 your WDL outputs. We'll leave the actual Python to you as an exercise, but let's assume you have a
 Python script called `check_readgroups.py` which does something more advanced than what we can
 easily do in Bash.
