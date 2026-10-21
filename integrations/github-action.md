@@ -75,10 +75,9 @@ enabled.
 | Input | Default | Description |
 | --- | --- | --- |
 | `lint` | `false` | Whether to run linting in addition to validation. Valid choices: `"true"`, `"false"`. |
-| `all-lint-rules` | `false` | Whether to enable all lint rules (adds additional rules beyond the default lint rule set). Valid choices: `"true"`, `"false"`. |
 | `deny-warnings` | `false` | If specified, `sprocket check` will fail if any `warnings` are produced. Valid choices: `"true"`, `"false"`. |
 | `deny-notes` | `false` | If specified, `sprocket check` will fail if any `notes` are produced. Valid choices: `"true"`, `"false"`. |
-| `except` | `''` | Rules to except from all `sprocket check` reports, as a comma-separated list — for example, `CallInputSpacing,CommandSectionMixedIndentation`. Valid options are listed in the [lint rules reference](/reference/lint-rules), and upstream in [analysis rules](https://github.com/stjude-rust-labs/wdl/blob/main/wdl-analysis/RULES.md) and [lint rules](https://github.com/stjude-rust-labs/wdl/blob/main/wdl-lint/RULES.md). |
+| `disable` | `''` | Rules to disable from all `sprocket check` reports, as a comma-separated list — for example, `UnusedInput,MutableContainerTag`. Valid options are listed in the [lint rules reference](/reference/lint-rules), and upstream in [analysis rules](https://github.com/stjude-rust-labs/wdl/blob/main/wdl-analysis/RULES.md) and [lint rules](https://github.com/stjude-rust-labs/wdl/blob/main/wdl-lint/RULES.md). |
 | `ignore-patterns` | `''` | Comma-separated list of patterns to append to the [`.sprocketignore`](/concepts/configuration#ignoring-wdl-files-and-directories) file in the root of the repository. |
 
 ##### Example usage
@@ -89,7 +88,7 @@ with:
     action: check
     lint: true
     ignore-patterns: template,test
-    except: UnusedInput,MutableContainerTag
+    disable: UnusedInput,MutableContainerTag
 ```
 
 The action `lint` can be specified and is equivalent to specifying `action: check` and `lint: true`.
@@ -99,7 +98,7 @@ uses: stjude-rust-labs/sprocket-action@main
 with:
     action: lint
     ignore-patterns: template,test
-    except: UnusedInput,MutableContainerTag
+    disable: UnusedInput,MutableContainerTag
 ```
 
 #### `validate`
@@ -164,8 +163,8 @@ with:
 ### Configuration
 
 The Sprocket GitHub Action will load a `sprocket.toml` in the root of your repository, so your CI
-environment can use the same settings as your local development environment. The `except`,
-`deny-warnings`, and `deny-notes` action inputs correspond to the `except`, `deny_warnings`, and
+environment can use the same settings as your local development environment. The `disable`,
+`deny-warnings`, and `deny-notes` action inputs correspond to the `disable`, `deny_warnings`, and
 `deny_notes` keys in the `[check]` table, so you can set them in your TOML instead. Action-specific
 inputs, such as `action`, `skip-config-search`, `config-path`, `wdl_files`, `inputs_files`, and
 `ignore-patterns`, have no `sprocket.toml` equivalent and must stay in your workflow YAML. See the
