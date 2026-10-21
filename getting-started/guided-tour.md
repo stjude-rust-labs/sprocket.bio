@@ -4,43 +4,39 @@ description: "A hands-on tour of linting, validating, and running WDL with Sproc
 
 # Guided Tour
 
-In this guide, we'll cover how to write, verify, and run WDL documents using
-Sprocket. This should give you a good sense of where and how you might use
-Sprocket in your day-to-day work.
+In this guide, we'll cover how to write, verify, and run WDL documents using Sprocket. This should
+give you a good sense of where and how you might use Sprocket in your day-to-day work.
 
-To follow along, you are encouraged to download [this WDL
-document](/guided-tour/example.wdl){target="_self" download="example.wdl"} that
-has been specifically crafted for this walkthrough. Further, if you have not
-already, please follow [this guide](/getting-started/installation) to install Sprocket.
+To follow along, you are encouraged to download
+[this WDL document](/guided-tour/example.wdl){target="_self" download="example.wdl"} that has been
+specifically crafted for this walkthrough. Further, if you have not already, please follow
+[this guide](/getting-started/installation) to install Sprocket.
 
 ::: tip New to WDL?
 
-This guide assumes some familiarity with WDL. If you're just getting started,
-the OpenWDL project maintains two tutorials:
+This guide assumes some familiarity with WDL. If you're just getting started, the OpenWDL project
+maintains two tutorials:
 
-- [Getting started](https://openwdl.org/docs/start/overview/) is a fast-paced
-  introduction that walks you through your first workflow and the core language
-  concepts.
-- [Production guide](https://openwdl.org/docs/production/getting-started/) is
-  an in-depth course that takes you from an empty directory to a tested,
-  released pipeline—covering Git, containers, testing, and CI along the way. No
-  prior WDL experience is needed.
+- [Getting started](https://openwdl.org/docs/start/overview/) is a fast-paced introduction that
+  walks you through your first workflow and the core language concepts.
+- [Production guide](https://openwdl.org/docs/production/getting-started/) is an in-depth course
+  that takes you from an empty directory to a tested, released pipeline—covering Git, containers,
+  testing, and CI along the way. No prior WDL experience is needed.
 
 :::
 
 ## Ensuring high-quality code
 
-Using automation to ensure high-quality code both during development and through
-continuous integration (CI) processes is one of the hallmarks of modern
-development. Sprocket contains both the `check` and `lint` (shortcut for `check
---lint`) subcommands to help you during your WDL development.
+Using automation to ensure high-quality code both during development and through continuous
+integration (CI) processes is one of the hallmarks of modern development. Sprocket contains both the
+`check` and `lint` (shortcut for `check --lint`) subcommands to help you during your WDL
+development.
 
 ### Exploring lint and validation rules
 
-You can see a list of all of the rules Sprocket contains by running `sprocket
-explain -h`. You can dive into any of the rules Sprocket includes by running
-`sprocket explain <RULE>`. For example, if we wanted to learn more about the
-`ImportPlacement` rule, we could do the following.
+You can see a list of all of the rules Sprocket contains by running `sprocket explain -h`. You can
+dive into any of the rules Sprocket includes by running `sprocket explain <RULE>`. For example, if
+we wanted to learn more about the `ImportPlacement` rule, we could do the following.
 
 ```shell
 sprocket explain ImportPlacement
@@ -75,25 +71,25 @@ workflow example {
 ```
 ````
 
-We encourage you to explore the existing validation and linting rules supported
-by Sprocket along with suggesting new helpful rules on our [issues
-page](https://github.com/stjude-rust-labs/wdl/issues). Every rule is also listed
-on the [lint rules reference](/reference/lint-rules), and
-[`sprocket explain`](/reference/cli/explain) has more ways to browse them, such
-as `--tag` for a single tag and `--list-all-rules` for every rule at once.
+We encourage you to explore the existing validation and linting rules supported by Sprocket along
+with suggesting new helpful rules on our
+[issues page](https://github.com/stjude-rust-labs/wdl/issues). Every rule is also listed on the
+[lint rules reference](/reference/lint-rules), and [`sprocket explain`](/reference/cli/explain) has
+more ways to browse them, such as `--tag` for a single tag and `--list-all-rules` for every rule at
+once.
 
 ### Linting and validation
 
-Both single WDL documents and directories of WDL documents can be validated and
-linted by using the `sprocket lint` subcommand.
+Both single WDL documents and directories of WDL documents can be validated and linted by using the
+`sprocket lint` subcommand.
 
 ```shell
 sprocket lint example.wdl
 ```
 
-This returns a set of validation and linting diagnostics that can/should be
-addressed by the workflow author. In this case, the following is the
-output from the linting and validation process on `example.wdl`.
+This returns a set of validation and linting diagnostics that can/should be addressed by the
+workflow author. In this case, the following is the output from the linting and validation process
+on `example.wdl`.
 
 ```txt
 note[MetaSections]: task `say_hello` is missing both `meta` and `parameter_meta` sections
@@ -133,44 +129,40 @@ Specific lint rules can be ignored with multiple invocations of the `--off` flag
 sprocket lint example.wdl --off MutableContainerTag --off MetaSections
 ```
 
-This leaves a single diagnostic, which is that `color` is an unused workflow
-input. Before continuing on, we will remove that input from the `main` workflow
-so it doesn't continue showing up in the diagnostics.
+This leaves a single diagnostic, which is that `color` is an unused workflow input. Before
+continuing on, we will remove that input from the `main` workflow so it doesn't continue showing up
+in the diagnostics.
 
 ### Continuous integration
 
-If you use GitHub for source control, you can use the [Sprocket GitHub
-Action](https://github.com/stjude-rust-labs/sprocket-action) to ensure that your
+If you use GitHub for source control, you can use the
+[Sprocket GitHub Action](https://github.com/stjude-rust-labs/sprocket-action) to ensure that your
 WDL documents stay formatted correctly and free of validation/lint errors.
 
 ## Code editor integration
 
-Rather than running `sprocket check` and `sprocket lint` continually on the
-command line, most developers prefer to have these errors and lints show up in
-their editor of choice. Sprocket makes available a language server protocol
-(LSP) server under the `sprocket analyzer` command.
+Rather than running `sprocket check` and `sprocket lint` continually on the command line, most
+developers prefer to have these errors and lints show up in their editor of choice. Sprocket makes
+available a language server protocol (LSP) server under the `sprocket analyzer` command.
 
 If you use Visual Studio Code, you can easily get started by simply installing
-[the Sprocket VSCode
-extension](https://marketplace.visualstudio.com/items?itemName=stjude-rust-labs.sprocket-vscode).
-This automatically downloads the latest version of `sprocket` and integrates the
-various lint and validation warnings into the "Problems" tab of your editor.
+[the Sprocket VSCode extension](https://marketplace.visualstudio.com/items?itemName=stjude-rust-labs.sprocket-vscode).
+This automatically downloads the latest version of `sprocket` and integrates the various lint and
+validation warnings into the "Problems" tab of your editor.
 
-![A view of the "Problems" tab in VSCode with Sprocket reported
-issues](./guided-tour/problems.png){style="margin-top: 30px;"}
+![A view of the "Problems" tab in VSCode with Sprocket reported issues](./guided-tour/problems.png){style="margin-top:
+30px;"}
 
-If you use Neovim, the
-[`sprocket.nvim`](https://github.com/stjude-rust-labs/sprocket.nvim) plugin
+If you use Neovim, the [`sprocket.nvim`](https://github.com/stjude-rust-labs/sprocket.nvim) plugin
 provides similar integration.
 
-For other editors, please refer to their documentation on how to configure the
-Sprocket LSP (i.e., `sprocket analyzer`).
+For other editors, please refer to their documentation on how to configure the Sprocket LSP (i.e.,
+`sprocket analyzer`).
 
 ## Generating input templates
 
-Before running a workflow, it can be helpful to see what inputs it expects. The
-`sprocket inputs` subcommand generates a template input JSON file for a given
-task or workflow:
+Before running a workflow, it can be helpful to see what inputs it expects. The `sprocket inputs`
+subcommand generates a template input JSON file for a given task or workflow:
 
 ```shell
 sprocket inputs example.wdl --target main
@@ -191,14 +183,13 @@ This produces a JSON object with placeholders for each input:
 }
 ```
 
-Required inputs are marked with `<REQUIRED>` and their type, while inputs with
-defaults show their default values directly. Optional inputs without defaults
-appear as `null`.
+Required inputs are marked with `<REQUIRED>` and their type, while inputs with defaults show their
+default values directly. Optional inputs without defaults appear as `null`.
 
-You can save this to a file, fill in the values, and pass it directly to
-`sprocket run`. The `--hide-defaults` flag narrows the output to only the
-required inputs, and `--show-non-literals` includes expression values. See the
-[`sprocket inputs`](/reference/cli/inputs) reference for details.
+You can save this to a file, fill in the values, and pass it directly to `sprocket run`. The
+`--hide-defaults` flag narrows the output to only the required inputs, and `--show-non-literals`
+includes expression values. See the [`sprocket inputs`](/reference/cli/inputs) reference for
+details.
 
 ## Running tasks and workflows
 
@@ -208,11 +199,10 @@ Individual tasks and workflows can be run with the `sprocket run` subcommand.
 sprocket run example.wdl
 ```
 
-We didn't tell Sprocket which task or workflow to run, so it inferred one: our
-document defines a workflow, and a workflow is selected when one exists. (If the
-document held several tasks and no workflow, Sprocket would report that the
-target is ambiguous and ask for `--target`.) After a few seconds, you'll see
-`sprocket` return an error.
+We didn't tell Sprocket which task or workflow to run, so it inferred one: our document defines a
+workflow, and a workflow is selected when one exists. (If the document held several tasks and no
+workflow, Sprocket would report that the target is ambiguous and ask for `--target`.) After a few
+seconds, you'll see `sprocket` return an error.
 
 ```txt
 error: failed to validate the inputs to workflow `main`
@@ -221,19 +211,19 @@ Caused by:
     missing required input `name` to workflow `main`
 ```
 
-This is because the workflow has a required input parameter called `name` that
-must be provided before the workflow can run.
+This is because the workflow has a required input parameter called `name` that must be provided
+before the workflow can run.
 
 ::: tip Understanding inputs
 
-Inputs are passed as arguments after the WDL document: `key=value` pairs, or an
-input file prefixed with `@` (`@inputs.json`, `@inputs.yaml`). Later inputs
-override earlier ones, and `--target` lets you drop the repeated `main.` prefix
-from keys. See [Inputs and targets](/concepts/inputs) for the full rules.
+Inputs are passed as arguments after the WDL document: `key=value` pairs, or an input file prefixed
+with `@` (`@inputs.json`, `@inputs.yaml`). Later inputs override earlier ones, and `--target` lets
+you drop the repeated `main.` prefix from keys. See [Inputs and targets](/concepts/inputs) for the
+full rules.
 :::
 
-Here, we can specify the `name` parameter as a key-value pair on the command
-line, along with the target to apply it to.
+Here, we can specify the `name` parameter as a key-value pair on the command line, along with the
+target to apply it to.
 
 ```shell
 sprocket run example.wdl --target main name="World"
@@ -253,8 +243,8 @@ After a few seconds, this job runs successfully with the following outputs.
 
 Congrats on your first successful `sprocket run` 🎉!
 
-If you wanted to override some of the defaults for the workflow, you could do
-so by defining the input in a `hello_overrides.json` file:
+If you wanted to override some of the defaults for the workflow, you could do so by defining the
+input in a `hello_overrides.json` file:
 
 ```json
 {
@@ -288,11 +278,8 @@ This produces the following output.
 
 ## Conclusion
 
-You should now have a clear idea on how the most commonly used commands within
-Sprocket work. With further questions or feature requests, we ask that you join
-the [#sprocket channel on the WDL
-Slack](https://join.slack.com/t/openwdl/shared_invite/zt-ctmj4mhf-cFBNxIiZYs6SY9HgM9UAVw)
-or file an issue on [the Sprocket
-repository](https://github.com/stjude-rust-labs/sprocket/issues). See
-[Community and Support](/about/community) for everywhere else you can reach the
-project.
+You should now have a clear idea on how the most commonly used commands within Sprocket work. With
+further questions or feature requests, we ask that you join the
+[#sprocket channel on the WDL Slack](https://join.slack.com/t/openwdl/shared_invite/zt-ctmj4mhf-cFBNxIiZYs6SY9HgM9UAVw)
+or file an issue on [the Sprocket repository](https://github.com/stjude-rust-labs/sprocket/issues).
+See [Community and Support](/about/community) for everywhere else you can reach the project.

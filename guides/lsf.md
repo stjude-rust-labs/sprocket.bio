@@ -4,25 +4,21 @@ description: "An end-to-end guide to installing, configuring, and running Sprock
 
 # Running Sprocket on an LSF cluster
 
-Sprocket is a workflow execution engine for the [Workflow Description
-Language](https://openwdl.org) (WDL). It can dispatch individual task executions
-to an HPC cluster using IBM Spectrum LSF for job scheduling and Apptainer as the
-container runtime, allowing you to run WDL workflows at scale on existing HPC
-infrastructure.
+Sprocket is a workflow execution engine for the [Workflow Description Language](https://openwdl.org)
+(WDL). It can dispatch individual task executions to an HPC cluster using IBM Spectrum LSF for job
+scheduling and Apptainer as the container runtime, allowing you to run WDL workflows at scale on
+existing HPC infrastructure.
 
-This guide is intended for system administrators and power users looking to
-configure Sprocket for their HPC environment. It walks through the entire
-process of getting Sprocket running on an LSF cluster: installing the binary,
-configuring the backend, running your first workflow, and tuning for production
-use. By the end, you will have Sprocket submitting containerized WDL tasks as
-LSF jobs.
+This guide is intended for system administrators and power users looking to configure Sprocket for
+their HPC environment. It walks through the entire process of getting Sprocket running on an LSF
+cluster: installing the binary, configuring the backend, running your first workflow, and tuning for
+production use. By the end, you will have Sprocket submitting containerized WDL tasks as LSF jobs.
 
 ## Prerequisites
 
 Before starting, verify that your environment meets the following requirements.
 
-- **LSF command-line tools** (10.1.0 or later) must be available on the
-  login/submission node:
+- **LSF command-line tools** (10.1.0 or later) must be available on the login/submission node:
 
   ```shell
   bsub -V
@@ -30,28 +26,26 @@ Before starting, verify that your environment meets the following requirements.
   bkill -V
   ```
 
-- **Apptainer** (1.3.6 or later) must be installed on the compute nodes where
-  LSF dispatches jobs:
+- **Apptainer** (1.3.6 or later) must be installed on the compute nodes where LSF dispatches jobs:
 
   ```shell
   apptainer --version
   ```
 
-- **A shared filesystem** (e.g., Lustre, GPFS, or NFS) must be accessible from
-  both the login node and the compute nodes. Sprocket writes its output
-  directory to this filesystem, and the compute nodes read task scripts and
-  write results back to it.
+- **A shared filesystem** (e.g., Lustre, GPFS, or NFS) must be accessible from both the login node
+  and the compute nodes. Sprocket writes its output directory to this filesystem, and the compute
+  nodes read task scripts and write results back to it.
 
-- **Network access** from compute nodes to container registries (Docker Hub,
-  Quay, or your organization's private registry) is required for pulling
-  container images. If your compute nodes lack outbound internet access, you
-  will need to pre-pull images or configure a local registry mirror.
+- **Network access** from compute nodes to container registries (Docker Hub, Quay, or your
+  organization's private registry) is required for pulling container images. If your compute nodes
+  lack outbound internet access, you will need to pre-pull images or configure a local registry
+  mirror.
 
 ## Installing Sprocket
 
-The simplest approach on an HPC cluster is to download a pre-built binary from
-the [GitHub releases page](https://github.com/stjude-rust-labs/sprocket/releases)
-and place it on the shared filesystem.
+The simplest approach on an HPC cluster is to download a pre-built binary from the
+[GitHub releases page](https://github.com/stjude-rust-labs/sprocket/releases) and place it on the
+shared filesystem.
 
 ```shell
 # Determine the latest version
@@ -80,44 +74,39 @@ cargo install sprocket --locked
 ```
 
 ::: tip
-If your site uses [environment modules](https://modules.readthedocs.io/),
-consider creating a module file for Sprocket so users can load it with
-`module load sprocket`. [Spack](https://spack.io/) is another common option
-for managing software on HPC clusters.
+If your site uses [environment modules](https://modules.readthedocs.io/), consider creating a module
+file for Sprocket so users can load it with `module load sprocket`. [Spack](https://spack.io/) is
+another common option for managing software on HPC clusters.
 :::
 
 ## Setting up a shared configuration
 
-For a multi-user cluster, it is common to provide a site-wide `sprocket.toml`
-that all users inherit. There are two recommended approaches:
+For a multi-user cluster, it is common to provide a site-wide `sprocket.toml` that all users
+inherit. There are two recommended approaches:
 
-- **Executable-adjacent configuration.** Place a `sprocket.toml` in the same
-  directory as the `sprocket` binary (e.g.,
-  `/shared/software/bin/sprocket.toml`). Sprocket automatically loads this
-  file, making it a natural fit when the binary is installed to a shared
-  location.
+- **Executable-adjacent configuration.** Place a `sprocket.toml` in the same directory as the
+  `sprocket` binary (e.g., `/shared/software/bin/sprocket.toml`). Sprocket automatically loads this
+  file, making it a natural fit when the binary is installed to a shared location.
 
-- **Environment variable.** Set `SPROCKET_CONFIG` to point to a shared
-  configuration file. This is useful when the binary is managed separately
-  (e.g., installed via `cargo install`) or when you need different
-  configurations for different groups of users:
+- **Environment variable.** Set `SPROCKET_CONFIG` to point to a shared configuration file. This is
+  useful when the binary is managed separately (e.g., installed via `cargo install`) or when you
+  need different configurations for different groups of users:
 
   ```shell
   export SPROCKET_CONFIG=/shared/config/sprocket.toml
   ```
 
-  If your site uses environment modules, add this export to the module file so
-  it is set automatically when users run `module load sprocket`.
+  If your site uses environment modules, add this export to the module file so it is set
+  automatically when users run `module load sprocket`.
 
-Users can still override settings by placing their own `sprocket.toml` in their
-working directory or by passing `--config` on the command line. See the
-[configuration overview](/concepts/configuration) for the full load order and
-precedence rules.
+Users can still override settings by placing their own `sprocket.toml` in their working directory or
+by passing `--config` on the command line. See the [configuration overview](/concepts/configuration)
+for the full load order and precedence rules.
 
 ## Configuring the backend
 
-The following example configures Sprocket to use LSF + Apptainer as its default
-backend. This is a good starting point for a shared `sprocket.toml`:
+The following example configures Sprocket to use LSF + Apptainer as its default backend. This is a
+good starting point for a shared `sprocket.toml`:
 
 ```toml
 # Use the LSF + Apptainer backend.
@@ -139,10 +128,9 @@ job_name_prefix = "sprocket"
 interval = 30
 ```
 
-This is a minimal configuration. For every option the backend accepts —
-including short-task, GPU, and FPGA queues, `max_concurrency`, extra `bsub` and
-`apptainer` arguments, and conditional `bsub` arguments — see the [LSF +
-Apptainer backend reference](/reference/backends/lsf).
+This is a minimal configuration. For every option the backend accepts — including short-task, GPU,
+and FPGA queues, `max_concurrency`, extra `bsub` and `apptainer` arguments, and conditional `bsub`
+arguments — see the [LSF + Apptainer backend reference](/reference/backends/lsf).
 
 ### Resource limit behavior
 
@@ -154,8 +142,7 @@ default_lsf_queue.max_cpu_per_task = 64
 default_lsf_queue.max_memory_per_task = "96 GB"
 ```
 
-When a WDL task requests more than these limits, Sprocket's behavior is
-controlled by two settings:
+When a WDL task requests more than these limits, Sprocket's behavior is controlled by two settings:
 
 ```toml
 [run.task]
@@ -164,13 +151,13 @@ memory_limit_behavior = "deny"
 ```
 
 - `"deny"` (default) — Sprocket refuses to run the task and reports an error.
-- `"try_with_max"` — Sprocket clamps the request to the queue's maximum and
-  attempts to run the task anyway. This does not guarantee success, but it
-  avoids failing before the task has a chance to run.
+- `"try_with_max"` — Sprocket clamps the request to the queue's maximum and attempts to run the task
+  anyway. This does not guarantee success, but it avoids failing before the task has a chance to
+  run.
 
-If `max_cpu_per_task` and `max_memory_per_task` are not set on a queue, these
-settings have no effect and Sprocket submits the task's resource request
-as-is. Both settings are documented with the rest of the task options in the
+If `max_cpu_per_task` and `max_memory_per_task` are not set on a queue, these settings have no
+effect and Sprocket submits the task's resource request as-is. Both settings are documented with the
+rest of the task options in the
 [configuration guide](/concepts/configuration#overriding-task-cpu-and-memory-requirements).
 
 ## Running your first workflow
@@ -205,9 +192,9 @@ Run it:
 sprocket run hello.wdl --target say_hello greeting="Hello"
 ```
 
-Sprocket will pull the `ubuntu:latest` container image (converting it to an
-Apptainer SIF file), submit a job via `bsub`, poll `bjobs` until the job
-completes, and collect the outputs. You can monitor the LSF job while it runs:
+Sprocket will pull the `ubuntu:latest` container image (converting it to an Apptainer SIF file),
+submit a job via `bsub`, poll `bjobs` until the job completes, and collect the outputs. You can
+monitor the LSF job while it runs:
 
 ```shell
 bjobs -a
@@ -215,7 +202,7 @@ bjobs -a
 
 Once the run completes, the output directory will contain:
 
-```
+```text
 out/
 ├── sprocket.db
 └── runs/
@@ -238,8 +225,8 @@ out/
 
 ### Output directory placement
 
-Place the output directory on the shared filesystem so that both the login node
-and compute nodes can access it. Use the `-o` flag to specify the location:
+Place the output directory on the shared filesystem so that both the login node and compute nodes
+can access it. Use the `-o` flag to specify the location:
 
 ```shell
 sprocket run workflow.wdl --target main -o /shared/results/my-project
@@ -247,50 +234,46 @@ sprocket run workflow.wdl --target main -o /shared/results/my-project
 
 ### Concurrency
 
-The `max_concurrency` setting controls how many `bsub` processes the backend
-will spawn concurrently to queue tasks. The default is `10`, which you may want
-to raise for large-scale workflow execution:
+The `max_concurrency` setting controls how many `bsub` processes the backend will spawn concurrently
+to queue tasks. The default is `10`, which you may want to raise for large-scale workflow execution:
 
 ```toml
 [run.backends.default]
 max_concurrency = 10
 ```
 
-The `run.workflow.scatter.concurrency` setting controls how many elements within a
-`scatter` block are evaluated concurrently. The default is `1000`:
+The `run.workflow.scatter.concurrency` setting controls how many elements within a `scatter` block
+are evaluated concurrently. The default is `1000`:
 
 ```toml
 [run.workflow.scatter]
 concurrency = 1000
 ```
 
-Setting scatter concurrency too high can put pressure on the scheduler by
-queueing a large number of jobs at once. Note that each scattered task may
-itself request multiple CPUs, so the actual resource consumption can be a
-multiple of this number.
+Setting scatter concurrency too high can put pressure on the scheduler by queueing a large number of
+jobs at once. Note that each scattered task may itself request multiple CPUs, so the actual resource
+consumption can be a multiple of this number.
 
 ### Container image caching
 
-Sprocket pulls container images and converts them to SIF files in an
-`apptainer-images/` directory inside each run's timestamped directory. A given
-image is only pulled once within a run, but each new run pulls all of its
-images fresh.
+Sprocket pulls container images and converts them to SIF files in an `apptainer-images/` directory
+inside each run's timestamped directory. A given image is only pulled once within a run, but each
+new run pulls all of its images fresh.
 
-The preferred way to share images across runs is to set `image_cache_dir` in
-your backend configuration:
+The preferred way to share images across runs is to set `image_cache_dir` in your backend
+configuration:
 
 ```toml
 [run.backends.default.apptainer]
 image_cache_dir = "/shared/containers/cache"
 ```
 
-When set, Sprocket stores pulled `.sif` images in this directory and reuses
-them for subsequent runs, avoiding repeated downloads. See
-[containers](/concepts/containers) for how Sprocket resolves and caches images.
+When set, Sprocket stores pulled `.sif` images in this directory and reuses them for subsequent
+runs, avoiding repeated downloads. See [containers](/concepts/containers) for how Sprocket resolves
+and caches images.
 
-Alternatively, you can pre-pull images to a shared location using
-`apptainer pull` and reference the local SIF path in your WDL `container`
-declarations:
+Alternatively, you can pre-pull images to a shared location using `apptainer pull` and reference the
+local SIF path in your WDL `container` declarations:
 
 ```shell
 apptainer pull /shared/containers/ubuntu_latest.sif docker://ubuntu:latest
@@ -298,19 +281,16 @@ apptainer pull /shared/containers/ubuntu_latest.sif docker://ubuntu:latest
 
 ### Provenance database
 
-The `sprocket.db` SQLite database lives in the output directory and records
-every run, task, and session. SQLite works over shared filesystems, but for
-heavily concurrent workloads, back up the database regularly. See the
-[provenance tracking](/concepts/provenance) documentation for details.
+The `sprocket.db` SQLite database lives in the output directory and records every run, task, and
+session. SQLite works over shared filesystems, but for heavily concurrent workloads, back up the
+database regularly. See the [provenance tracking](/concepts/provenance) documentation for details.
 
 ### Failure mode
 
 The `run.fail` setting controls what happens when a task fails:
 
-- `"slow"` (default) — Sprocket waits for all currently running tasks to
-  complete before exiting.
-- `"fast"` — Sprocket cancels all running tasks immediately via `bkill` and
-  exits.
+- `"slow"` (default) — Sprocket waits for all currently running tasks to complete before exiting.
+- `"fast"` — Sprocket cancels all running tasks immediately via `bkill` and exits.
 
 ```toml
 [run]
@@ -321,15 +301,14 @@ fail = "fast"
 
 ### Checking job status
 
-While a workflow is running, you can use `bjobs` to see the LSF jobs that
-Sprocket has submitted:
+While a workflow is running, you can use `bjobs` to see the LSF jobs that Sprocket has submitted:
 
 ```shell
 bjobs -a
 ```
 
-If you set `job_name_prefix` in your configuration, you can filter `bjobs`
-output to show only Sprocket jobs:
+If you set `job_name_prefix` in your configuration, you can filter `bjobs` output to show only
+Sprocket jobs:
 
 ```shell
 bjobs -J "sprocket*"
@@ -337,70 +316,62 @@ bjobs -J "sprocket*"
 
 ### Inspecting run output
 
-Where a task attempt writes its files depends on what you ran. When you run a
-task directly, the attempts sit at the top level of the run directory:
+Where a task attempt writes its files depends on what you ran. When you run a task directly, the
+attempts sit at the top level of the run directory:
 
-```
+```text
 out/runs/<target>/<timestamp>/attempts/<n>/
 ```
 
-When you run a workflow, each task call gets its own directory under `calls/`
-and the attempts sit inside it:
+When you run a workflow, each task call gets its own directory under `calls/` and the attempts sit
+inside it:
 
-```
+```text
 out/runs/<target>/<timestamp>/calls/<task_call_id>/attempts/<n>/
 ```
 
 Either way, an attempt directory contains the following:
 
 | File | Contents |
-|------|----------|
+| ------ | ---------- |
 | `command` | The shell script that was executed inside the container |
 | `stdout` | Standard output from the task |
 | `stderr` | Standard error from the task |
 | `work/` | The task's working directory, containing any output files |
 
-The LSF backend also writes the submission command it generated
-(`bsub_command`) and the LSF job identifier (`job_id`) next to those files.
+The LSF backend also writes the submission command it generated (`bsub_command`) and the LSF job
+identifier (`job_id`) next to those files.
 
-When troubleshooting a failed task, start with `stderr` and `command` to
-understand what ran and what went wrong. See [directory
-structure](/concepts/provenance#directory-structure) for a full description of
-the run directory layout, and [troubleshooting](/guides/troubleshooting) for a
+When troubleshooting a failed task, start with `stderr` and `command` to understand what ran and
+what went wrong. See [directory structure](/concepts/provenance#directory-structure) for a full
+description of the run directory layout, and [troubleshooting](/guides/troubleshooting) for a
 step-by-step way to work through a failed run.
 
 ### Common issues
 
-- **Job pending indefinitely.** The task's resource request (CPU or memory)
-  may exceed what the queue can provide. Check with `bjobs -l <jobid>` and
-  compare against your queue limits. Consider setting
-  `cpu_limit_behavior = "try_with_max"` or adjusting the queue's
-  `max_cpu_per_task` and `max_memory_per_task`.
+- **Job pending indefinitely.** The task's resource request (CPU or memory) may exceed what the
+  queue can provide. Check with `bjobs -l <jobid>` and compare against your queue limits. Consider
+  setting `cpu_limit_behavior = "try_with_max"` or adjusting the queue's `max_cpu_per_task` and
+  `max_memory_per_task`.
 
-- **Container pull failure.** Compute nodes may lack network access to the
-  container registry. Check whether the nodes can reach the registry, or
-  pre-pull the image and reference a local path.
+- **Container pull failure.** Compute nodes may lack network access to the container registry. Check
+  whether the nodes can reach the registry, or pre-pull the image and reference a local path.
 
-- **Permission errors.** The shared filesystem must be writable by the user
-  running Sprocket and by the LSF jobs on the compute nodes. Verify that
-  directory permissions are consistent across nodes.
+- **Permission errors.** The shared filesystem must be writable by the user running Sprocket and by
+  the LSF jobs on the compute nodes. Verify that directory permissions are consistent across nodes.
 
-- **Apptainer not found on compute nodes.** Ensure Apptainer is installed and
-  on the `PATH` for LSF jobs. If Apptainer is provided via an environment
-  module, it must be loaded in the user's environment before running
-  `sprocket run` so that the job inherits the correct `PATH`. You can also
-  set the `executable` option in `[run.backends.default.apptainer]` to
-  `"singularity"` or a full path to the binary if it is not named
-  `apptainer` or is not on `PATH`.
+- **Apptainer not found on compute nodes.** Ensure Apptainer is installed and on the `PATH` for LSF
+  jobs. If Apptainer is provided via an environment module, it must be loaded in the user's
+  environment before running `sprocket run` so that the job inherits the correct `PATH`. You can
+  also set the `executable` option in `[run.backends.default.apptainer]` to `"singularity"` or a
+  full path to the binary if it is not named `apptainer` or is not on `PATH`.
 
-See [troubleshooting](/guides/troubleshooting) for errors that are not specific
-to LSF, and the backend's [known issues](/reference/backends/lsf#known-issues)
-for limitations to be aware of.
+See [troubleshooting](/guides/troubleshooting) for errors that are not specific to LSF, and the
+backend's [known issues](/reference/backends/lsf#known-issues) for limitations to be aware of.
 
 ### Getting help
 
-If you run into problems or have feedback, join the [OpenWDL
-Slack](https://join.slack.com/t/openwdl/shared_invite/zt-ctmj4mhf-cFBNxIiZYs6SY9HgM9UAVw)
-and reach out in the `#sprocket` channel. See [community and
-support](/about/community) for the other places you can ask questions and
-report issues.
+If you run into problems or have feedback, join the
+[OpenWDL Slack](https://join.slack.com/t/openwdl/shared_invite/zt-ctmj4mhf-cFBNxIiZYs6SY9HgM9UAVw)
+and reach out in the `#sprocket` channel. See [community and support](/about/community) for the
+other places you can ask questions and report issues.

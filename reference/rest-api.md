@@ -3,51 +3,48 @@ title: REST API
 description: "Reference for the REST API exposed by the experimental sprocket dev server command."
 ---
 
-# REST API
+## REST API
 
 ::: danger Caution
-This API is part of the beta release of the [`server`](/reference/cli/dev/server)
-command. This functionality is considered experimental and may change in future
-releases.
+This API is part of the beta release of the [`server`](/reference/cli/dev/server) command. This
+functionality is considered experimental and may change in future releases.
 :::
 
-The server exposes a REST API for managing workflow executions. Interactive
-documentation is available at `/api/v1/swagger-ui` when the server is running,
-and the OpenAPI specification can be retrieved from `/api/v1/openapi.json`.
+The server exposes a REST API for managing workflow executions. Interactive documentation is
+available at `/api/v1/swagger-ui` when the server is running, and the OpenAPI specification can be
+retrieved from `/api/v1/openapi.json`.
 
-To start a server, see [`sprocket dev server`](/reference/cli/dev/server). To
-submit a run from the command line instead of calling the API directly, see
+To start a server, see [`sprocket dev server`](/reference/cli/dev/server). To submit a run from the
+command line instead of calling the API directly, see
 [`sprocket dev server submit`](/reference/cli/dev/server-submit).
 
-## Server
+### Server
 
 - `GET /api/v1/info` - Get server metadata.
 
-## Runs
+### Runs
 
 Runs represent individual workflow executions.
 
 - `POST /api/v1/runs` - Submit a new workflow.
-- `GET /api/v1/runs` - List all runs. Supports optional `?status=` filter
-  (e.g., `?status=running`).
+- `GET /api/v1/runs` - List all runs. Supports optional `?status=` filter (e.g., `?status=running`).
 - `GET /api/v1/runs/{uuid}` - Get run details.
 - `POST /api/v1/runs/{uuid}/cancel` - Cancel a running workflow.
 - `GET /api/v1/runs/{uuid}/outputs` - Get run outputs.
-- `GET /api/v1/runs/{uuid}/tasks` - List a run's tasks. Supports pagination and
-  an optional `?status=` filter.
+- `GET /api/v1/runs/{uuid}/tasks` - List a run's tasks. Supports pagination and an optional
+  `?status=` filter.
 - `GET /api/v1/runs/{uuid}/tasks/counts` - Get per-status task counts for a run.
 
-## Sessions
+### Sessions
 
-Sessions group related workflow submissions. Each `sprocket run` invocation
-creates its own session, while a running `sprocket dev server start` instance
-creates a single session at startup that is shared by all workflows submitted to
-it.
+Sessions group related workflow submissions. Each `sprocket run` invocation creates its own session,
+while a running `sprocket dev server start` instance creates a single session at startup that is
+shared by all workflows submitted to it.
 
 - `GET /api/v1/sessions` - List sessions.
 - `GET /api/v1/sessions/{uuid}` - Get session details.
 
-## Tasks
+### Tasks
 
 Tasks represent individual task executions within a workflow run.
 
@@ -55,9 +52,9 @@ Tasks represent individual task executions within a workflow run.
 - `GET /api/v1/tasks/{name}` - Get task details.
 - `GET /api/v1/tasks/{name}/logs` - Get task logs.
 
-## Example usage
+### Example usage
 
-### Starting the server
+#### Starting the server
 
 ```shell
 # Start server allowing workflows from a local directory
@@ -71,7 +68,7 @@ sprocket dev server start \
   --port 8080
 ```
 
-### Submitting a workflow
+#### Submitting a workflow
 
 ```shell
 # Submit a workflow via the API
@@ -85,7 +82,7 @@ curl -X POST http://localhost:8080/api/v1/runs \
   }'
 ```
 
-### Checking run status
+#### Checking run status
 
 ```shell
 # Get run details

@@ -8,12 +8,15 @@ description: "Create, resolve, verify, sign, and inspect reusable WDL modules wi
 Module management is experimental and may change in future releases.
 :::
 
-`sprocket dev module` creates, resolves, verifies, signs, and inspects reusable WDL modules. A module is described by `module.json`; resolved dependencies are recorded in `module-lock.json`. [`sprocket dev doc`](/reference/cli/dev/doc#module-workspaces) documents every module it finds in a workspace.
+`sprocket dev module` creates, resolves, verifies, signs, and inspects reusable WDL modules. A
+module is described by `module.json`; resolved dependencies are recorded in `module-lock.json`.
+[`sprocket dev doc`](/reference/cli/dev/doc#module-workspaces) documents every module it finds in a
+workspace.
 
 ## Commands
 
 | Command | Purpose |
-|---|---|
+| --- | --- |
 | `init` | Create `module.json` and, unless `--no-scaffold` is used, starter files. |
 | `add` | Add a local or Git dependency and update the lockfile. |
 | `remove` | Remove a dependency and update the lockfile. |
@@ -38,7 +41,9 @@ cd example-module
 sprocket dev module init --name example-module --license MIT
 ```
 
-By default, `init` creates `module.json`, `index.wdl`, and `README.md`. The manifest can describe authors, an entrypoint, documentation, tools, excluded paths, and dependencies. Module versions come from Git tags rather than a `version` field in `module.json`.
+By default, `init` creates `module.json`, `index.wdl`, and `README.md`. The manifest can describe
+authors, an entrypoint, documentation, tools, excluded paths, and dependencies. Module versions come
+from Git tags rather than a `version` field in `module.json`.
 
 ## Add and lock dependencies
 
@@ -50,7 +55,11 @@ sprocket dev module add common ../common
 sprocket dev module lock --locked
 ```
 
-Use `--name` to select an alias, or choose a Git revision with `--version`, `--tag`, `--branch`, or `--commit`. A commit selector may be any unique 4–40 character SHA prefix. [`sprocket run`](/reference/cli/run) and [`sprocket dev server submit`](/reference/cli/dev/server-submit) regenerate a missing or stale lockfile before execution.
+Use `--name` to select an alias, or choose a Git revision with `--version`, `--tag`, `--branch`, or
+`--commit`. A commit selector may be any unique 4–40 character SHA prefix.
+[`sprocket run`](/reference/cli/run) and
+[`sprocket dev server submit`](/reference/cli/dev/server-submit) regenerate a missing or stale
+lockfile before execution.
 
 ## Verify and trust modules
 
@@ -61,7 +70,9 @@ sprocket dev module sign
 sprocket dev module trust list
 ```
 
-Signer changes require confirmation by default. `tofu` trusts the first key seen for a new dependency and prompts on later changes; `auto-accept` accepts and reports every signer change. Use `--trust-mode` on commands that update the lockfile to override the configured behavior.
+Signer changes require confirmation by default. `tofu` trusts the first key seen for a new
+dependency and prompts on later changes; `auto-accept` accepts and reports every signer change. Use
+`--trust-mode` on commands that update the lockfile to override the configured behavior.
 
 ## Configuration
 
@@ -74,4 +85,6 @@ max_transfer_bytes = "2GiB"
 trust_mode = "confirm"
 ```
 
-`default_git_platform` controls how `owner/repository` shorthand expands. `max_transfer_bytes` caps data accepted from one Git fetch and also accepts `"unlimited"`. `trust_mode` accepts `"confirm"`, `"tofu"`, or `"auto-accept"`.
+`default_git_platform` controls how `owner/repository` shorthand expands. `max_transfer_bytes` caps
+data accepted from one Git fetch and also accepts `"unlimited"`. `trust_mode` accepts `"confirm"`,
+`"tofu"`, or `"auto-accept"`.

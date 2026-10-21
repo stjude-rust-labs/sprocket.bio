@@ -4,76 +4,66 @@ description: "How Sprocket records every workflow run in a SQLite database and o
 
 # Provenance Tracking
 
-Sprocket automatically tracks all workflow executions in a SQLite database while
-maintaining an organized filesystem structure for outputs. Both `sprocket run`
-and `sprocket dev server` share the same
-[execution engine](/concepts/execution-model) and output structure, so
-the concepts described here apply equally to both commands.
+Sprocket automatically tracks all workflow executions in a SQLite database while maintaining an
+organized filesystem structure for outputs. Both `sprocket run` and `sprocket dev server` share the
+same [execution engine](/concepts/execution-model) and output structure, so the concepts described
+here apply equally to both commands.
 
 ::: info Note
-Provenance is a well-established research area within scientific workflow
-systems. Formal models such as the
-[W3C PROV](https://www.w3.org/TR/prov-overview/) family and its
-workflow-oriented extension
-[ProvONE](https://purl.dataone.org/provone-v1-dev) define rich vocabularies
-for describing data lineage, activity chains, and agent relationships (cf.
+Provenance is a well-established research area within scientific workflow systems. Formal models
+such as the [W3C PROV](https://www.w3.org/TR/prov-overview/) family and its workflow-oriented
+extension [ProvONE](https://purl.dataone.org/provone-v1-dev) define rich vocabularies for describing
+data lineage, activity chains, and agent relationships (cf.
 [Ludäscher et al., 2016](https://link.springer.com/chapter/10.1007/978-3-319-40226-0_7);
 [Deelman et al., 2018](https://journals.sagepub.com/doi/abs/10.1177/1094342017704893)).
-Sprocket uses the term "provenance" more loosely here to describe its
-execution tracking capabilities—recording what was run, with which inputs,
-when, and by whom—rather than implementing the full data lineage and
-dependency tracking described in those formal models.
+Sprocket uses the term "provenance" more loosely here to describe its execution tracking
+capabilities—recording what was run, with which inputs, when, and by whom—rather than implementing
+the full data lineage and dependency tracking described in those formal models.
 :::
 
 For design details, see [RFC #3](https://github.com/stjude-rust-labs/rfcs/pull/3).
 
-From executable `1.0`, the documented `inputs.json` and `outputs.json` formats
-and `--index-on` behavior are stable when produced by stable, non-`dev`
-commands. The `runs/` layout (including `_latest` and task attempt directories)
-and the `sprocket.db` schema are internal and may change without deprecation.
-See [Project Status](/about/project-status) for the full policy.
+From executable `1.0`, the documented `inputs.json` and `outputs.json` formats and `--index-on`
+behavior are stable when produced by stable, non-`dev` commands. The `runs/` layout (including
+`_latest` and task attempt directories) and the `sprocket.db` schema are internal and may change
+without deprecation. See [Project Status](/about/project-status) for the full policy.
 
 ## Runs and the index
 
-The output directory contains two complementary directory hierarchies that
-together address a fundamental tension in workflow management: users need both a
-complete provenance record for reproducibility and auditing _and_ a simplified,
-domain-specific view for everyday access to results. Rather than forcing users to
-choose one or maintain both manually, Sprocket provides both automatically.
+The output directory contains two complementary directory hierarchies that together address a
+fundamental tension in workflow management: users need both a complete provenance record for
+reproducibility and auditing _and_ a simplified, domain-specific view for everyday access to
+results. Rather than forcing users to choose one or maintain both manually, Sprocket provides both
+automatically.
 
-The **`runs/`** directory is the immutable record of truth. It
-organizes every execution chronologically by target name and timestamp,
-preserving the full history of inputs, outputs, and individual task attempts.
-This structure is currently append-only — Sprocket does not modify or remove
-previous runs — so it serves as a reliable audit trail. When a workflow is run
-multiple times, each execution receives its own timestamped directory, and the
-complete set of attempts is available for inspection. The internal layout of
-`runs/` is not a stable interface, though; see
+The **`runs/`** directory is the immutable record of truth. It organizes every execution
+chronologically by target name and timestamp, preserving the full history of inputs, outputs, and
+individual task attempts. This structure is currently append-only — Sprocket does not modify or
+remove previous runs — so it serves as a reliable audit trail. When a workflow is run multiple
+times, each execution receives its own timestamped directory, and the complete set of attempts is
+available for inspection. The internal layout of `runs/` is not a stable interface, though; see
 [Querying execution history](#querying-execution-history).
 
-The **`index/`** directory is an optional, user-curated view layered on top of
-the runs. When the `--index-on` flag is provided, Sprocket creates symlinks
-under `index/` that point back into `runs/`, giving users a way to organize
-results by whatever dimension makes sense for their domain (e.g., by project or
-by experiment) without duplicating any data. Because the index
-consists entirely of relative symlinks, it adds negligible storage overhead and
-can be reconstructed from the provenance database at any time.
+The **`index/`** directory is an optional, user-curated view layered on top of the runs. When the
+`--index-on` flag is provided, Sprocket creates symlinks under `index/` that point back into
+`runs/`, giving users a way to organize results by whatever dimension makes sense for their domain
+(e.g., by project or by experiment) without duplicating any data. Because the index consists
+entirely of relative symlinks, it adds negligible storage overhead and can be reconstructed from the
+provenance database at any time.
 
-This separation means that the provenance record remains intact regardless of how
-the index evolves. Re-running a workflow with the same `--index-on` path updates
-the index symlinks to point to the latest results, but the previous run's
-directory under `runs/` is preserved, and the database records the full history
-of index changes. The design follows a principle of
+This separation means that the provenance record remains intact regardless of how the index evolves.
+Re-running a workflow with the same `--index-on` path updates the index symlinks to point to the
+latest results, but the previous run's directory under `runs/` is preserved, and the database
+records the full history of index changes. The design follows a principle of
 [progressive disclosure](https://en.wikipedia.org/wiki/Progressive_disclosure):
-users who simply run `sprocket run` get a well-organized `runs/` directory and a
-provenance database with no extra configuration, and those who need logical
-organization can opt into indexing by adding a single flag.
+users who simply run `sprocket run` get a well-organized `runs/` directory and a provenance database
+with no extra configuration, and those who need logical organization can opt into indexing by adding
+a single flag.
 
 ## Output directory
 
-By default, Sprocket creates an `out/` directory in your current working
-directory to store all workflow outputs and provenance data. This location can
-be configured via:
+By default, Sprocket creates an `out/` directory in your current working directory to store all
+workflow outputs and provenance data. This location can be configured via:
 
 - The `-o, --output-dir` CLI flag (for `sprocket run` and `sprocket dev server start`).
 - The `run.output_dir` configuration option (for run mode).
@@ -81,15 +71,14 @@ be configured via:
 
 ### Directory structure
 
-The layout within each run directory differs slightly depending on whether the
-target is a standalone task or a workflow containing multiple task calls.
+The layout within each run directory differs slightly depending on whether the target is a
+standalone task or a workflow containing multiple task calls.
 
 #### Task runs
 
-When running a task directly, the `attempts/` directory sits at the top level of
-the run directory.
+When running a task directly, the `attempts/` directory sits at the top level of the run directory.
 
-```
+```text
 ./out/
 ├── sprocket.db                       # SQLite provenance database
 ├── runs/
@@ -115,11 +104,11 @@ the run directory.
 
 #### Workflow runs
 
-When running a workflow, each task call within the workflow gets its own
-subdirectory under `calls/`. Each call directory then contains the same
-`attempts/` and `tmp/` structure as a standalone task run.
+When running a workflow, each task call within the workflow gets its own subdirectory under
+`calls/`. Each call directory then contains the same `attempts/` and `tmp/` structure as a
+standalone task run.
 
-```
+```text
 ./out/
 ├── sprocket.db
 ├── runs/
@@ -148,9 +137,9 @@ subdirectory under `calls/`. Each call directory then contains the same
 
 ### The `_latest` symlink
 
-For each target, Sprocket maintains a `_latest` symlink pointing to the most
-recent execution directory. This provides quick access to the latest results
-without needing to know the exact timestamp.
+For each target, Sprocket maintains a `_latest` symlink pointing to the most recent execution
+directory. This provides quick access to the latest results without needing to know the exact
+timestamp.
 
 ```shell
 # Access the latest run outputs
@@ -158,9 +147,8 @@ ls out/runs/my_workflow/_latest/
 ```
 
 ::: info Note
-On Windows, creating symlinks may require administrator privileges or
-Developer Mode. If symlink creation fails, the `_latest` symlink will be
-omitted but workflow execution will continue normally.
+On Windows, creating symlinks may require administrator privileges or Developer Mode. If symlink
+creation fails, the `_latest` symlink will be omitted but workflow execution will continue normally.
 :::
 
 ## Provenance database
@@ -172,25 +160,22 @@ The `sprocket.db` SQLite database tracks all workflow executions, including:
 - **Tasks**: Individual task executions within a workflow run.
 
 ::: warning Do not read the database directly
-`sprocket.db` is internal to Sprocket. Its schema is not backward compatible
-and may change in any release when a bundled forward migration can safely
-upgrade existing databases while preserving user data and supported command
-behavior. Direct querying, editing, and downgrade compatibility are
-unsupported: don't query it with SQLite tools or build scripts, dashboards, or
-other integrations on top of it. Use Sprocket commands and APIs, such as the
-`sprocket dev server` [run management commands](/reference/cli/dev/server#managing-runs)
-or the [REST API](/reference/rest-api), or request a supported interface if one
-is missing. A database migrated by a newer Sprocket release may not work with
-an older release.
+`sprocket.db` is internal to Sprocket. Its schema is not backward compatible and may change in any
+release when a bundled forward migration can safely upgrade existing databases while preserving user
+data and supported command behavior. Direct querying, editing, and downgrade compatibility are
+unsupported: don't query it with SQLite tools or build scripts, dashboards, or other integrations on
+top of it. Use Sprocket commands and APIs, such as the `sprocket dev server`
+[run management commands](/reference/cli/dev/server#managing-runs) or the
+[REST API](/reference/rest-api), or request a supported interface if one is missing. A database
+migrated by a newer Sprocket release may not work with an older release.
 :::
 
 ## Run contents
 
-Each run creates a timestamped directory under `runs/<target>/` containing
-the following:
+Each run creates a timestamped directory under `runs/<target>/` containing the following:
 
 | File/Directory | Description |
-|----------------|-------------|
+| ---------------- | ------------- |
 | `output.log` | Log of all messages emitted during the run |
 | `inputs.json` | Serialized inputs provided for the run |
 | `outputs.json` | Serialized outputs produced by the run |
@@ -205,13 +190,12 @@ the following:
 
 ### JSON run artifacts
 
-From executable `1.0`, the formats of `inputs.json` and `outputs.json` produced
-by stable commands are stable. Their locations inside `runs/` are not.
-Each file is a JSON object. Top-level task or workflow inputs use their declared
-WDL names as keys. Nested call inputs use `<call>.<input>` keys, and task
-requirement or hint overrides use `requirements.<name>` or `hints.<name>` keys.
-Every `outputs.json` key uses `<task-or-workflow>.<output>`, where the first
-component is the executed target's name.
+From executable `1.0`, the formats of `inputs.json` and `outputs.json` produced by stable commands
+are stable. Their locations inside `runs/` are not. Each file is a JSON object. Top-level task or
+workflow inputs use their declared WDL names as keys. Nested call inputs use `<call>.<input>` keys,
+and task requirement or hint overrides use `requirements.<name>` or `hints.<name>` keys. Every
+`outputs.json` key uses `<task-or-workflow>.<output>`, where the first component is the executed
+target's name.
 
 Values use these JSON representations:
 
@@ -222,29 +206,25 @@ Values use these JSON representations:
 - maps, objects, and structs use JSON objects.
 - pairs use objects with `left` and `right` fields.
 
-Whitespace, indentation, and object field order are not part of the stable
-format.
+Whitespace, indentation, and object field order are not part of the stable format.
 
 ### Retries
 
-When a task fails and is retried, each attempt gets its own numbered
-subdirectory under `attempts/`. This preserves the complete history of all
-execution attempts, which is valuable for debugging intermittent failures.
+When a task fails and is retried, each attempt gets its own numbered subdirectory under `attempts/`.
+This preserves the complete history of all execution attempts, which is valuable for debugging
+intermittent failures.
 
 ## Output indexing
 
-The `--index-on` flag takes a path within the output directory's `index/`
-directory. For each run, Sprocket creates entries for the run's `outputs.json`
-and every output that is a `File`, a `Directory`, or an array of them under
-`index/<index_path>/`. This gives results a consistent location per project,
-experiment, or sample without walking `runs/`.
+The `--index-on` flag takes a path within the output directory's `index/` directory. For each run,
+Sprocket creates entries for the run's `outputs.json` and every output that is a `File`, a
+`Directory`, or an array of them under `index/<index_path>/`. This gives results a consistent
+location per project, experiment, or sample without walking `runs/`.
 
-From executable `1.0`, stable `--index-on` behavior includes the accepted
-index-path syntax and validation, creation of entries under
-`index/<index_path>/`, which outputs receive entries, each entry resolving to
-the corresponding run artifact or output, and handling of outputs outside the
-output directory. The entry mechanism and its target path are internal
-details.
+From executable `1.0`, stable `--index-on` behavior includes the accepted index-path syntax and
+validation, creation of entries under `index/<index_path>/`, which outputs receive entries, each
+entry resolving to the corresponding run artifact or output, and handling of outputs outside the
+output directory. The entry mechanism and its target path are internal details.
 
 ```shell
 # Index this run's outputs under `index/greeting/`
@@ -253,19 +233,18 @@ sprocket run hello.wdl -t hello --index-on greeting
 
 The resulting index entry is a relative symlink:
 
-```
+```text
 index/greeting/outputs.json -> ../../runs/hello/<timestamp>/outputs.json
 ```
 
-An index path is relative and cannot contain `.` or `..` components; Sprocket
-rejects anything else before the run starts, which keeps every entry inside
-`index/`. Because Sprocket uses the path verbatim, group results by a value of
-your own choosing by interpolating that value into the index path in your shell.
+An index path is relative and cannot contain `.` or `..` components; Sprocket rejects anything else
+before the run starts, which keeps every entry inside `index/`. Because Sprocket uses the path
+verbatim, group results by a value of your own choosing by interpolating that value into the index
+path in your shell.
 
-Outputs that live outside the output directory are reported and left out of the
-index. A `File` input that a task passes straight through to an output is the
-usual case: its path belongs to the input rather than to the run, so neither a
-relative symlink nor a database entry can describe it.
+Outputs that live outside the output directory are reported and left out of the index. A `File`
+input that a task passes straight through to an output is the usual case: its path belongs to the
+input rather than to the run, so neither a relative symlink nor a database entry can describe it.
 
 ## Portability
 
@@ -277,8 +256,8 @@ The entire output directory is designed to be portable:
 
 ## Concurrent access
 
-Both `sprocket run` and `sprocket dev server` share the same execution engine and
-can operate on the same output directory simultaneously:
+Both `sprocket run` and `sprocket dev server` share the same execution engine and can operate on the
+same output directory simultaneously:
 
 - The SQLite WAL mode enables concurrent access.
 - Database locks are held briefly (milliseconds per transaction).
@@ -289,9 +268,9 @@ can operate on the same output directory simultaneously:
 
 ### Organizing output directories
 
-Use a dedicated output directory for each project or analysis domain. This keeps
-provenance data isolated, makes backups straightforward, and avoids confusion
-when multiple unrelated workflows share the same `runs/` hierarchy.
+Use a dedicated output directory for each project or analysis domain. This keeps provenance data
+isolated, makes backups straightforward, and avoids confusion when multiple unrelated workflows
+share the same `runs/` hierarchy.
 
 ```shell
 sprocket run pipeline_a.wdl -o ./pipeline-a-out ...
@@ -300,48 +279,43 @@ sprocket run pipeline_b.wdl -o ./pipeline-b-out ...
 
 ### Querying execution history
 
-Use Sprocket to query execution history, not the files it writes. There are two
-supported ways:
+Use Sprocket to query execution history, not the files it writes. There are two supported ways:
 
 - The `sprocket dev server` [run management commands](/reference/cli/dev/server#managing-runs)
   (`status`, `inspect`, `cancel`, and `retry`).
-- The [REST API](/reference/rest-api), available via `sprocket dev server start`.
-  It has endpoints for listing sessions, runs, and tasks with filtering. See the
-  [server documentation](/reference/cli/dev/server) for endpoint details and the
-  interactive Swagger UI at `/api/v1/swagger-ui` for exploration.
+- The [REST API](/reference/rest-api), available via `sprocket dev server start`. It has endpoints
+  for listing sessions, runs, and tasks with filtering. See the
+  [server documentation](/reference/cli/dev/server) for endpoint details and the interactive Swagger
+  UI at `/api/v1/swagger-ui` for exploration.
 
 Both remain experimental while the server is under `sprocket dev`.
 
 ::: warning The database and `runs/` layout are internal
-Neither the [provenance database](#provenance-database) nor the internal
-structure of the `runs/` directory is covered by backwards compatibility
-guarantees. File names, directory nesting, and the database schema are
-implementation details that may change without deprecation. Don't parse `runs/`
-or query `sprocket.db` in scripts, pipelines, or other tools; anything built on
-them may break when you upgrade Sprocket.
+Neither the [provenance database](#provenance-database) nor the internal structure of the `runs/`
+directory is covered by backwards compatibility guarantees. File names, directory nesting, and the
+database schema are implementation details that may change without deprecation. Don't parse `runs/`
+or query `sprocket.db` in scripts, pipelines, or other tools; anything built on them may break when
+you upgrade Sprocket.
 :::
 
-The `index/` directory, on the other hand, is user-assembled via `--index-on`
-and is designed to be consumed directly. Documented `--index-on` behavior on
-stable commands is stable from executable `1.0`.
+The `index/` directory, on the other hand, is user-assembled via `--index-on` and is designed to be
+consumed directly. Documented `--index-on` behavior on stable commands is stable from executable
+`1.0`.
 
 ### Backing up provenance data
 
-The output directory is self-contained: backing up the entire `out/` directory
-(including `sprocket.db` and the `runs/` and `index/` hierarchies) captures the
-full provenance record. Because all paths in the database and all symlinks are
-relative, a backup can be restored to any location without reconfiguration.
+The output directory is self-contained: backing up the entire `out/` directory (including
+`sprocket.db` and the `runs/` and `index/` hierarchies) captures the full provenance record. Because
+all paths in the database and all symlinks are relative, a backup can be restored to any location
+without reconfiguration.
 
-When backing up a live system, be aware that SQLite WAL mode uses auxiliary
-files (`sprocket.db-wal` and `sprocket.db-shm`). For a consistent backup,
-either stop active workflows first, or use SQLite's
-[backup API](https://www.sqlite.org/backup.html) to safely copy the database
-while it is in use.
+When backing up a live system, be aware that SQLite WAL mode uses auxiliary files (`sprocket.db-wal`
+and `sprocket.db-shm`). For a consistent backup, either stop active workflows first, or use SQLite's
+[backup API](https://www.sqlite.org/backup.html) to safely copy the database while it is in use.
 
 ### Preserving the `runs/` directory
 
-The `runs/` hierarchy is the immutable record of truth for all workflow
-executions. Do not modify, rename, or delete files within it, as doing so may
-invalidate provenance records and break index symlinks that reference those
-paths. If disk space becomes a concern, consider archiving older runs rather
-than deleting them.
+The `runs/` hierarchy is the immutable record of truth for all workflow executions. Do not modify,
+rename, or delete files within it, as doing so may invalidate provenance records and break index
+symlinks that reference those paths. If disk space becomes a concern, consider archiving older runs
+rather than deleting them.
