@@ -5,8 +5,10 @@ description: "Write YAML unit tests for WDL tasks and workflows and run them wit
 # `sprocket dev test`
 
 ::: danger Caution
+
 This document describes the beta release of the `test` command, which is currently exposed under the
 `dev` subcommand (i.e. `sprocket dev test`). This functionality may change in future releases.
+
 :::
 
 The Sprocket unit testing framework does not require any modifications to your source WDL, re-uses
@@ -88,7 +90,7 @@ bam_to_fastq:
 This is a single test named "kitchen_sink" which defines an input matrix that gets expanded into 96
 individual WDL executions, all of which have a unique set of inputs and run in parallel!
 
-> 96 executions come from the cartesian product of each sequence inputs (`3*2*2*2*2*2*1=96`).
+> 96 executions come from the cartesian product of each input sequence (`3*2*2*2*2*2*1=96`).
 
 If not otherwise specified, a test is considered successful so long as the entrypoint runs to
 completion, exits without an error, and all outputs are evaluated successfully. For tasks, the test
@@ -254,6 +256,107 @@ would be most useful to you during WDL development.
 
 :::
 
+#### Custom Assertions
+
+The above "builtin" assertions can get you pretty far with your testing, but there are often further
+checks you may want to perform which are outside the scope or ability of the builtins. For these
+cases, you can use custom assertions, which allow test authors to write arbitrary code in Bash
+scripts or other executables and call them from test YAML. An example may be wanting to verify that
+a BAM created as a task output can be parsed by `samtools quickcheck`.
+
+Custom assertions will call Bash scripts (they must be Bash) which are found within the
+`<workspace>/test/bin` directory. Other, non-Bash executables may also be placed in the `test/bin`
+directory and will be made available to the called Bash script. These scripts will run in the host
+environment, so external dependencies like `samtools` are easily accessed.
+
+::: danger Caution
+
+Running in the host environment does present security concerns, which are mitigated by default so
+that Sprocket tests are safe until this advanced capability is explicitly enabled. See the
+[below section](#enabling-custom-assertions) for instructions.
+
+:::
+
+An example of a custom assertion Bash script calling `samtools quickcheck` on a newly created BAM
+could look like:
+
+```bash
+set -euo pipefail
+
+output_json=$1
+bam_field=$2
+
+bam=$(jq -r ".$bam_field" "$json")
+
+samtools quickcheck "$bam"
+```
+
+This script would then be called from a `custom` block in the `assertions` section of a YAML test.
+Each key in the block must be the basename of a Bash script in the `test/bin` directory. The value
+of that key is an array of strings, where each string is an argument to pass to the script. One of
+those arguments _must_ be `"$OUTPUTS"`, and that argument will be replaced with a path to the
+successful task or workflow's generated `outputs.json`.
+
+```yaml
+assertions:
+  custom:
+    quickcheck.sh: [ "$OUTPUTS", "duplicate_marked_bam" ]
+```
+
+In the example, the second argument to the script is the field of the output JSON which holds the
+BAM we want to quick check. We parse the BAM's path out of the supplied JSON using `jq` and then run
+`samtools` on the new file.
+
+##### Calling other executables from Bash
+
+Bash is great for its portability, but its often not the language we want to write our tests in. You
+may want to write a Python script that uses the `pySAM` library to do even more advanced checks on
+your WDL outputs. We'll leave the actual Python to you as an exercise, but let's assume you have a
+Python script called `check_readgroups.py` which does something more advanced than what we can
+easily do in Bash.
+
+You can store `check_readgroups.py` in the `test/bin` directory alongside your Bash scripts, and it
+will be made available at runtime using the Bash environment variable `$TEST_BIN`. To call it, we
+may write a Bash script that looks like:
+
+```bash
+set -euo pipefail
+
+output_json=$1
+output_field=$2
+script_name=$3
+
+bam=$(jq -r ".$output_field" "$json")
+
+python3 "$TEST_BIN/$script_name" "$bam"
+```
+
+Then our test YAML could call this pair of executables with:
+
+```yaml
+assertions:
+  custom:
+    quickcheck.sh: [ "$OUTPUTS", "duplicate_marked_bam" ]
+    call_python.bash: [ "$OUTPUTS", "duplicate_marked_bam", "check_readgroups.py" ]
+```
+
+##### Enabling custom assertions
+
+By default, Sprocket will ignore any custom assertions and skip over them when executing tests. This
+is to make sure that Sprocket never runs malicious code without your instruction. Custom assertions
+can be enabled either with the `--enable-custom-assertions` flag at the command line or in your
+`sprocket.toml` in the `[test]` table with `enable_custom_assertions = true`.
+
+Additionally, _all_ files in the `test/bin` directory must be "blessed" to run on your host. After
+finalizing your `bin` directory, you can run `sprocket dev test bless-executables` to store the name
+and exact hash of every file in that directory in a special `blessed-executables.json` file Sprocket
+writes and reads. If Sprocket detects any changes to your `bin` directory that haven't been blessed
+yet, the tests will fail. If all the hashes match when custom assertions are enabled, they will run
+as described above.
+
+To ease the development process while writing new tests, you can pass the `--trusted` flag to the
+`test` command. This will bypass the bless check and let anything in `test/bin` to run on your host.
+
 ### How to use test fixtures
 
 WDL tasks and workflows often take file inputs, so the Sprocket unit testing framework has attempted
@@ -365,115 +468,6 @@ build_bwa_db:
 ```
 
 ## Running unit tests
-
-```text
-Runs unit tests for a WDL workspace
-
-Usage: sprocket dev test [OPTIONS] [SOURCE] [COMMAND]
-
-Commands:
-  schema  Print the JSON schema for Sprocket test definition YAMLs to stdout
-  help    Print this message or the help of the given subcommand(s)
-
-Arguments:
-  [SOURCE]
-          Local path to a WDL document or workspace to unit test.
-
-          If not specified, this defaults to the current working directory.
-
-Options:
-  -w, --workspace <WORKSPACE>
-          Root of the workspace where the `test/` directory will be located. Test fixtures will be loaded from `<workspace>/test/fixtures/` if it is present.
-
-          If a `<workspace>/test/` directory does not exist, one will be created and it will contain a `runs/` directory for test executions, unless otherwise specified.
-
-          If not specified and the `source` argument is a directory, it's assumed that directory is also the workspace. This can be specified in addition to a source directory if they are different.
-
-          If not specified and the `source` argument is a file, it's assumed that the current working directory is the workspace. This can be specified in addition to a source file if the CWD is not the right workspace.
-
-  -t, --target <TARGET>
-          Only run tests whose target (task/workflow) name contains the given filter
-
-  -f, --filter <FILTER>
-          Only run tests whose names contain the given filter
-
-      --exact
-          If set, filters are matched exactly rather than by substring
-
-  -i, --include-tag <TAG>
-          Specific test tag that should be run.
-
-          Can be repeated multiple times.
-
-  -e, --exclude-tag <TAG>
-          Filter out any tests with a matching tag.
-
-          Can be repeated multiple times.
-
-      --no-clean
-          Do not clean the file system of successful tests.
-
-          The default behavior is to remove directories of successful tests, leaving only failed and errored run directories on the file system.
-
-      --clean-all
-          Clean all execution directories, even for tests that failed or errored
-
-  -p, --parallelism <PARALLELISM>
-          The number of test executions to run in parallel
-
-      --fixtures-dir <FIXTURES_DIR>
-          Directory containing fixture files used by tests.
-
-          If not specified, defaults to `<workspace>/test/fixtures`.
-
-      --run-dir <RUN_DIR>
-          Directory to execute tests in.
-
-          If not specified, defaults to `<workspace>/test/runs`.
-
-      --no-status
-          Do not print results as tests complete
-
-  -v, --verbose...
-          Increase logging verbosity
-
-  -m, --report-mode <MODE>
-          The report mode for any emitted diagnostics
-
-          Possible values:
-          - full:     Prints diagnostics as multiple lines
-          - one-line: Prints diagnostics as one line
-
-  -q, --quiet...
-          Decrease logging verbosity
-
-      --no-ignore
-          Ignore `.sprocketignore` files while discovering WDL documents
-
-      --color <COLOR>
-          Controls output colorization
-
-          Possible values:
-          - auto:   Automatically colorize output depending on output device
-          - always: Always colorize output
-          - never:  Never colorize output
-
-          [default: auto]
-
-  -c, --config <CONFIG>
-          Path to the configuration file
-
-  -s, --skip-config-search
-          Skip searching for and loading configuration files.
-
-          Only a configuration file specified as a command line argument will be used.
-
-  -h, --help
-          Print help (see a summary with '-h')
-
-  -V, --version
-          Print version
-```
 
 ### Filtering which tests run
 
