@@ -298,7 +298,7 @@ assertions:
 
 In the example, the second argument to the script is the field of the output JSON which holds the
 BAM we want to quick check. We
-[parse the BAM's path out of the supplied JSON using `jq`](https://jqlang.org/) and then run
+parse the BAM's path out of the supplied JSON using [`jq`](https://jqlang.org/) and then run
 `samtools` on the new file.
 
 ##### Calling other executables from Bash
