@@ -1,15 +1,8 @@
 ---
-description: "Write YAML unit tests for WDL tasks and workflows and run them with Sprocket's experimental sprocket dev test framework."
+description: "Write YAML unit tests for WDL tasks and workflows and run them with Sprocket's test framework."
 ---
 
-# `sprocket dev test`
-
-::: danger Caution
-
-This document describes the beta release of the `test` command, which is currently exposed under the
-`dev` subcommand (i.e. `sprocket dev test`). This functionality may change in future releases.
-
-:::
+# `sprocket test`
 
 The Sprocket unit testing framework does not require any modifications to your source WDL, re-uses
 your [`run` configuration](/concepts/configuration), and everything required to test is done via
@@ -360,8 +353,8 @@ can be enabled either with the `--enable-custom-assertions` flag at the command 
 `sprocket.toml` in the `[test]` table with `enable_custom_assertions = true`.
 
 Additionally, _all_ files in the `test/bin` directory must be "blessed" to run on your host. After
-finalizing your `bin` directory, you can run `sprocket dev test bless-executables` to store the name
-and exact hash of every file in that directory in a special `blessed-executables.json` file Sprocket
+finalizing your `bin` directory, you can run `sprocket test bless-executables` to store the name and
+exact hash of every file in that directory in a special `blessed-executables.json` file Sprocket
 writes and reads. If Sprocket detects any changes to your `bin` directory that haven't been blessed,
 the tests will fail. If all the hashes match when custom assertions are enabled, they will run as
 described above.
@@ -490,10 +483,10 @@ above.
 
 ### Generating a test schema
 
-`sprocket dev test schema` prints a [JSON schema](https://json-schema.org) for Sprocket test
-definition YAMLs to standard out. You can use this to validate test definition files or to power
-editor autocompletion.
+`sprocket test schema` prints a [JSON schema](https://json-schema.org) for Sprocket test definition
+YAMLs to standard out. You can use this to validate test definition files or to power editor
+autocompletion.
 
 ```shell
-sprocket dev test schema > test.schema.json
+sprocket test schema > test.schema.json
 ```
