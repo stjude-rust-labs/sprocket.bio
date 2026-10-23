@@ -297,9 +297,8 @@ assertions:
 ```
 
 In the example, the second argument to the script is the field of the output JSON which holds the
-BAM we want to quick check. We
-parse the BAM's path out of the supplied JSON using [`jq`](https://jqlang.org/) and then run
-`samtools` on the new file.
+BAM we want to quick check. We parse the BAM's path out of the supplied JSON using
+[`jq`](https://jqlang.org/) and then run `samtools` on the new file.
 
 ##### Calling other executables from Bash
 
@@ -354,11 +353,12 @@ can be enabled either with the `--enable-custom-assertions` flag at the command 
 
 ##### Blessing executables
 
-Additionally, _all_ files in the `test/bin` directory must be "blessed" to run on your host. After
-finalizing your `bin` directory, you can run `sprocket test bless-executables` to store the name and
-exact hash of every file in that directory in a special `blessed-executables.json` file. If Sprocket
-detects any changes to your `bin` directory that haven't been blessed, the tests will fail. If all
-the hashes match when custom assertions are enabled, they will run as described above.
+In addition to enabling custom assertions, _all_ files in the `test/bin` directory must be "blessed"
+to run on your host. After finalizing your `bin` directory, you can run
+`sprocket test bless-executables` to store the name and exact hash of every file in that directory
+in a special `blessed-executables.json` file. If Sprocket detects any changes to your `bin`
+directory that haven't been blessed, no user code will run and the tests will fail. If all the
+hashes match, they will run as described above.
 
 To ease the development process while writing new tests, you can pass the `--trusted` flag to the
 `test` command. This will bypass the bless check and let anything in `test/bin` run on your host.
