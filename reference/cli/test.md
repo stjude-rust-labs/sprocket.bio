@@ -474,12 +474,23 @@ build_bwa_db:
 
 ## Running unit tests
 
-### Filtering which tests run
+### Choosing which tests run
 
 Use `--target` (`-t`) to run only tests whose task or workflow name contains a substring, and
 `--filter` (`-f`) to run only tests whose _test name_ contains a substring. Pass `--exact` to match
 these filters exactly rather than by substring. These combine with the tag-based selection described
 above.
+
+The `--include-tag` (`-i`) and `--exclude-tag` (`-e`) flags can also be used to choose which tests
+run.
+
+### Investigating tests
+
+By default, Sprocket will clean up all the files created by successful test executions. The
+individual executions which fail their assertions will remain on disk to enable investigating why
+the test did not match expectations. If you instead want Sprocket to remove _all_ test files at the
+end of a run, you can use the `--clean-all` flag. Conversely, if you wish to _keep_ all files
+created, including those created by successful tests, you can use the `--no-clean` flag.
 
 ### Generating a test schema
 
