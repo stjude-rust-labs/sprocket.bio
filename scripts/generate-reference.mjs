@@ -586,9 +586,9 @@ export function renderConfiguration(schema, defaultsSource, version) {
     "",
     "# Configuration reference",
     "",
-    "`sprocket.toml` controls Sprocket commands and runtime behavior. `sprocket config init` prints a configuration file with the defaults, while `sprocket config schema` prints the JSON Schema used to build this page. For configuration discovery, load order, and incremental merging, see [Configuration](/concepts/configuration).",
+    "`sprocket.toml` controls Sprocket commands and runtime behavior. `sprocket config default` prints a configuration file with the defaults, while `sprocket config schema` prints the JSON Schema used to build this page. For configuration discovery, load order, and incremental merging, see [Configuration](/concepts/configuration).",
     "",
-    "Keys marked as required must be present when their containing table is configured. A default shown here comes from the schema or, when the schema omits it, from `sprocket config init`.",
+    "Keys marked as required must be present when their containing table is configured. A default shown here comes from the schema or, when the schema omits it, from `sprocket config default`.",
     "",
   ];
 
@@ -978,11 +978,11 @@ export function generateReference(binary) {
 
   if (configuration.defaultDisagreements.length > 0) {
     console.error(
-      "Warning: schema defaults disagree with `sprocket config init`; using config init values:",
+      "Warning: schema defaults disagree with `sprocket config default`; using config default values:",
     );
     for (const disagreement of configuration.defaultDisagreements) {
       console.error(
-        `  ${disagreement.path}: schema ${disagreement.schema}; config init ${disagreement.initialized}`,
+        `  ${disagreement.path}: schema ${disagreement.schema}; config default ${disagreement.initialized}`,
       );
     }
   }
