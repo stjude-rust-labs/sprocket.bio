@@ -1,13 +1,8 @@
 ---
-description: "Write YAML unit tests for WDL tasks and workflows and run them with Sprocket's experimental sprocket dev test framework."
+description: "Write YAML unit tests for WDL tasks and workflows and run them with Sprocket's test framework."
 ---
 
-# `sprocket dev test`
-
-::: danger Caution
-This document describes the beta release of the `test` command, which is currently exposed under the
-`dev` subcommand (i.e. `sprocket dev test`). This functionality may change in future releases.
-:::
+# `sprocket test`
 
 The Sprocket unit testing framework does not require any modifications to your source WDL, re-uses
 your [`run` configuration](/concepts/configuration), and everything required to test is done via
@@ -54,7 +49,7 @@ example:
 
 ```yaml
 bam_to_fastq:
-  - name: kitchen_sink
+  - name: kitchen sink
     inputs:
       bam:
         - bams/Aligned.sortedByCoord.chr9_chr22.bam
@@ -85,10 +80,10 @@ bam_to_fastq:
         - kitchen_sink_test
 ```
 
-This is a single test named "kitchen_sink" which defines an input matrix that gets expanded into 96
+This is a single test named "kitchen sink" which defines an input matrix that gets expanded into 96
 individual WDL executions, all of which have a unique set of inputs and run in parallel!
 
-> 96 executions come from the cartesian product of each sequence inputs (`3*2*2*2*2*2*1=96`).
+> 96 executions come from the cartesian product of each input sequence (`3*2*2*2*2*2*1=96`).
 
 If not otherwise specified, a test is considered successful so long as the entrypoint runs to
 completion, exits without an error, and all outputs are evaluated successfully. For tasks, the test
@@ -96,27 +91,27 @@ framework assumes the expected exit code is `0`.
 
 ### Assertions
 
-Assertions are available for ensuring more complex expectations than simple "success" remain true.
+Assertions are available for ensuring more complex expectations than simple "success" are true.
 These more complex conditions can be specified with an `assertions:` section for the YAML
 definition.
 
 The assertions available depend on whether the entrypoint is a workflow or a task.
 
-The `should_fail: <boolean>` assertion is available for both workflows and tasks. It defaults to
-`false`, but may be specified as `should_fail: true` to assert that the execution is expected to
-fail. For workflows, any failure satisfies the assertion; for tasks, any nonzero exit code satisfies
-it. `should_fail` cannot be combined with `exit_code`.
+The `should_fail: <boolean>` assertion is available for both workflows and tasks. Specifying `false`
+doesn't change test behavior, but if it's specified as `should_fail: true` the execution is expected
+to fail. For workflows, any failure satisfies the assertion; for tasks, any nonzero exit code
+satisfies it.
 
 ```yaml
 validate_flag_filter: # this is a workflow
-  - name: valid_FlagFilter
+  - name: valid FlagFilter
     inputs:
       flags:
         - include_if_all: "3"
           exclude_if_any: "0xF04"
           include_if_any: "03"
           exclude_if_all: "4095"
-  - name: invalid_FlagFilter
+  - name: invalid FlagFilter
     inputs:
       flags:
         - include_if_all: "3"
@@ -133,14 +128,14 @@ exclusive.
 
 ```yaml
 validate_string_is_12bit_int: # this is a task
-  - name: valid_numbers
+  - name: valid numbers
     inputs:
       number:
         - "5" # decimal
         - "0x9AF" # hexadecimal
         - "01" # octal
         - "4095" # decimal
-  - name: invalid_numbers
+  - name: invalid numbers
     inputs:
       number:
         - "0x1000" # too many bits
@@ -155,8 +150,8 @@ validate_string_is_12bit_int: # this is a task
 ```
 
 Assertions are shared by all executions of a test. In the example above, there are 4 executions
-defined for the `validate_string_is_12bit_int::valid_numbers` test. This test is considered passed
-if all 4 of those executions evaluate with an exit code of `0`. The `invalid_numbers` test contains
+defined for the `validate_string_is_12bit_int::valid numbers` test. This test is considered passed
+if all 4 of those executions evaluate with an exit code of `0`. The `invalid numbers` test contains
 7 executions, and every one of those executions must exit with a code of `42` for the test to be
 considered a success.
 
@@ -167,7 +162,7 @@ task's STDOUT/STDERR stream. For example:
 
 ```yaml
 validate_string_is_12bit_int:
-  - name: too_big_decimal_fails
+  - name: too big decimal fails
     inputs:
       number:
         - "4096"
@@ -188,7 +183,7 @@ assertions, output assertions are expected to pass for every execution of a test
 
 ```yaml
 read_group_to_string:
-  - name: valid_read_groups
+  - name: valid read groups
     inputs:
       read_group:
         - ID: R1
@@ -206,9 +201,9 @@ read_group_to_string:
 
 Each key under `outputs` should be an exact match to an output of the task or workflow. The
 assertions available for that output are going to depend on the WDL type of the output. It wouldn't
-make sense to assert whether a WDL `Float` "contains" a string, so Sprocket will emit an informative
-error if there are any type mismatches between the assertions used and the expected type of each
-output.
+make sense to assert whether a WDL `Boolean` "contains" a string, so Sprocket will emit an
+informative error if there are any type mismatches between the assertions used and the expected type
+of each output.
 
 The currently supported basic output assertions are:
 
@@ -224,7 +219,7 @@ The currently supported basic output assertions are:
 - `Empty: <boolean>`: is the output `String`, `Array`, or `Map` empty?
   - "empty" for `String` types means length zero
 
-There are also several recursive output assertions which can be combined with the above in order to
+There are also several compound output assertions which can be combined with the above in order to
 test properties of compound WDL types:
 
 - `First: <inner assertion>`: applies the inner assertion to the first element of an output `Array`
@@ -254,6 +249,120 @@ would be most useful to you during WDL development.
 
 :::
 
+#### Custom Assertions
+
+The above "builtin" assertions can get you pretty far with your testing, but there are often further
+checks you may want to perform which are outside the scope or ability of the builtins. For these
+cases, you can use custom assertions which allow test authors to write arbitrary code in Bash
+scripts or other executables and call them from test YAML. An example may be wanting to verify that
+a BAM created as a task output can be parsed by `samtools quickcheck`.
+
+Custom assertions will call Bash scripts (they must be Bash) which are found within the
+`<workspace>/test/bin` directory. Other, non-Bash executables may also be placed in the `test/bin`
+directory and will be made available to the called Bash script. These scripts will run in the host
+environment, so external dependencies like `samtools` are easily accessed.
+
+::: danger Caution
+
+Running in the host environment does present security concerns, which are mitigated by default so
+that Sprocket tests are safe until this advanced capability is explicitly enabled. See the
+[below section](#enabling-custom-assertions) for instructions.
+
+:::
+
+An example of a custom assertion Bash script calling `samtools quickcheck` on a newly created BAM
+could look like:
+
+```bash
+set -euo pipefail
+
+output_json="$1"
+bam_field="$2"
+
+bam="$(jq -r ".$bam_field" "$json")"
+
+samtools quickcheck "$bam"
+```
+
+This script would then be called from a `custom` block in the `assertions` section of a YAML test.
+Each key in the block must be the basename of a Bash script in the `test/bin` directory. The value
+of that key is an array of strings, where each string is an argument to pass to the script. One of
+those arguments _must_ be `"$OUTPUTS"`, and that argument will be replaced with a path to the
+successful task or workflow's generated `outputs.json`.
+
+```yaml
+assertions:
+  custom:
+    quickcheck.sh: [ "$OUTPUTS", "duplicate_marked_bam" ]
+```
+
+In the example, the second argument to the script is the field of the output JSON which holds the
+BAM we want to quick check. We parse the BAM's path out of the supplied JSON using
+[`jq`](https://jqlang.org/) and then run `samtools` on the new file.
+
+##### Calling other executables from Bash
+
+Bash is great for its portability, but it's often not the language we want to write our tests in.
+You may want to write a Python script that uses the
+[`pysam` module](https://pysam.readthedocs.io/en/stable/api.html) to do even more advanced checks on
+your output BAM files. We'll leave the actual Python to you as an exercise, but let's assume you
+have a Python script called `check_readgroups.py` which does something more advanced than what we
+can easily do in Bash.
+
+You can store `check_readgroups.py` in the `test/bin` directory alongside your Bash scripts, and it
+will be made available at runtime using the Bash environment variable `$TEST_BIN`. To call it, we
+may write a Bash script that looks like:
+
+```bash
+set -euo pipefail
+
+output_json="$1"
+output_field="$2"
+script_name="$3"
+
+output="$(jq -r ".$output_field" "$json")"
+
+python3 "$TEST_BIN/$script_name" "$output"
+```
+
+Then our test YAML could call this pair of executables with:
+
+```yaml
+assertions:
+  custom:
+    quickcheck.sh: [ "$OUTPUTS", "duplicate_marked_bam" ]
+    call_python.bash: [ "$OUTPUTS", "duplicate_marked_bam", "check_readgroups.py" ]
+```
+
+##### Debugging custom assertions
+
+While writing scripts, it's often helpful to be able to inspect the STDOUT and STDERR of what is
+being run. To view these streams during test execution, you can pass the `--show-assertion-stdio`
+flag to `test`.
+
+To prevent litterring your filesystem with temporary files, we run custom assertions inside a temp
+directory that will be deleted when the custom executables are done running. This may change in
+future releases.
+
+##### Enabling custom assertions
+
+By default, Sprocket will ignore any custom assertions and skip over them when executing tests. This
+is to make sure that Sprocket never runs malicious code without your instruction. Custom assertions
+can be enabled either with the `--enable-custom-assertions` flag at the command line or in your
+`sprocket.toml` in the `[test]` table with `enable_custom_assertions = true`.
+
+##### Blessing executables
+
+In addition to enabling custom assertions, _all_ files in the `test/bin` directory must be "blessed"
+to run on your host. After finalizing your `bin` directory, you can run
+`sprocket test bless-executables` to store the name and exact hash of every file in that directory
+in a special `blessed-executables.json` file. If Sprocket detects any changes to your `bin`
+directory that haven't been blessed, no user code will run and the tests will fail. If all the
+hashes match, they will run as described above.
+
+To ease the development process while writing new tests, you can pass the `--trusted` flag to the
+`test` command. This will bypass the bless check and let anything in `test/bin` run on your host.
+
 ### How to use test fixtures
 
 WDL tasks and workflows often take file inputs, so the Sprocket unit testing framework has attempted
@@ -269,7 +378,7 @@ to be located. This means that your test YAML can live near the WDL source it is
 fixtures remain isolated relative to the workspace root, preventing clutter in your source
 directories.
 
-Let's return to the "kitchen_sink" example test defined earlier: one of the inputs sections looks
+Let's return to the "kitchen sink" example test defined earlier: one of the inputs sections looks
 like:
 
 ```yaml
@@ -288,9 +397,9 @@ found at:
 <workspace>/test/fixtures/bams/test.bwa_aln_pe.chrY_chrM.bam
 ```
 
-This makes re-using test fixtures across your workspace super easy! Any YAML file in the workspace
-can reference the same fixtures using the same paths; even if the source WDL moves around, your
-tests will remain valid.
+This makes re-using test fixtures across your workspace easy! Any YAML file in the workspace can
+reference the same fixtures using the same paths; even if the source WDL moves around, your tests
+will remain valid.
 
 ### Specifying groups of inputs
 
@@ -301,7 +410,7 @@ produce a useful test matrix:
 
 ```yaml
 bam_coverage:
-  - name: this_will_not_work
+  - name: this will not work
     inputs:
       bam:
         - bams/test.bam
@@ -329,7 +438,7 @@ we could re-write to look like:
 
 ```yaml
 bam_coverage:
-  - name: this_will_work
+  - name: this will work
     inputs:
       $samples:
         bam:
@@ -357,7 +466,7 @@ tags that can be toggled from the command line when executing tests. For example
 
 ```yaml
 build_bwa_db:
-  - name: build_reference
+  - name: build reference
     tags: [ reference, slow ]
     inputs:
       reference_fasta:
@@ -366,128 +475,30 @@ build_bwa_db:
 
 ## Running unit tests
 
-```text
-Runs unit tests for a WDL workspace
-
-Usage: sprocket dev test [OPTIONS] [SOURCE] [COMMAND]
-
-Commands:
-  schema  Print the JSON schema for Sprocket test definition YAMLs to stdout
-  help    Print this message or the help of the given subcommand(s)
-
-Arguments:
-  [SOURCE]
-          Local path to a WDL document or workspace to unit test.
-
-          If not specified, this defaults to the current working directory.
-
-Options:
-  -w, --workspace <WORKSPACE>
-          Root of the workspace where the `test/` directory will be located. Test fixtures will be loaded from `<workspace>/test/fixtures/` if it is present.
-
-          If a `<workspace>/test/` directory does not exist, one will be created and it will contain a `runs/` directory for test executions, unless otherwise specified.
-
-          If not specified and the `source` argument is a directory, it's assumed that directory is also the workspace. This can be specified in addition to a source directory if they are different.
-
-          If not specified and the `source` argument is a file, it's assumed that the current working directory is the workspace. This can be specified in addition to a source file if the CWD is not the right workspace.
-
-  -t, --target <TARGET>
-          Only run tests whose target (task/workflow) name contains the given filter
-
-  -f, --filter <FILTER>
-          Only run tests whose names contain the given filter
-
-      --exact
-          If set, filters are matched exactly rather than by substring
-
-  -i, --include-tag <TAG>
-          Specific test tag that should be run.
-
-          Can be repeated multiple times.
-
-  -e, --exclude-tag <TAG>
-          Filter out any tests with a matching tag.
-
-          Can be repeated multiple times.
-
-      --no-clean
-          Do not clean the file system of successful tests.
-
-          The default behavior is to remove directories of successful tests, leaving only failed and errored run directories on the file system.
-
-      --clean-all
-          Clean all execution directories, even for tests that failed or errored
-
-  -p, --parallelism <PARALLELISM>
-          The number of test executions to run in parallel
-
-      --fixtures-dir <FIXTURES_DIR>
-          Directory containing fixture files used by tests.
-
-          If not specified, defaults to `<workspace>/test/fixtures`.
-
-      --run-dir <RUN_DIR>
-          Directory to execute tests in.
-
-          If not specified, defaults to `<workspace>/test/runs`.
-
-      --no-status
-          Do not print results as tests complete
-
-  -v, --verbose...
-          Increase logging verbosity
-
-  -m, --report-mode <MODE>
-          The report mode for any emitted diagnostics
-
-          Possible values:
-          - full:     Prints diagnostics as multiple lines
-          - one-line: Prints diagnostics as one line
-
-  -q, --quiet...
-          Decrease logging verbosity
-
-      --no-ignore
-          Ignore `.sprocketignore` files while discovering WDL documents
-
-      --color <COLOR>
-          Controls output colorization
-
-          Possible values:
-          - auto:   Automatically colorize output depending on output device
-          - always: Always colorize output
-          - never:  Never colorize output
-
-          [default: auto]
-
-  -c, --config <CONFIG>
-          Path to the configuration file
-
-  -s, --skip-config-search
-          Skip searching for and loading configuration files.
-
-          Only a configuration file specified as a command line argument will be used.
-
-  -h, --help
-          Print help (see a summary with '-h')
-
-  -V, --version
-          Print version
-```
-
-### Filtering which tests run
+### Choosing which tests run
 
 Use `--target` (`-t`) to run only tests whose task or workflow name contains a substring, and
 `--filter` (`-f`) to run only tests whose _test name_ contains a substring. Pass `--exact` to match
 these filters exactly rather than by substring. These combine with the tag-based selection described
 above.
 
+The `--include-tag` (`-i`) and `--exclude-tag` (`-e`) flags can also be used to choose which tests
+run.
+
+### Investigating tests
+
+By default, Sprocket will clean up all the files created by successful test executions. The
+individual executions which fail their assertions will remain on disk to enable investigating why
+the test did not match expectations. If you instead want Sprocket to remove _all_ test files at the
+end of a run, you can use the `--clean-all` flag. Conversely, if you wish to _keep_ all files
+created, including those created by successful tests, you can use the `--no-clean` flag.
+
 ### Generating a test schema
 
-`sprocket dev test schema` prints a [JSON schema](https://json-schema.org) for Sprocket test
-definition YAMLs to standard out. You can use this to validate test definition files or to power
-editor autocompletion.
+`sprocket test schema` prints a [JSON schema](https://json-schema.org) for Sprocket test definition
+YAMLs to standard out. You can use this to validate test definition files or to power editor
+autocompletion.
 
 ```shell
-sprocket dev test schema > test.schema.json
+sprocket test schema > test.schema.json
 ```
