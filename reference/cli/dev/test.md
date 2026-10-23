@@ -56,7 +56,7 @@ example:
 
 ```yaml
 bam_to_fastq:
-  - name: kitchen_sink
+  - name: kitchen sink
     inputs:
       bam:
         - bams/Aligned.sortedByCoord.chr9_chr22.bam
@@ -87,7 +87,7 @@ bam_to_fastq:
         - kitchen_sink_test
 ```
 
-This is a single test named "kitchen_sink" which defines an input matrix that gets expanded into 96
+This is a single test named "kitchen sink" which defines an input matrix that gets expanded into 96
 individual WDL executions, all of which have a unique set of inputs and run in parallel!
 
 > 96 executions come from the cartesian product of each input sequence (`3*2*2*2*2*2*1=96`).
@@ -98,27 +98,27 @@ framework assumes the expected exit code is `0`.
 
 ### Assertions
 
-Assertions are available for ensuring more complex expectations than simple "success" remain true.
+Assertions are available for ensuring more complex expectations than simple "success" are true.
 These more complex conditions can be specified with an `assertions:` section for the YAML
 definition.
 
 The assertions available depend on whether the entrypoint is a workflow or a task.
 
-The `should_fail: <boolean>` assertion is available for both workflows and tasks. It defaults to
-`false`, but may be specified as `should_fail: true` to assert that the execution is expected to
-fail. For workflows, any failure satisfies the assertion; for tasks, any nonzero exit code satisfies
-it. `should_fail` cannot be combined with `exit_code`.
+The `should_fail: <boolean>` assertion is available for both workflows and tasks. Specifying `false`
+doesn't change test behavior, but if it's specified as `should_fail: true` the execution is expected
+to fail. For workflows, any failure satisfies the assertion; for tasks, any nonzero exit code
+satisfies it.
 
 ```yaml
 validate_flag_filter: # this is a workflow
-  - name: valid_FlagFilter
+  - name: valid FlagFilter
     inputs:
       flags:
         - include_if_all: "3"
           exclude_if_any: "0xF04"
           include_if_any: "03"
           exclude_if_all: "4095"
-  - name: invalid_FlagFilter
+  - name: invalid FlagFilter
     inputs:
       flags:
         - include_if_all: "3"
@@ -135,14 +135,14 @@ exclusive.
 
 ```yaml
 validate_string_is_12bit_int: # this is a task
-  - name: valid_numbers
+  - name: valid numbers
     inputs:
       number:
         - "5" # decimal
         - "0x9AF" # hexadecimal
         - "01" # octal
         - "4095" # decimal
-  - name: invalid_numbers
+  - name: invalid numbers
     inputs:
       number:
         - "0x1000" # too many bits
@@ -157,8 +157,8 @@ validate_string_is_12bit_int: # this is a task
 ```
 
 Assertions are shared by all executions of a test. In the example above, there are 4 executions
-defined for the `validate_string_is_12bit_int::valid_numbers` test. This test is considered passed
-if all 4 of those executions evaluate with an exit code of `0`. The `invalid_numbers` test contains
+defined for the `validate_string_is_12bit_int::valid numbers` test. This test is considered passed
+if all 4 of those executions evaluate with an exit code of `0`. The `invalid numbers` test contains
 7 executions, and every one of those executions must exit with a code of `42` for the test to be
 considered a success.
 
@@ -169,7 +169,7 @@ task's STDOUT/STDERR stream. For example:
 
 ```yaml
 validate_string_is_12bit_int:
-  - name: too_big_decimal_fails
+  - name: too big decimal fails
     inputs:
       number:
         - "4096"
@@ -190,7 +190,7 @@ assertions, output assertions are expected to pass for every execution of a test
 
 ```yaml
 read_group_to_string:
-  - name: valid_read_groups
+  - name: valid read groups
     inputs:
       read_group:
         - ID: R1
@@ -208,9 +208,9 @@ read_group_to_string:
 
 Each key under `outputs` should be an exact match to an output of the task or workflow. The
 assertions available for that output are going to depend on the WDL type of the output. It wouldn't
-make sense to assert whether a WDL `Float` "contains" a string, so Sprocket will emit an informative
-error if there are any type mismatches between the assertions used and the expected type of each
-output.
+make sense to assert whether a WDL `Boolean` "contains" a string, so Sprocket will emit an
+informative error if there are any type mismatches between the assertions used and the expected type
+of each output.
 
 The currently supported basic output assertions are:
 
@@ -226,7 +226,7 @@ The currently supported basic output assertions are:
 - `Empty: <boolean>`: is the output `String`, `Array`, or `Map` empty?
   - "empty" for `String` types means length zero
 
-There are also several recursive output assertions which can be combined with the above in order to
+There are also several compound output assertions which can be combined with the above in order to
 test properties of compound WDL types:
 
 - `First: <inner assertion>`: applies the inner assertion to the first element of an output `Array`
@@ -260,7 +260,7 @@ would be most useful to you during WDL development.
 
 The above "builtin" assertions can get you pretty far with your testing, but there are often further
 checks you may want to perform which are outside the scope or ability of the builtins. For these
-cases, you can use custom assertions, which allow test authors to write arbitrary code in Bash
+cases, you can use custom assertions which allow test authors to write arbitrary code in Bash
 scripts or other executables and call them from test YAML. An example may be wanting to verify that
 a BAM created as a task output can be parsed by `samtools quickcheck`.
 
@@ -283,10 +283,10 @@ could look like:
 ```bash
 set -euo pipefail
 
-output_json=$1
-bam_field=$2
+output_json="$1"
+bam_field="$2"
 
-bam=$(jq -r ".$bam_field" "$json")
+bam="$(jq -r ".$bam_field" "$json")"
 
 samtools quickcheck "$bam"
 ```
@@ -310,12 +310,12 @@ BAM we want to quick check. We
 
 ##### Calling other executables from Bash
 
-Bash is great for its portability, but its often not the language we want to write our tests in. You
-may want to write a Python script that uses the
+Bash is great for its portability, but it's often not the language we want to write our tests in.
+You may want to write a Python script that uses the
 [`pysam` module](https://pysam.readthedocs.io/en/stable/api.html) to do even more advanced checks on
-your WDL outputs. We'll leave the actual Python to you as an exercise, but let's assume you have a
-Python script called `check_readgroups.py` which does something more advanced than what we can
-easily do in Bash.
+your output BAM files. We'll leave the actual Python to you as an exercise, but let's assume you
+have a Python script called `check_readgroups.py` which does something more advanced than what we
+can easily do in Bash.
 
 You can store `check_readgroups.py` in the `test/bin` directory alongside your Bash scripts, and it
 will be made available at runtime using the Bash environment variable `$TEST_BIN`. To call it, we
@@ -324,13 +324,13 @@ may write a Bash script that looks like:
 ```bash
 set -euo pipefail
 
-output_json=$1
-output_field=$2
-script_name=$3
+output_json="$1"
+output_field="$2"
+script_name="$3"
 
-bam=$(jq -r ".$output_field" "$json")
+output="$(jq -r ".$output_field" "$json")"
 
-python3 "$TEST_BIN/$script_name" "$bam"
+python3 "$TEST_BIN/$script_name" "$output"
 ```
 
 Then our test YAML could call this pair of executables with:
@@ -342,6 +342,16 @@ assertions:
     call_python.bash: [ "$OUTPUTS", "duplicate_marked_bam", "check_readgroups.py" ]
 ```
 
+##### Debugging custom assertions
+
+While writing scripts, it's often helpful to be able to inspect the STDOUT and STDERR of what is
+being run. To view these streams during test execution, you can pass the `--show-assertion-stdio`
+flag to `test`.
+
+To prevent litterring your filesystem with temporary files, we run custom assertions inside a temp
+directory that will be deleted when the custom executables are done running. This may change in
+future releases.
+
 ##### Enabling custom assertions
 
 By default, Sprocket will ignore any custom assertions and skip over them when executing tests. This
@@ -352,12 +362,12 @@ can be enabled either with the `--enable-custom-assertions` flag at the command 
 Additionally, _all_ files in the `test/bin` directory must be "blessed" to run on your host. After
 finalizing your `bin` directory, you can run `sprocket dev test bless-executables` to store the name
 and exact hash of every file in that directory in a special `blessed-executables.json` file Sprocket
-writes and reads. If Sprocket detects any changes to your `bin` directory that haven't been blessed
-yet, the tests will fail. If all the hashes match when custom assertions are enabled, they will run
-as described above.
+writes and reads. If Sprocket detects any changes to your `bin` directory that haven't been blessed,
+the tests will fail. If all the hashes match when custom assertions are enabled, they will run as
+described above.
 
 To ease the development process while writing new tests, you can pass the `--trusted` flag to the
-`test` command. This will bypass the bless check and let anything in `test/bin` to run on your host.
+`test` command. This will bypass the bless check and let anything in `test/bin` run on your host.
 
 ### How to use test fixtures
 
@@ -374,7 +384,7 @@ to be located. This means that your test YAML can live near the WDL source it is
 fixtures remain isolated relative to the workspace root, preventing clutter in your source
 directories.
 
-Let's return to the "kitchen_sink" example test defined earlier: one of the inputs sections looks
+Let's return to the "kitchen sink" example test defined earlier: one of the inputs sections looks
 like:
 
 ```yaml
@@ -393,9 +403,9 @@ found at:
 <workspace>/test/fixtures/bams/test.bwa_aln_pe.chrY_chrM.bam
 ```
 
-This makes re-using test fixtures across your workspace super easy! Any YAML file in the workspace
-can reference the same fixtures using the same paths; even if the source WDL moves around, your
-tests will remain valid.
+This makes re-using test fixtures across your workspace easy! Any YAML file in the workspace can
+reference the same fixtures using the same paths; even if the source WDL moves around, your tests
+will remain valid.
 
 ### Specifying groups of inputs
 
@@ -406,7 +416,7 @@ produce a useful test matrix:
 
 ```yaml
 bam_coverage:
-  - name: this_will_not_work
+  - name: this will not work
     inputs:
       bam:
         - bams/test.bam
@@ -434,7 +444,7 @@ we could re-write to look like:
 
 ```yaml
 bam_coverage:
-  - name: this_will_work
+  - name: this will work
     inputs:
       $samples:
         bam:
@@ -462,7 +472,7 @@ tags that can be toggled from the command line when executing tests. For example
 
 ```yaml
 build_bwa_db:
-  - name: build_reference
+  - name: build reference
     tags: [ reference, slow ]
     inputs:
       reference_fasta:
