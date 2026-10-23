@@ -352,12 +352,13 @@ is to make sure that Sprocket never runs malicious code without your instruction
 can be enabled either with the `--enable-custom-assertions` flag at the command line or in your
 `sprocket.toml` in the `[test]` table with `enable_custom_assertions = true`.
 
+##### Blessing executables
+
 Additionally, _all_ files in the `test/bin` directory must be "blessed" to run on your host. After
 finalizing your `bin` directory, you can run `sprocket test bless-executables` to store the name and
-exact hash of every file in that directory in a special `blessed-executables.json` file Sprocket
-writes and reads. If Sprocket detects any changes to your `bin` directory that haven't been blessed,
-the tests will fail. If all the hashes match when custom assertions are enabled, they will run as
-described above.
+exact hash of every file in that directory in a special `blessed-executables.json` file. If Sprocket
+detects any changes to your `bin` directory that haven't been blessed, the tests will fail. If all
+the hashes match when custom assertions are enabled, they will run as described above.
 
 To ease the development process while writing new tests, you can pass the `--trusted` flag to the
 `test` command. This will bypass the bless check and let anything in `test/bin` run on your host.
