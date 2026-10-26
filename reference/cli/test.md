@@ -340,7 +340,7 @@ While writing scripts, it's often helpful to be able to inspect the STDOUT and S
 being run. To view these streams during test execution, you can pass the `--show-assertion-stdio`
 flag to `test`.
 
-To prevent litterring your filesystem with temporary files, we run custom assertions inside a temp
+To prevent littering your filesystem with temporary files, we run custom assertions inside a temp
 directory that will be deleted when the custom executables are done running. This may change in
 future releases.
 
