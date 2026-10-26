@@ -356,7 +356,7 @@ can be enabled either with the `--enable-custom-assertions` flag at the command 
 In addition to enabling custom assertions, _all_ files in the `test/bin` directory must be "blessed"
 to run on your host. After finalizing your `bin` directory, you can run
 `sprocket test bless-executables` to store the name and exact hash of every file in that directory
-in a special `blessed-executables.json` file. If Sprocket detects any changes to your `bin`
+in a special `blessed_executables.json` file. If Sprocket detects any changes to your `bin`
 directory that haven't been blessed, no user code will run and the tests will fail. If all the
 hashes match, they will run as described above.
 
