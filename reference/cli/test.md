@@ -358,7 +358,7 @@ to run on your host. After finalizing your `bin` directory, you can run
 `sprocket test bless-executables` to store the name and exact hash of every file in that directory
 in a special `blessed_executables.json` file. If Sprocket detects any changes to your `bin`
 directory that haven't been blessed, no user code will run and the tests will fail. If all the
-hashes match, they will run as described above.
+hashes match, they will run as described above. This process prevents running changed files; it does not ensure a file is safe to execute. That remains the user's responsibility.
 
 To ease the development process while writing new tests, you can pass the `--trusted` flag to the
 `test` command. This will bypass the bless check and let anything in `test/bin` run on your host.
