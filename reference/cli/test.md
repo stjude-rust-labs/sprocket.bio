@@ -320,7 +320,7 @@ output_json="$1"
 output_field="$2"
 script_name="$3"
 
-output="$(jq -r ".$output_field" "$json")"
+output="$(jq -r ".$output_field" "$output_json")"
 
 python3 "$TEST_BIN/$script_name" "$output"
 ```
