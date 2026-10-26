@@ -264,6 +264,9 @@ environment, so external dependencies like `samtools` are easily accessed.
 
 ::: danger Caution
 
+Custom assertions are able to execute arbitrary code with the user's permissions and may access
+local files, environment variables, network resources, and installed programs.
+
 Running in the host environment does present security concerns, which are mitigated by default so
 that Sprocket tests are safe until this advanced capability is explicitly enabled. See the
 [below section](#enabling-custom-assertions) for instructions.
