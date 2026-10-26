@@ -3382,7 +3382,7 @@ The HMAC Secret to use.
 
 Configuration for the `test` command.
 
-**See also:** [Test command](/reference/cli/dev/test).
+**See also:** [Test command](/reference/cli/test).
 
 ### `parallelism` {#test-parallelism}
 

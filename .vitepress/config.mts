@@ -283,7 +283,7 @@ export default defineConfigWithTheme<SprocketThemeConfig>({
               { text: "dev module", link: "/reference/cli/dev/module", docFooterText: "Commands &gt; Experimental &gt; dev module" },
               { text: "dev server", link: "/reference/cli/dev/server", docFooterText: "Commands &gt; Experimental &gt; dev server" },
               { text: "dev server submit", link: "/reference/cli/dev/server-submit", docFooterText: "Commands &gt; Experimental &gt; dev server submit" },
-              { text: "dev test", link: "/reference/cli/dev/test", docFooterText: "Commands &gt; Experimental &gt; dev test" },
+              { text: "test", link: "/reference/cli/test", docFooterText: "Commands &gt; Experimental &gt; test" },
             ],
           },
         ],
