@@ -347,7 +347,7 @@ future releases.
 ##### Enabling custom assertions
 
 By default, Sprocket will ignore any custom assertions and skip over them when executing tests. This
-is to make sure that Sprocket never runs malicious code without your instruction. Custom assertions
+is to make sure that Sprocket never runs potentially malicious code without your instruction. Custom assertions
 can be enabled either with the `--enable-custom-assertions` flag at the command line or in your
 `sprocket.toml` in the `[test]` table with `enable_custom_assertions = true`.
 
