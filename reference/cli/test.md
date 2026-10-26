@@ -279,7 +279,7 @@ set -euo pipefail
 output_json="$1"
 bam_field="$2"
 
-bam="$(jq -r ".$bam_field" "$json")"
+bam="$(jq -r ".$bam_field" "$output_json")"
 
 samtools quickcheck "$bam"
 ```
