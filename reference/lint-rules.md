@@ -16,12 +16,12 @@ Rules from `wdl-lint` are listed as **Lint** rules. Rules from `wdl-analysis` ar
 | Rule | Kind | Tags | Description |
 | --- | --- | --- | --- |
 | [`BashSetSyntax`](#bashsetsyntax) | Lint | Correctness | Ensures that all `command` sections start with a valid `set` command. |
+| [`CallInputKeyword`](#callinputkeyword) | Lint | Style, Deprecated | Ensures that the `input:` keyword is not used in call statements when WDL version is 1.2 or later. |
 | [`CommandSectionIndentation`](#commandsectionindentation) | Validation | — | Ensures consistent indentation (no mixed spaces/tabs) within command sections. |
 | [`ConciseInput`](#conciseinput) | Lint | Style | Ensures concise input assignments are used (implicit binding when available). |
 | [`ContainerUri`](#containeruri) | Lint | Clarity, Portability | Ensures that values for the `container` key within `runtime`/`requirements` sections are well-formed. |
 | [`DeclarationName`](#declarationname) | Lint | Naming, Style, Clarity | Ensures declaration names do not redundantly include their type name. |
 | [`DenyGlobStar`](#denyglobstar) | Lint | Clarity, Correctness | Ensures `glob("*")` is not used in output declarations. |
-| [`DeprecatedInputKeyword`](#deprecatedinputkeyword) | Validation | — | Ensures that the `input:` keyword is not used in call statements when WDL version is 1.2 or later. |
 | [`DeprecatedObject`](#deprecatedobject) | Validation | — | Ensures that the deprecated `Object` types are not used. |
 | [`DeprecatedPlaceholder`](#deprecatedplaceholder) | Validation | — | Ensures that deprecated expression placeholder options are not used. |
 | [`DeprecatedRuntimeKey`](#deprecatedruntimekey) | Lint | Completeness, Deprecated | Detects WDL 1.1 `runtime` keys that have preferred replacements. |
@@ -41,7 +41,7 @@ Rules from `wdl-lint` are listed as **Lint** rules. Rules from `wdl-analysis` ar
 | [`MatchingOutputMeta`](#matchingoutputmeta) | Lint | Completeness, Documentation, SprocketCompatibility | Ensures that each output field is documented either in `meta.outputs` or with a doc comment. |
 | [`MeaninglessLintDirective`](#meaninglesslintdirective) | Validation | — | Warns if an `#@ except:` comment doesn't actually suppress a lint. |
 | [`MetaDescription`](#metadescription) | Lint | Completeness, Documentation, SprocketCompatibility | Ensures that items with a `meta` section either contain a `description` key or a doc comment. |
-| [`MetaSections`](#metasections) | Lint | Completeness, Clarity, Documentation | Ensures that tasks, workflows, and structs have the required `meta` and `parameter_meta` sections, or supplementary doc comments. |
+| [`MetaSections`](#metasections) | Lint | Completeness, Clarity, Documentation | Ensures that tasks and workflows have the required `meta` and `parameter_meta` sections, or supplementary doc comments. |
 | [`MisleadingDeclarationOrder`](#misleadingdeclarationorder) | Validation | — | Warns when a variable declaration is placed after a `command` block. |
 | [`MissingParameterMeta`](#missingparametermeta) | Lint | Completeness, Sorting, Documentation, SprocketCompatibility | Ensures that inputs and struct fields have `parameter_meta` entries or supplementary doc comments. |
 | [`MutableContainerTag`](#mutablecontainertag) | Lint | Clarity, Portability | Ensures that container URIs use immutable tags. |
@@ -68,18 +68,18 @@ Rules from `wdl-lint` are listed as **Lint** rules. Rules from `wdl-analysis` ar
 
 ## Tags
 
-- **All:** [`BashSetSyntax`](#bashsetsyntax), [`ConciseInput`](#conciseinput), [`ContainerUri`](#containeruri), [`DeclarationName`](#declarationname), [`DenyGlobStar`](#denyglobstar), [`DeprecatedRuntimeKey`](#deprecatedruntimekey), [`DocCommentTabs`](#doccommenttabs), [`EmptyDocComment`](#emptydoccomment), [`EmptyOutputs`](#emptyoutputs), [`ExtraneousParameterMeta`](#extraneousparametermeta), [`FlaggedComment`](#flaggedcomment), [`HereDocCommands`](#heredoccommands), [`HostPathLiterals`](#hostpathliterals), [`ImportPlacement`](#importplacement), [`InlineInstall`](#inlineinstall), [`InputName`](#inputname), [`MatchingOutputMeta`](#matchingoutputmeta), [`MetaDescription`](#metadescription), [`MetaSections`](#metasections), [`MissingParameterMeta`](#missingparametermeta), [`MutableContainerTag`](#mutablecontainertag), [`NamingConvention`](#namingconvention), [`OutputMetaOrder`](#outputmetaorder), [`OutputName`](#outputname), [`ParameterDescription`](#parameterdescription), [`ParameterMetaOrder`](#parametermetaorder), [`RecommendedRuntimeKeys`](#recommendedruntimekeys), [`RedundantContainerArray`](#redundantcontainerarray), [`RedundantNone`](#redundantnone), [`RequirementsSection`](#requirementssection), [`RuntimeSection`](#runtimesection), [`ShellCheck`](#shellcheck), [`ShellSplitting`](#shellsplitting), [`UnknownRuntimeKeys`](#unknownruntimekeys), [`UnusedDocComments`](#unuseddoccomments)
+- **All:** [`BashSetSyntax`](#bashsetsyntax), [`CallInputKeyword`](#callinputkeyword), [`ConciseInput`](#conciseinput), [`ContainerUri`](#containeruri), [`DeclarationName`](#declarationname), [`DenyGlobStar`](#denyglobstar), [`DeprecatedRuntimeKey`](#deprecatedruntimekey), [`DocCommentTabs`](#doccommenttabs), [`EmptyDocComment`](#emptydoccomment), [`EmptyOutputs`](#emptyoutputs), [`ExtraneousParameterMeta`](#extraneousparametermeta), [`FlaggedComment`](#flaggedcomment), [`HereDocCommands`](#heredoccommands), [`HostPathLiterals`](#hostpathliterals), [`ImportPlacement`](#importplacement), [`InlineInstall`](#inlineinstall), [`InputName`](#inputname), [`MatchingOutputMeta`](#matchingoutputmeta), [`MetaDescription`](#metadescription), [`MetaSections`](#metasections), [`MissingParameterMeta`](#missingparametermeta), [`MutableContainerTag`](#mutablecontainertag), [`NamingConvention`](#namingconvention), [`OutputMetaOrder`](#outputmetaorder), [`OutputName`](#outputname), [`ParameterDescription`](#parameterdescription), [`ParameterMetaOrder`](#parametermetaorder), [`RecommendedRuntimeKeys`](#recommendedruntimekeys), [`RedundantContainerArray`](#redundantcontainerarray), [`RedundantNone`](#redundantnone), [`RequirementsSection`](#requirementssection), [`RuntimeSection`](#runtimesection), [`ShellCheck`](#shellcheck), [`ShellSplitting`](#shellsplitting), [`UnknownRuntimeKeys`](#unknownruntimekeys), [`UnusedDocComments`](#unuseddoccomments)
 - **Clarity:** [`ContainerUri`](#containeruri), [`DeclarationName`](#declarationname), [`DenyGlobStar`](#denyglobstar), [`DocCommentTabs`](#doccommenttabs), [`EmptyDocComment`](#emptydoccomment), [`HereDocCommands`](#heredoccommands), [`ImportPlacement`](#importplacement), [`MetaSections`](#metasections), [`MutableContainerTag`](#mutablecontainertag), [`NamingConvention`](#namingconvention), [`RedundantContainerArray`](#redundantcontainerarray)
 - **Completeness:** [`DeprecatedRuntimeKey`](#deprecatedruntimekey), [`EmptyOutputs`](#emptyoutputs), [`ExtraneousParameterMeta`](#extraneousparametermeta), [`MatchingOutputMeta`](#matchingoutputmeta), [`MetaDescription`](#metadescription), [`MetaSections`](#metasections), [`MissingParameterMeta`](#missingparametermeta), [`OutputMetaOrder`](#outputmetaorder), [`ParameterDescription`](#parameterdescription), [`ParameterMetaOrder`](#parametermetaorder), [`RecommendedRuntimeKeys`](#recommendedruntimekeys), [`RequirementsSection`](#requirementssection), [`RuntimeSection`](#runtimesection), [`UnknownRuntimeKeys`](#unknownruntimekeys)
 - **Correctness:** [`BashSetSyntax`](#bashsetsyntax), [`DenyGlobStar`](#denyglobstar), [`HereDocCommands`](#heredoccommands), [`InlineInstall`](#inlineinstall), [`ShellCheck`](#shellcheck), [`ShellSplitting`](#shellsplitting)
-- **Deprecated:** [`DeprecatedRuntimeKey`](#deprecatedruntimekey), [`RecommendedRuntimeKeys`](#recommendedruntimekeys), [`UnknownRuntimeKeys`](#unknownruntimekeys)
+- **Deprecated:** [`CallInputKeyword`](#callinputkeyword), [`DeprecatedRuntimeKey`](#deprecatedruntimekey), [`RecommendedRuntimeKeys`](#recommendedruntimekeys), [`UnknownRuntimeKeys`](#unknownruntimekeys)
 - **Documentation:** [`EmptyDocComment`](#emptydoccomment), [`ExtraneousParameterMeta`](#extraneousparametermeta), [`MatchingOutputMeta`](#matchingoutputmeta), [`MetaDescription`](#metadescription), [`MetaSections`](#metasections), [`MissingParameterMeta`](#missingparametermeta), [`OutputMetaOrder`](#outputmetaorder), [`ParameterDescription`](#parameterdescription), [`ParameterMetaOrder`](#parametermetaorder), [`UnusedDocComments`](#unuseddoccomments)
 - **Naming:** [`DeclarationName`](#declarationname), [`InputName`](#inputname), [`NamingConvention`](#namingconvention), [`OutputName`](#outputname)
 - **Performance:** [`InlineInstall`](#inlineinstall)
 - **Portability:** [`ContainerUri`](#containeruri), [`HostPathLiterals`](#hostpathliterals), [`InlineInstall`](#inlineinstall), [`MutableContainerTag`](#mutablecontainertag), [`RedundantContainerArray`](#redundantcontainerarray), [`RequirementsSection`](#requirementssection), [`RuntimeSection`](#runtimesection)
 - **Sorting:** [`ExtraneousParameterMeta`](#extraneousparametermeta), [`MissingParameterMeta`](#missingparametermeta), [`ParameterMetaOrder`](#parametermetaorder)
 - **SprocketCompatibility:** [`ExtraneousParameterMeta`](#extraneousparametermeta), [`MatchingOutputMeta`](#matchingoutputmeta), [`MetaDescription`](#metadescription), [`MissingParameterMeta`](#missingparametermeta), [`OutputMetaOrder`](#outputmetaorder), [`ParameterMetaOrder`](#parametermetaorder)
-- **Style:** [`ConciseInput`](#conciseinput), [`DeclarationName`](#declarationname), [`DocCommentTabs`](#doccommenttabs), [`FlaggedComment`](#flaggedcomment), [`InputName`](#inputname), [`NamingConvention`](#namingconvention), [`OutputName`](#outputname), [`RedundantNone`](#redundantnone)
+- **Style:** [`CallInputKeyword`](#callinputkeyword), [`ConciseInput`](#conciseinput), [`DeclarationName`](#declarationname), [`DocCommentTabs`](#doccommenttabs), [`FlaggedComment`](#flaggedcomment), [`InputName`](#inputname), [`NamingConvention`](#namingconvention), [`OutputName`](#outputname), [`RedundantNone`](#redundantnone)
 
 ## Definitions
 
@@ -87,18 +87,13 @@ Rules from `wdl-lint` are listed as **Lint** rules. Rules from `wdl-analysis` ar
 
 #### Preamble
 
-The document preamble is defined as anything before the version declaration statement and the
-version declaration statement itself. Only comments and whitespace are permitted before the version
-declaration.
+The document preamble is defined as anything before the version declaration statement and the version declaration statement itself. Only comments and whitespace are permitted before the version declaration.
 
 ### Comment Types
 
 #### Lint Directives
 
-Lint directives are special comments that begin with `#@ except:` followed by a comma-delimited list
-of rule IDs. These comments are used to disable specific lint rules for a section of the document.
-When a lint directive is encountered in the preamble, it will disable the specified rules for the
-entire document.
+Lint directives are special comments that begin with `#@ except:` followed by a comma-delimited list of rule IDs. These comments are used to disable specific lint rules for a section of the document. When a lint directive is encountered in the preamble, it will disable the specified rules for the entire document.
 
 For example:
 
@@ -108,11 +103,7 @@ For example:
 
 #### Preamble Comments
 
-Preamble comments are special comments at the start of a WDL file that begin with double pound signs
-(`##`). These comments are used for documentation that doesn't fit within any of the WDL-defined
-documentation elements (i.e., `meta` and `parameter_meta` sections). They may provide context for a
-collection of tasks or structs, or they may provide a high-level overview of a workflow. Preamble
-comments can be formatted as Markdown text.
+Preamble comments are special comments at the start of a WDL file that begin with double pound signs (`##`). These comments are used for documentation that doesn't fit within any of the WDL-defined documentation elements (i.e., `meta` and `parameter_meta` sections). They may provide context for a collection of tasks or structs, or they may provide a high-level overview of a workflow. Preamble comments can be formatted as Markdown text.
 
 For example:
 
@@ -176,6 +167,52 @@ task say_hello {
         set -euo pipefail
         echo "Hello, World!"
     >>>
+}
+```
+
+## CallInputKeyword {#callinputkeyword}
+
+- **Kind:** Lint
+- **Tags:** Style, Deprecated
+
+Ensures that the `input:` keyword is not used in call statements when WDL version is 1.2 or later.
+
+Starting with WDL version 1.2, the `input:` keyword in call statements is optional. This specification change allows call inputs to be specified directly within the braces without the `input:` keyword, resulting in a cleaner and more concise syntax. This rule encourages adoption of the newer syntax when using WDL 1.2 or later.
+
+### Configuration
+
+#### `severity`
+
+- **Default:** `"note"`
+
+The severity of the rule's diagnostics: `off`, `note` or `warning`.
+
+### Examples
+
+**Problem**
+
+```wdl
+version 1.2
+
+workflow example {
+    # In versions prior to WDL v1.2, the `input:` keyword
+    # was necessary in `call` statements.
+    call say_hello { input:
+        name = "world",
+    }
+}
+```
+
+**Revision**
+
+```wdl
+version 1.2
+
+workflow example {
+    # This is correct for WDL v1.2 and later.
+    call say_hello {
+        name = "world",
+    }
 }
 ```
 
@@ -481,52 +518,6 @@ task generate_files {
     output {
         # Specifically collect the .txt files
         Array[File] files = glob("*.txt")
-    }
-}
-```
-
-## DeprecatedInputKeyword {#deprecatedinputkeyword}
-
-- **Kind:** Validation
-- **Tags:** None
-
-Ensures that the `input:` keyword is not used in call statements when WDL version is 1.2 or later.
-
-Starting with WDL version 1.2, the `input:` keyword in call statements is optional. This specification change allows call inputs to be specified directly within the braces without the `input:` keyword, resulting in a cleaner and more concise syntax. This rule encourages adoption of the newer syntax when using WDL 1.2 or later.
-
-### Configuration
-
-#### `severity`
-
-- **Default:** `"warning"`
-
-The severity of the rule's diagnostics: `off`, `note` or `warning`.
-
-### Examples
-
-**Problem**
-
-```wdl
-version 1.2
-
-workflow example {
-    # In versions prior to WDL v1.2, the `input:` keyword
-    # was necessary in `call` statements.
-    call say_hello { input:
-        name = "world",
-    }
-}
-```
-
-**Revision**
-
-```wdl
-version 1.2
-
-workflow example {
-    # This is correct for WDL v1.2 and later.
-    call say_hello {
-        name = "world",
     }
 }
 ```
@@ -1526,9 +1517,9 @@ task say_hello {
 - **Tags:** Completeness, Clarity, Documentation
 - **Related rules:** [`MetaDescription`](#metadescription), [`MissingParameterMeta`](#missingparametermeta), `OutputSection`, [`RequirementsSection`](#requirementssection), [`RuntimeSection`](#runtimesection), [`MatchingOutputMeta`](#matchingoutputmeta), `DescriptionLength`
 
-Ensures that tasks, workflows, and structs have the required `meta` and `parameter_meta` sections, or supplementary doc comments.
+Ensures that tasks and workflows have the required `meta` and `parameter_meta` sections, or supplementary doc comments.
 
-It is important that WDL code is well-documented. Every task, workflow and struct should be documented with both a meta and parameter_meta section, or doc comments. Tasks without an `input` section are permitted to skip the `parameter_meta` section. WDL 1.0/1.1 structs don't support the `meta` or `parameter_meta` sections but require doc comments instead.
+It is important that WDL code is well-documented. Every task and workflow should be documented with both a meta and parameter_meta section, or doc comments. Tasks without an `input` section are permitted to skip the `parameter_meta` section.
 
 ### Configuration
 

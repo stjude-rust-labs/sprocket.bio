@@ -323,19 +323,6 @@ The `DeprecatedRuntimeSection` rule.
 
 The severity of the rule's diagnostics: `off`, `note` or `warning`.
 
-## `[check.rules.DeprecatedInputKeyword]` {#check-rules-deprecatedinputkeyword}
-
-The `DeprecatedInputKeyword` rule.
-
-**See also:** [Check and lint command](/reference/cli/check-lint).
-
-### `severity` {#check-rules-deprecatedinputkeyword-severity}
-
-- **Type:** one of "off" | "note" | "warning"
-- **Default:** `"warning"`
-
-The severity of the rule's diagnostics: `off`, `note` or `warning`.
-
 ## `[check.rules.BashSetSyntax]` {#check-rules-bashsetsyntax}
 
 The `BashSetSyntax` rule.
@@ -362,6 +349,19 @@ List of options to enforce in the bash `set` builtin for every `command` section
 [check.rules.BashSetSyntax]
 bash_set_options = ["errexit", "nounset", "pipefail"]
 ```
+
+## `[check.rules.CallInputKeyword]` {#check-rules-callinputkeyword}
+
+The `CallInputKeyword` rule.
+
+**See also:** [Check and lint command](/reference/cli/check-lint).
+
+### `severity` {#check-rules-callinputkeyword-severity}
+
+- **Type:** one of "off" | "note" | "warning"
+- **Default:** `"note"`
+
+The severity of the rule's diagnostics: `off`, `note` or `warning`.
 
 ## `[check.rules.ConciseInput]` {#check-rules-conciseinput}
 
@@ -1402,13 +1402,6 @@ Use the local task execution backend.
 
 **See also:** [Run command](/reference/cli/run).
 
-### `type` {#run-backends-name-local-type}
-
-- **Type:** "local"
-- **Required:** yes
-
-Selects the `local` variant for this table.
-
 ### `cpu` {#run-backends-name-local-cpu}
 
 - **Type:** integer, nullable
@@ -1430,18 +1423,18 @@ Defaults to the total amount of memory for the host.
 
 The value cannot be zero or exceed the host's total amount of memory.
 
+### `type` {#run-backends-name-local-type}
+
+- **Type:** "local"
+- **Required:** yes
+
+Selects the `local` variant for this table.
+
 ## `[run.backends.<name>]` — `docker` {#run-backends-name-docker}
 
 Use the Docker task execution backend.
 
 **See also:** [Docker backend](/reference/backends/docker); [Run command](/reference/cli/run).
-
-### `type` {#run-backends-name-docker-type}
-
-- **Type:** "docker"
-- **Required:** yes
-
-Selects the `docker` variant for this table.
 
 ### `cleanup` {#run-backends-name-docker-cleanup}
 
@@ -1452,18 +1445,18 @@ Whether or not to remove a task's container after the task completes.
 
 Defaults to `true`.
 
+### `type` {#run-backends-name-docker-type}
+
+- **Type:** "docker"
+- **Required:** yes
+
+Selects the `docker` variant for this table.
+
 ## `[run.backends.<name>]` — `tes` {#run-backends-name-tes}
 
 Use the TES task execution backend.
 
 **See also:** [TES backend](/reference/backends/tes); [Run command](/reference/cli/run).
-
-### `type` {#run-backends-name-tes-type}
-
-- **Type:** "tes"
-- **Required:** yes
-
-Selects the `tes` variant for this table.
 
 ### `service` {#run-backends-name-tes-service}
 
@@ -1523,18 +1516,18 @@ Defaults to 10 concurrent requests.
 
 Whether or not the TES server URL may use an insecure protocol like HTTP.
 
+### `type` {#run-backends-name-tes-type}
+
+- **Type:** "tes"
+- **Required:** yes
+
+Selects the `tes` variant for this table.
+
 ## `[run.backends.<name>.auth]` — `tes / basic` {#run-backends-name-auth-tes-basic}
 
 Use basic authentication for the TES backend.
 
 **See also:** [TES backend](/reference/backends/tes); [Run command](/reference/cli/run).
-
-### `type` {#run-backends-name-auth-tes-basic-type}
-
-- **Type:** "basic"
-- **Required:** yes
-
-Selects the `basic` variant for this table.
 
 ### `username` {#run-backends-name-auth-tes-basic-username}
 
@@ -1549,18 +1542,18 @@ The HTTP basic authentication username.
 
 The HTTP basic authentication password.
 
+### `type` {#run-backends-name-auth-tes-basic-type}
+
+- **Type:** "basic"
+- **Required:** yes
+
+Selects the `basic` variant for this table.
+
 ## `[run.backends.<name>.auth]` — `tes / bearer` {#run-backends-name-auth-tes-bearer}
 
 Use bearer token authentication for the TES backend.
 
 **See also:** [TES backend](/reference/backends/tes); [Run command](/reference/cli/run).
-
-### `type` {#run-backends-name-auth-tes-bearer-type}
-
-- **Type:** "bearer"
-- **Required:** yes
-
-Selects the `bearer` variant for this table.
 
 ### `token` {#run-backends-name-auth-tes-bearer-token}
 
@@ -1569,18 +1562,18 @@ Selects the `bearer` variant for this table.
 
 The HTTP bearer authentication token.
 
+### `type` {#run-backends-name-auth-tes-bearer-type}
+
+- **Type:** "bearer"
+- **Required:** yes
+
+Selects the `bearer` variant for this table.
+
 ## `[run.backends.<name>.auth]` — `tes / oauth` {#run-backends-name-auth-tes-oauth}
 
 Use OAuth authentication for the TES backend.
 
 **See also:** [TES backend](/reference/backends/tes); [Run command](/reference/cli/run).
-
-### `type` {#run-backends-name-auth-tes-oauth-type}
-
-- **Type:** "oauth"
-- **Required:** yes
-
-Selects the `oauth` variant for this table.
 
 ### `client_id` {#run-backends-name-auth-tes-oauth-client-id}
 
@@ -1639,6 +1632,13 @@ If `false` and the OAuth authorization does not return a refresh token, a device
 
 Defaults to `false`.
 
+### `type` {#run-backends-name-auth-tes-oauth-type}
+
+- **Type:** "oauth"
+- **Required:** yes
+
+Selects the `oauth` variant for this table.
+
 ## `[run.backends.<name>]` — `lsf_apptainer` {#run-backends-name-lsf-apptainer}
 
 Use the experimental LSF + Apptainer task execution backend.
@@ -1646,13 +1646,6 @@ Use the experimental LSF + Apptainer task execution backend.
 Requires enabling experimental features.
 
 **See also:** [LSF backend](/reference/backends/lsf); [Run command](/reference/cli/run).
-
-### `type` {#run-backends-name-lsf-apptainer-type}
-
-- **Type:** "lsf_apptainer"
-- **Required:** yes
-
-Selects the `lsf_apptainer` variant for this table.
 
 ### `interval` {#run-backends-name-lsf-apptainer-interval}
 
@@ -1679,6 +1672,13 @@ Defaults to 10 concurrent operations.
 - **Type:** string, nullable
 
 Prefix to add to every LSF job name before the task identifier. This is truncated as needed to satisfy the byte-oriented LSF job name limit.
+
+### `type` {#run-backends-name-lsf-apptainer-type}
+
+- **Type:** "lsf_apptainer"
+- **Required:** yes
+
+Selects the `lsf_apptainer` variant for this table.
 
 ## `[run.backends.<name>.default_lsf_queue]` — `lsf_apptainer` {#run-backends-name-default-lsf-queue-lsf-apptainer}
 
@@ -1872,13 +1872,6 @@ Requires enabling experimental features.
 
 **See also:** [Slurm backend](/reference/backends/slurm); [Run command](/reference/cli/run).
 
-### `type` {#run-backends-name-slurm-apptainer-type}
-
-- **Type:** "slurm_apptainer"
-- **Required:** yes
-
-Selects the `slurm_apptainer` variant for this table.
-
 ### `interval` {#run-backends-name-slurm-apptainer-interval}
 
 - **Type:** integer, nullable
@@ -1904,6 +1897,13 @@ Defaults to 10 concurrent operations.
 - **Type:** string, nullable
 
 Prefix to add to every Slurm job name before the task identifier.
+
+### `type` {#run-backends-name-slurm-apptainer-type}
+
+- **Type:** "slurm_apptainer"
+- **Required:** yes
+
+Selects the `slurm_apptainer` variant for this table.
 
 ## `[run.backends.<name>.default_slurm_partition]` — `slurm_apptainer` {#run-backends-name-default-slurm-partition-slurm-apptainer}
 
@@ -2593,13 +2593,6 @@ Use the local task execution backend.
 
 **See also:** [Server command](/reference/cli/dev/server).
 
-### `type` {#server-engine-backends-name-local-type}
-
-- **Type:** "local"
-- **Required:** yes
-
-Selects the `local` variant for this table.
-
 ### `cpu` {#server-engine-backends-name-local-cpu}
 
 - **Type:** integer, nullable
@@ -2621,18 +2614,18 @@ Defaults to the total amount of memory for the host.
 
 The value cannot be zero or exceed the host's total amount of memory.
 
+### `type` {#server-engine-backends-name-local-type}
+
+- **Type:** "local"
+- **Required:** yes
+
+Selects the `local` variant for this table.
+
 ## `[server.engine.backends.<name>]` — `docker` {#server-engine-backends-name-docker}
 
 Use the Docker task execution backend.
 
 **See also:** [Docker backend](/reference/backends/docker); [Server command](/reference/cli/dev/server).
-
-### `type` {#server-engine-backends-name-docker-type}
-
-- **Type:** "docker"
-- **Required:** yes
-
-Selects the `docker` variant for this table.
 
 ### `cleanup` {#server-engine-backends-name-docker-cleanup}
 
@@ -2643,18 +2636,18 @@ Whether or not to remove a task's container after the task completes.
 
 Defaults to `true`.
 
+### `type` {#server-engine-backends-name-docker-type}
+
+- **Type:** "docker"
+- **Required:** yes
+
+Selects the `docker` variant for this table.
+
 ## `[server.engine.backends.<name>]` — `tes` {#server-engine-backends-name-tes}
 
 Use the TES task execution backend.
 
 **See also:** [TES backend](/reference/backends/tes); [Server command](/reference/cli/dev/server).
-
-### `type` {#server-engine-backends-name-tes-type}
-
-- **Type:** "tes"
-- **Required:** yes
-
-Selects the `tes` variant for this table.
 
 ### `service` {#server-engine-backends-name-tes-service}
 
@@ -2714,18 +2707,18 @@ Defaults to 10 concurrent requests.
 
 Whether or not the TES server URL may use an insecure protocol like HTTP.
 
+### `type` {#server-engine-backends-name-tes-type}
+
+- **Type:** "tes"
+- **Required:** yes
+
+Selects the `tes` variant for this table.
+
 ## `[server.engine.backends.<name>.auth]` — `tes / basic` {#server-engine-backends-name-auth-tes-basic}
 
 Use basic authentication for the TES backend.
 
 **See also:** [TES backend](/reference/backends/tes); [Server command](/reference/cli/dev/server).
-
-### `type` {#server-engine-backends-name-auth-tes-basic-type}
-
-- **Type:** "basic"
-- **Required:** yes
-
-Selects the `basic` variant for this table.
 
 ### `username` {#server-engine-backends-name-auth-tes-basic-username}
 
@@ -2740,18 +2733,18 @@ The HTTP basic authentication username.
 
 The HTTP basic authentication password.
 
+### `type` {#server-engine-backends-name-auth-tes-basic-type}
+
+- **Type:** "basic"
+- **Required:** yes
+
+Selects the `basic` variant for this table.
+
 ## `[server.engine.backends.<name>.auth]` — `tes / bearer` {#server-engine-backends-name-auth-tes-bearer}
 
 Use bearer token authentication for the TES backend.
 
 **See also:** [TES backend](/reference/backends/tes); [Server command](/reference/cli/dev/server).
-
-### `type` {#server-engine-backends-name-auth-tes-bearer-type}
-
-- **Type:** "bearer"
-- **Required:** yes
-
-Selects the `bearer` variant for this table.
 
 ### `token` {#server-engine-backends-name-auth-tes-bearer-token}
 
@@ -2760,18 +2753,18 @@ Selects the `bearer` variant for this table.
 
 The HTTP bearer authentication token.
 
+### `type` {#server-engine-backends-name-auth-tes-bearer-type}
+
+- **Type:** "bearer"
+- **Required:** yes
+
+Selects the `bearer` variant for this table.
+
 ## `[server.engine.backends.<name>.auth]` — `tes / oauth` {#server-engine-backends-name-auth-tes-oauth}
 
 Use OAuth authentication for the TES backend.
 
 **See also:** [TES backend](/reference/backends/tes); [Server command](/reference/cli/dev/server).
-
-### `type` {#server-engine-backends-name-auth-tes-oauth-type}
-
-- **Type:** "oauth"
-- **Required:** yes
-
-Selects the `oauth` variant for this table.
 
 ### `client_id` {#server-engine-backends-name-auth-tes-oauth-client-id}
 
@@ -2830,6 +2823,13 @@ If `false` and the OAuth authorization does not return a refresh token, a device
 
 Defaults to `false`.
 
+### `type` {#server-engine-backends-name-auth-tes-oauth-type}
+
+- **Type:** "oauth"
+- **Required:** yes
+
+Selects the `oauth` variant for this table.
+
 ## `[server.engine.backends.<name>]` — `lsf_apptainer` {#server-engine-backends-name-lsf-apptainer}
 
 Use the experimental LSF + Apptainer task execution backend.
@@ -2837,13 +2837,6 @@ Use the experimental LSF + Apptainer task execution backend.
 Requires enabling experimental features.
 
 **See also:** [LSF backend](/reference/backends/lsf); [Server command](/reference/cli/dev/server).
-
-### `type` {#server-engine-backends-name-lsf-apptainer-type}
-
-- **Type:** "lsf_apptainer"
-- **Required:** yes
-
-Selects the `lsf_apptainer` variant for this table.
 
 ### `interval` {#server-engine-backends-name-lsf-apptainer-interval}
 
@@ -2870,6 +2863,13 @@ Defaults to 10 concurrent operations.
 - **Type:** string, nullable
 
 Prefix to add to every LSF job name before the task identifier. This is truncated as needed to satisfy the byte-oriented LSF job name limit.
+
+### `type` {#server-engine-backends-name-lsf-apptainer-type}
+
+- **Type:** "lsf_apptainer"
+- **Required:** yes
+
+Selects the `lsf_apptainer` variant for this table.
 
 ## `[server.engine.backends.<name>.default_lsf_queue]` — `lsf_apptainer` {#server-engine-backends-name-default-lsf-queue-lsf-apptainer}
 
@@ -3063,13 +3063,6 @@ Requires enabling experimental features.
 
 **See also:** [Slurm backend](/reference/backends/slurm); [Server command](/reference/cli/dev/server).
 
-### `type` {#server-engine-backends-name-slurm-apptainer-type}
-
-- **Type:** "slurm_apptainer"
-- **Required:** yes
-
-Selects the `slurm_apptainer` variant for this table.
-
 ### `interval` {#server-engine-backends-name-slurm-apptainer-interval}
 
 - **Type:** integer, nullable
@@ -3095,6 +3088,13 @@ Defaults to 10 concurrent operations.
 - **Type:** string, nullable
 
 Prefix to add to every Slurm job name before the task identifier.
+
+### `type` {#server-engine-backends-name-slurm-apptainer-type}
+
+- **Type:** "slurm_apptainer"
+- **Required:** yes
+
+Selects the `slurm_apptainer` variant for this table.
 
 ## `[server.engine.backends.<name>.default_slurm_partition]` — `slurm_apptainer` {#server-engine-backends-name-default-slurm-partition-slurm-apptainer}
 
@@ -3382,7 +3382,7 @@ The HMAC Secret to use.
 
 Configuration for the `test` command.
 
-**See also:** [Test command](/reference/cli/test).
+**See also:** [Test command](/reference/cli/dev/test).
 
 ### `parallelism` {#test-parallelism}
 
@@ -3416,14 +3416,6 @@ Directory containing test fixture files.
 
 If not set, fixtures are resolved from `<workspace>/test/fixtures`.
 
-### `bin_dir` {#test-bin-dir}
-
-- **Type:** string, nullable
-
-Directory containing executable files to run for custom assertions.
-
-If not set, executables are resolved from `<workspace>/test/bin`.
-
 ### `run_dir` {#test-run-dir}
 
 - **Type:** string, nullable
@@ -3431,16 +3423,6 @@ If not set, executables are resolved from `<workspace>/test/bin`.
 Directory to use for executing tests.
 
 If not set, runs are written to `<workspace>/test/runs`.
-
-### `enable_custom_assertions` {#test-enable-custom-assertions}
-
-- **Type:** boolean
-- **Default:** `false`
-- **Required:** yes
-
-Whether to enable arbitrary code execution for custom test assertions.
-
-**Warning:** this may run arbitrary user code on the host machine!
 
 ## `[doc]` {#doc}
 
