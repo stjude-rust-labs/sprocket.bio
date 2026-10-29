@@ -91,6 +91,16 @@ image_cache_dir = "/shared/containers/cache"
 If you run into problems or have other feedback, please reach out to us in the
 [#sprocket channel on the WDL Slack][sprocket-slack].
 
+## Resource Utilization
+
+After an LSF job finishes, Sprocket records scheduler-accounting measurements when LSF reports them,
+including memory and cumulative CPU time. Availability and precision depend on the cluster's
+accounting configuration; missing scheduler values remain absent from the execution metrics.
+
+You can combine scheduler accounting with Sprocket's optional in-task measurement. See
+[Execution Metrics](/concepts/execution-metrics#resource-utilization-sources) for configuration,
+field semantics, and precedence.
+
 ## Conditional `bsub` Arguments
 
 The LSF + Apptainer backend supports conditional arguments to `bsub` when queuing a task.

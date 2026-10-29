@@ -231,6 +231,7 @@ export default defineConfigWithTheme<SprocketThemeConfig>({
           { text: "Configuration", link: "/concepts/configuration", docFooterText: "Concepts &gt; Configuration" },
           { text: "Containers", link: "/concepts/containers", docFooterText: "Concepts &gt; Containers" },
           { text: "Call Caching", link: "/concepts/call-caching", docFooterText: "Concepts &gt; Call Caching" },
+          { text: "Execution Metrics", link: "/concepts/execution-metrics", docFooterText: "Concepts &gt; Execution Metrics" },
           { text: "Provenance Tracking", link: "/concepts/provenance", docFooterText: "Concepts &gt; Provenance Tracking" },
         ],
       },

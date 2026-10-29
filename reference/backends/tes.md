@@ -83,6 +83,9 @@ interval = 30
 # The number of retries after encountering an error communicating with the TES 
 # server (defaults to 0 retries).
 retries = 0
+# Read supported resource usage keys from TES task log metadata.
+# This is disabled by default.
+resource_usage_metadata = true
 
 # If basic authentication is required:
 [run.backends.default.auth]
@@ -133,6 +136,30 @@ On Unix operating systems, it is recommended that your `sprocket.toml` has an ac
 The example above shows the options most runs need. For every key the backend accepts, including
 `max_concurrency` and `insecure`, see the
 [configuration file reference](/reference/configuration#run-backends-name-tes).
+
+## Resource Utilization
+
+Set `resource_usage_metadata = true` to ask Sprocket to poll tasks using the TES `BASIC` view and
+read supported top-level `TaskLog.metadata` values:
+
+- `peak_memory_bytes`
+- `avg_memory_bytes`
+- `cpu_time_ms`
+- `user_cpu_time_ms`
+- `system_cpu_time_ms`
+- `disk_used_bytes`
+
+Collection is disabled by default. Measurements appear only when the TES implementation reports
+supported keys; enabling the setting does not make a server measure values it does not already
+provide. Values may be JSON numbers or numeric strings.
+
+[Planetary](https://github.com/stjude-rust-labs/planetary) currently reports
+`peak_memory_bytes`, `avg_memory_bytes`, and `cpu_time_ms`, based on sampled Kubernetes working-set
+memory and cumulative CPU time across its executor containers.
+
+This backend-native data can be combined with Sprocket's optional in-task measurement. See
+[Execution Metrics](/concepts/execution-metrics#resource-utilization-sources) for precedence and
+limitations.
 
 ## GPU Support
 

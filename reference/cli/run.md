@@ -79,6 +79,12 @@ SQLite provenance database (`sprocket.db`) that tracks all executions. The datab
 layout of `runs/` are internal and may change in any release; see
 [Querying execution history](/concepts/provenance#querying-execution-history).
 
+At the end of each run, Sprocket attempts to write `metrics.json` beside `outputs.json`. This
+best-effort artifact reports attempts, retries, timing, resolved resource constraints, localization
+transfer volume, and any utilization available from the execution backend or optional engine
+measurement. A write or serialization error produces a warning but does not fail the run. See
+[Execution Metrics](/concepts/execution-metrics) for field semantics and collection settings.
+
 The `--suffix` flag appends a user-defined string to the run directory name, producing
 `<timestamp>_<suffix>` instead of just `<timestamp>`. This is useful for identifying runs at a
 glance:
