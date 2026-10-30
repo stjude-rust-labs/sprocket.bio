@@ -37,8 +37,8 @@ sprocket completions bash > ~/.bash_completions/sprocket.bash
 ```
 
 2. Modify your shell's startup configuration file (e.g. `~/.bashrc`, `~/.zshrc`,
-`~/.config/fish/config.fish`, PowerShell's `$PROFILE`, Elvish's `~/.config/elvish/rc.elv`) to source
-the file you just created. Continuing the Bash example, add this line to your `~/.bashrc`
+   `~/.config/fish/config.fish`, PowerShell's `$PROFILE`, Elvish's `~/.config/elvish/rc.elv`) to
+   source the file you just created. Continuing the Bash example, add this line to your `~/.bashrc`
 
 ```shell
 source ~/.bash_completions/sprocket.bash
