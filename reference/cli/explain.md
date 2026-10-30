@@ -15,7 +15,7 @@ when checking WDL, see
 
 ### Usage
 
-Sprocket 0.32.0 supports these forms:
+Sprocket 0.33.0 supports these forms:
 
 ```txt
 sprocket explain <RULE>
