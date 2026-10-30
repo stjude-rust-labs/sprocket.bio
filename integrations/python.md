@@ -2,7 +2,7 @@
 description: "Install the sprocket-bio package from PyPI to parse and analyze WDL documents programmatically from Python."
 ---
 
-<!-- Sources: https://pypi.org/project/sprocket-bio/ (0.32.0), https://github.com/stjude-rust-labs/sprocket@v0.32.0 (python/sprocket_bio) -->
+<!-- Sources: https://pypi.org/project/sprocket-bio/ (0.33.0), https://github.com/stjude-rust-labs/sprocket@v0.33.0 (python/sprocket_bio) -->
 
 # Python Bindings
 
