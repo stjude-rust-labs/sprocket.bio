@@ -39,7 +39,7 @@ task or workflow without any inputs.
 Without `--target`, every input key — in files and on the command line — must be prefixed with the
 name of the task or workflow being submitted. With `--target`, Sprocket appends a `.` to the target
 name and prepends it to each unqualified key, including keys inside `@`-prefixed input files. (The
-`--help` text for 0.32.0 says file keys are unchanged, but in practice they are prefixed the same
+`--help` text for 0.33.0 says file keys are unchanged, but in practice they are prefixed the same
 way `sprocket run` prefixes them.)
 
 ## Example
