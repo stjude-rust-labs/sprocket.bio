@@ -217,7 +217,7 @@ export const redirects: Redirect[] = [
     from: "/subcommands/lock",
     to: "/reference/cli/dev/lock",
     anchors: {
-      ...same("/reference/cli/dev/lock", ["sprocket-dev-lock", "overview"]),
+      ...same("/reference/cli/dev/lock", ["sprocket-dev-lock"]),
     },
   },
   {
