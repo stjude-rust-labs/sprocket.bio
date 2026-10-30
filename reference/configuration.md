@@ -1280,7 +1280,7 @@ Warning: nested scatter statements cause exponential memory usage based on this 
 
 Task evaluation configuration.
 
-**See also:** [Call caching](/concepts/call-caching); [Run command](/reference/cli/run).
+**See also:** [Execution metrics](/concepts/execution-metrics); [Call caching](/concepts/call-caching); [Run command](/reference/cli/run).
 
 ### `retries` {#run-task-retries}
 
@@ -1327,6 +1327,19 @@ The behavior when a task's `cpu` requirement cannot be met.
 - **Default:** `"deny"`
 
 The behavior when a task's `memory` requirement cannot be met.
+
+### `measure_resource_usage` {#run-task-measure-resource-usage}
+
+- **Type:** boolean
+- **Default:** `false`
+
+Whether to measure a task's resource usage from within its execution environment.
+
+When enabled, the engine wraps each task command with a portable measurement shim that attempts to record CPU time and, in containerized environments, peak cgroup memory, reporting them as resource usage metrics. CPU measurement requires Linux procfs, and peak-memory measurement requires a readable cgroup v1 or v2 peak counter. This works on any backend — including remote ones like TES — without requiring measurement tools in the container. Non-null shim measurements override overlapping backend measurements; fields reported only by the backend remain intact.
+
+The shim writes a small hidden file (`.sprocket_usage`) into the task's work directory by default. It is removed after collection on local file systems. Backends may redirect the file; TES exports it as a separate `usage` object outside the task's exported work directory.
+
+Defaults to `false`.
 
 ### `cache_dir` {#run-task-cache-dir}
 
@@ -1445,6 +1458,18 @@ Whether or not to remove a task's container after the task completes.
 
 Defaults to `true`.
 
+### `resource_usage_interval` {#run-backends-name-docker-resource-usage-interval}
+
+- **Type:** integer, nullable
+- **Default:** `null`
+- **Constraints:** minimum `0`; format `uint64`
+
+The interval, in seconds, at which to sample a running container's resource usage.
+
+When set to a positive value, Sprocket asks Crankshaft to sample local containers at this interval. Memory is sampled container memory with inactive file cache removed; the maximum is the largest observed sample, and the average is the arithmetic mean of successful samples. CPU time may be undercounted by up to one interval.
+
+An unset or zero value disables sampling. Sampling is unavailable for Docker Swarm services, and tasks that finish before the first interval may report no usage.
+
 ### `type` {#run-backends-name-docker-type}
 
 - **Type:** "docker"
@@ -1515,6 +1540,17 @@ Defaults to 10 concurrent requests.
 - **Default:** `false`
 
 Whether or not the TES server URL may use an insecure protocol like HTTP.
+
+### `resource_usage_metadata` {#run-backends-name-tes-resource-usage-metadata}
+
+- **Type:** boolean
+- **Default:** `false`
+
+Whether or not to read task resource usage from the TES server's task log metadata.
+
+When enabled, tasks are polled with the `BASIC` view and the documented resource usage metadata keys (e.g. `peak_memory_bytes`, `avg_memory_bytes`, `cpu_time_ms`), when reported by the server, are recorded as task resource usage.
+
+Defaults to `false`.
 
 ### `type` {#run-backends-name-tes-type}
 
@@ -2471,7 +2507,7 @@ Warning: nested scatter statements cause exponential memory usage based on this 
 
 Task evaluation configuration.
 
-**See also:** [Call caching](/concepts/call-caching); [Server command](/reference/cli/dev/server).
+**See also:** [Execution metrics](/concepts/execution-metrics); [Call caching](/concepts/call-caching); [Server command](/reference/cli/dev/server).
 
 ### `retries` {#server-engine-task-retries}
 
@@ -2518,6 +2554,19 @@ The behavior when a task's `cpu` requirement cannot be met.
 - **Default:** `"deny"`
 
 The behavior when a task's `memory` requirement cannot be met.
+
+### `measure_resource_usage` {#server-engine-task-measure-resource-usage}
+
+- **Type:** boolean
+- **Default:** `false`
+
+Whether to measure a task's resource usage from within its execution environment.
+
+When enabled, the engine wraps each task command with a portable measurement shim that attempts to record CPU time and, in containerized environments, peak cgroup memory, reporting them as resource usage metrics. CPU measurement requires Linux procfs, and peak-memory measurement requires a readable cgroup v1 or v2 peak counter. This works on any backend — including remote ones like TES — without requiring measurement tools in the container. Non-null shim measurements override overlapping backend measurements; fields reported only by the backend remain intact.
+
+The shim writes a small hidden file (`.sprocket_usage`) into the task's work directory by default. It is removed after collection on local file systems. Backends may redirect the file; TES exports it as a separate `usage` object outside the task's exported work directory.
+
+Defaults to `false`.
 
 ### `cache_dir` {#server-engine-task-cache-dir}
 
@@ -2636,6 +2685,18 @@ Whether or not to remove a task's container after the task completes.
 
 Defaults to `true`.
 
+### `resource_usage_interval` {#server-engine-backends-name-docker-resource-usage-interval}
+
+- **Type:** integer, nullable
+- **Default:** `null`
+- **Constraints:** minimum `0`; format `uint64`
+
+The interval, in seconds, at which to sample a running container's resource usage.
+
+When set to a positive value, Sprocket asks Crankshaft to sample local containers at this interval. Memory is sampled container memory with inactive file cache removed; the maximum is the largest observed sample, and the average is the arithmetic mean of successful samples. CPU time may be undercounted by up to one interval.
+
+An unset or zero value disables sampling. Sampling is unavailable for Docker Swarm services, and tasks that finish before the first interval may report no usage.
+
 ### `type` {#server-engine-backends-name-docker-type}
 
 - **Type:** "docker"
@@ -2706,6 +2767,17 @@ Defaults to 10 concurrent requests.
 - **Default:** `false`
 
 Whether or not the TES server URL may use an insecure protocol like HTTP.
+
+### `resource_usage_metadata` {#server-engine-backends-name-tes-resource-usage-metadata}
+
+- **Type:** boolean
+- **Default:** `false`
+
+Whether or not to read task resource usage from the TES server's task log metadata.
+
+When enabled, tasks are polled with the `BASIC` view and the documented resource usage metadata keys (e.g. `peak_memory_bytes`, `avg_memory_bytes`, `cpu_time_ms`), when reported by the server, are recorded as task resource usage.
+
+Defaults to `false`.
 
 ### `type` {#server-engine-backends-name-tes-type}
 

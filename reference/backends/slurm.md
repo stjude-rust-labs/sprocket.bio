@@ -91,6 +91,17 @@ image_cache_dir = "/shared/containers/cache"
 If you run into problems or have other feedback, please reach out to us in the
 [#sprocket channel on the WDL Slack][sprocket-slack].
 
+## Resource Utilization
+
+After a Slurm job finishes, Sprocket records scheduler-accounting measurements from `sacct` when
+they are available, including memory and cumulative CPU time. Availability and precision depend on
+the cluster's accounting configuration; missing scheduler values remain absent from the execution
+metrics.
+
+You can combine scheduler accounting with Sprocket's optional in-task measurement. See
+[Execution Metrics](/concepts/execution-metrics#resource-utilization-sources) for configuration,
+field semantics, and precedence.
+
 ## Conditional `sbatch` Arguments
 
 The Slurm + Apptainer backend supports conditional arguments to `sbatch` when queuing a task.
