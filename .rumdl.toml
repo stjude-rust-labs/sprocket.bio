@@ -1,6 +1,7 @@
 flavor = "gfm"
 line-length = 100
 extend-enable = ["MD060"]
+exclude = ["reference"]
 
 [MD013]
 code-blocks = false
