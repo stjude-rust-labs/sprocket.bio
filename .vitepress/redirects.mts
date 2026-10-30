@@ -252,9 +252,9 @@ export const redirects: Redirect[] = [
   },
   {
     from: "/subcommands/test",
-    to: "/reference/cli/dev/test",
+    to: "/reference/cli/test",
     anchors: {
-      ...same("/reference/cli/dev/test", ["sprocket-dev-test", "how-to-write-unit-tests", "where-test-definitions-are-located", "what-test-yaml-looks-like", "assertions", "output-assertions", "how-to-use-test-fixtures", "specifying-groups-of-inputs", "tagging-tests", "running-unit-tests", "filtering-which-tests-run", "generating-a-test-schema"]),
+      ...same("/reference/cli/test", ["sprocket-test", "how-to-write-unit-tests", "where-test-definitions-are-located", "what-test-yaml-looks-like", "assertions", "output-assertions", "custom-assertions", "calling-other-executables-from-bash", "debugging-custom-assertions", "enabling-custom-assertions", "blessing-executables", "how-to-use-test-fixtures", "specifying-groups-of-inputs", "tagging-tests", "running-unit-tests", "choosing-which-tests-run", "generating-a-test-schema"]),
     },
   },
   {
