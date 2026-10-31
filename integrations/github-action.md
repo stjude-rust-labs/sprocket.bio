@@ -52,7 +52,7 @@ jobs:
 
 ::: tip
 The action is also tagged to match Sprocket releases, so you can pin a version instead of tracking
-`main` — for example, `stjude-rust-labs/sprocket-action@v0.32.0`.
+`main` — for example, `stjude-rust-labs/sprocket-action@v0.33.0`.
 :::
 
 If an existing repository has more diagnostics than you can fix at once, generate a
@@ -75,6 +75,7 @@ enabled.
 | Input | Default | Description |
 | --- | --- | --- |
 | `lint` | `false` | Whether to run linting in addition to validation. Valid choices: `"true"`, `"false"`. |
+| `all-lint-rules` | `false` | Whether to enable all lint rules (adds additional rules beyond the default lint rule set). Valid choices: `"true"`, `"false"`. |
 | `deny-warnings` | `false` | If specified, `sprocket check` will fail if any `warnings` are produced. Valid choices: `"true"`, `"false"`. |
 | `deny-notes` | `false` | If specified, `sprocket check` will fail if any `notes` are produced. Valid choices: `"true"`, `"false"`. |
 | `disable` | `''` | Rules to disable from all `sprocket check` reports, as a comma-separated list — for example, `UnusedInput,MutableContainerTag`. Valid options are listed in the [lint rules reference](/reference/lint-rules), and upstream in [analysis rules](https://github.com/stjude-rust-labs/wdl/blob/main/wdl-analysis/RULES.md) and [lint rules](https://github.com/stjude-rust-labs/wdl/blob/main/wdl-lint/RULES.md). |

@@ -3,7 +3,7 @@ title: Run with TES
 description: "An end-to-end guide to running Sprocket workflows against a GA4GH Task Execution Service (TES) endpoint."
 ---
 
-<!-- Sources: https://www.ga4gh.org/product/task-execution-service-tes/ (accessed 2026-09-24), https://github.com/stjude-rust-labs/sprocket/blob/v0.32.0/crates/wdl-engine/src/backend/tes.rs@v0.32.0, https://github.com/stjude-rust-labs/sprocket/blob/v0.32.0/crates/wdl-engine/src/config.rs@v0.32.0 -->
+<!-- Sources: https://www.ga4gh.org/product/task-execution-service-tes/ (accessed 2026-09-24), https://github.com/stjude-rust-labs/sprocket/blob/v0.33.0/crates/wdl-engine/src/backend/tes.rs@v0.33.0, https://github.com/stjude-rust-labs/sprocket/blob/v0.33.0/crates/wdl-engine/src/config.rs@v0.33.0 -->
 
 ## Run with TES
 

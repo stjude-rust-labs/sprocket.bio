@@ -157,7 +157,7 @@ const extensions = [
   - uses: stjude-rust-labs/sprocket-action@main
     with:
       action: lint
-      except: TrailingComma,ContainerUri`)
+      disable: TrailingComma,ContainerUri`)
   },
   {
     id: 'libraries',
