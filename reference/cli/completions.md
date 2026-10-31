@@ -3,7 +3,7 @@ title: "`sprocket completions`"
 description: "Reference for the sprocket completions command and how to enable shell completions for Sprocket."
 ---
 
-<!-- Sources: `sprocket completions --help` from Sprocket v0.32.0 (70e29d31d) -->
+<!-- Sources: `sprocket completions --help` from Sprocket v0.33.0 (1b1b5dc2c) -->
 
 ## `sprocket completions`
 
