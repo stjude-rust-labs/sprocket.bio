@@ -9,7 +9,7 @@ This document describes the beta release of the `lock` command. This functionali
 experimental and may change in future releases.
 :::
 
-Via the `sprocket dev doc` command, Sprocket is capable of generating a lockfile for mutable container image tags for a
+Via the `sprocket dev lock` command, Sprocket is capable of generating a lockfile for mutable container image tags for a
 WDL workspace (including its imports).
 
 Within the WDL documents, each WDL `task` is checked for a `runtime.{container,docker}` or `requirements.container` key.
