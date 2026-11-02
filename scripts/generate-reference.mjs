@@ -538,7 +538,7 @@ const narrativeLinks = [
   [/^doc(?:\.|$)/, "Documentation command", "/reference/cli/dev/doc"],
   [/^module(?:\.|$)|^modules(?:\.|$)/, "Module commands", "/reference/cli/dev/module"],
   [/^server(?:\.|$)/, "Server command", "/reference/cli/dev/server"],
-  [/^test(?:\.|$)/, "Test command", "/reference/cli/dev/test"],
+  [/^test(?:\.|$)/, "Test command", "/reference/cli/test"],
   [/^run(?:\.|$)/, "Run command", "/reference/cli/run"],
 ];
 

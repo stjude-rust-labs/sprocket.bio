@@ -34,16 +34,6 @@ To enable this mode, add the following to your `sprocket.toml`:
 cache = "explicit"
 ```
 
-::: tip Note
-A task's execution must succeed on the very first attempt for it to be eligible for the cache.
-
-If the task's execution is retried by Sprocket, the resulting task execution will not be cached even
-if it succeeds.
-
-As a task can change the evaluated command between retry attempts in WDL 1.2+, retries are not
-cached to prevent storing a mismatched command digest.
-:::
-
 ## Call cache directory
 
 By default, the call cache is maintained in a subdirectory of the user's operating system cache
