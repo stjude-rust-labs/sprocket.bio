@@ -255,6 +255,7 @@ export default defineConfigWithTheme<SprocketThemeConfig>({
               { text: "check/lint", link: "/reference/cli/check-lint", docFooterText: "Commands &gt; Develop &gt; check/lint" },
               { text: "explain", link: "/reference/cli/explain", docFooterText: "Commands &gt; Develop &gt; explain" },
               { text: "format", link: "/reference/cli/format", docFooterText: "Commands &gt; Develop &gt; format" },
+              { text: "test", link: "/reference/cli/test", docFooterText: "Commands &gt; Develop &gt; test" },
             ],
           },
           {
@@ -283,7 +284,6 @@ export default defineConfigWithTheme<SprocketThemeConfig>({
               { text: "dev module", link: "/reference/cli/dev/module", docFooterText: "Commands &gt; Experimental &gt; dev module" },
               { text: "dev server", link: "/reference/cli/dev/server", docFooterText: "Commands &gt; Experimental &gt; dev server" },
               { text: "dev server submit", link: "/reference/cli/dev/server-submit", docFooterText: "Commands &gt; Experimental &gt; dev server submit" },
-              { text: "test", link: "/reference/cli/test", docFooterText: "Commands &gt; Experimental &gt; test" },
             ],
           },
         ],
