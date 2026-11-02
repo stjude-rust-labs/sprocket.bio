@@ -100,7 +100,7 @@ and are enabled by `sprocket lint` or `sprocket check --lint`. See
 ### Lock file
 
 The experimental `sprocket.lock` file written by `sprocket dev lock`. It records container image
-manifest checksums and the time they were resolved. Sprocket 0.32.0 does not yet consume this file
+manifest checksums and the time they were resolved. Sprocket 0.33.0 does not yet consume this file
 during a run. See
 [`sprocket dev lock`](/reference/cli/dev/lock).
 
