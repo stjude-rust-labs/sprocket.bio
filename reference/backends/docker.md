@@ -32,7 +32,28 @@ type = "docker"
 # THE DOCKER DAEMON'S PERFORMANCE MAY BE ADVERSELY IMPACTED BY FAILING TO
 # CLEANUP CONTAINERS.
 cleanup = false
+
+# Sample local container resource utilization every five seconds.
+# An unset or zero value disables sampling.
+resource_usage_interval = 5
 ```
+
+## Resource Utilization
+
+Set `resource_usage_interval` to a positive number of seconds to collect utilization from local
+Docker containers. Sprocket reports cache-adjusted container memory samples and cumulative CPU time.
+Peak memory is the largest successful sample, and average memory is the arithmetic mean of
+successful samples.
+
+Sampling has several limitations:
+
+- Tasks that finish before the first interval may report no utilization.
+- CPU time may be undercounted by up to one sampling interval.
+- Docker Swarm services do not support this sampling.
+
+The setting is disabled by default. To collect CPU time and peak cgroup memory from inside the task
+instead, or to understand how measurements from multiple sources are combined, see
+[Execution Metrics](/concepts/execution-metrics#resource-utilization-sources).
 
 ## Resource Mapping
 

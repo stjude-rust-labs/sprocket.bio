@@ -179,6 +179,10 @@ After a successful execution, Sprocket remaps any container paths in the working
 host paths and updates the call cache entry. The task's outputs are then evaluated from whichever
 produced the result: the fresh execution or the call cache.
 
+As attempts move through this pipeline, Sprocket records their timing, resolved constraints, retry
+causes, and any resource utilization reported by the engine or backend. See
+[Execution Metrics](/concepts/execution-metrics) for the collection sources and field semantics.
+
 ### How backends differ
 
 Every backend receives the same evaluated command and the same inputs. What differs is where the
@@ -222,8 +226,9 @@ does.
 Each run gets a timestamped directory under the
 [output directory](/reference/cli/run#output-directory) holding the run's `inputs.json`,
 `outputs.json`, log, and one directory per task call, each with a numbered directory per attempt.
-Every run is also recorded in the `sprocket.db` SQLite database at the root of the output directory.
-See [provenance tracking](/concepts/provenance) for the full layout.
+Local `sprocket run` executions also attempt a best-effort write of `metrics.json`. Every run is
+recorded in the `sprocket.db` SQLite database at the root of the output directory. See
+[provenance tracking](/concepts/provenance) for the full layout.
 
 The database schema and the layout of `runs/` are internal and may change in any release, so query
 run history with Sprocket's commands or [REST API](/reference/rest-api) instead of reading them

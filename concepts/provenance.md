@@ -87,6 +87,7 @@ When running a task directly, the `attempts/` directory sits at the top level of
 │       │   ├── output.log            # Execution log
 │       │   ├── inputs.json           # Serialized inputs for the run
 │       │   ├── outputs.json          # Serialized outputs from the run
+│       │   ├── metrics.json          # Execution metrics (`sprocket run`; best effort)
 │       │   ├── apptainer-images/     # Cached SIF images (Apptainer backends only)
 │       │   ├── tmp/                  # Temporary localization files
 │       │   └── attempts/
@@ -117,6 +118,7 @@ standalone task run.
 │       │   ├── output.log
 │       │   ├── inputs.json
 │       │   ├── outputs.json
+│       │   ├── metrics.json          # Execution metrics (`sprocket run`; best effort)
 │       │   ├── apptainer-images/     # Cached SIF images (Apptainer backends only)
 │       │   ├── tmp/                  # Workflow-level temporary files
 │       │   └── calls/               # Task execution directories
@@ -179,6 +181,7 @@ Each run creates a timestamped directory under `runs/<target>/` containing the f
 | `output.log` | Log of all messages emitted during the run |
 | `inputs.json` | Serialized inputs provided for the run |
 | `outputs.json` | Serialized outputs produced by the run |
+| `metrics.json` | When its best-effort write succeeds for a local `sprocket run`, timing, retries, constraints, data movement, and available resource utilization; see [Execution Metrics](/concepts/execution-metrics) |
 | `apptainer-images/` | Cached SIF container images pulled during the run (Apptainer backends only; see [Containers](/concepts/containers#image-caching)) |
 | `tmp/` | Temporary files used during input localization |
 | `attempts/` | Directory containing attempt subdirectories (task runs) |
@@ -279,16 +282,21 @@ sprocket run pipeline_b.wdl -o ./pipeline-b-out ...
 
 ### Querying execution history
 
-Use Sprocket to query execution history, not the files it writes. There are two supported ways:
+Use Sprocket to query execution history, not its internal database or directory layout. There are
+two supported ways:
 
 - The `sprocket dev server` [run management commands](/reference/cli/dev/server#managing-runs)
-  (`status`, `inspect`, `cancel`, and `retry`).
+  (`status`, `inspect`, `metrics`, `cancel`, and `retry`).
 - The [REST API](/reference/rest-api), available via `sprocket dev server start`. It has endpoints
   for listing sessions, runs, and tasks with filtering. See the
   [server documentation](/reference/cli/dev/server) for endpoint details and the interactive Swagger
   UI at `/api/v1/swagger-ui` for exploration.
 
 Both remain experimental while the server is under `sprocket dev`.
+
+For a local `sprocket run`, Sprocket also attempts to write the documented `metrics.json` report
+beside `outputs.json`. See [Execution Metrics](/concepts/execution-metrics) for its contents and
+semantics.
 
 ::: warning The database and `runs/` layout are internal
 Neither the [provenance database](#provenance-database) nor the internal structure of the `runs/`

@@ -22,6 +22,7 @@ The group provides the following subcommands:
 | [`submit`](/reference/cli/dev/server-submit) | Submit a workflow to a running server. |
 | [`status`](#managing-runs) | Show the status of one or all runs. |
 | [`inspect`](#managing-runs) | Show detailed information about a run. |
+| [`metrics`](#metrics) | Report attempts, timing, constraints, and resource utilization for a run. |
 | [`cancel`](#managing-runs) | Cancel a running or queued run. |
 | [`retry`](#managing-runs) | Retry a previous run, optionally with input overrides. |
 
@@ -125,6 +126,25 @@ Pass `--detailed` for a per-task breakdown, or `--json` for the raw response:
 ```shell
 sprocket dev server inspect happy-dolphin-42 --detailed
 ```
+
+### `metrics`
+
+Report execution metrics for a run, including attempts, retries, timing, resolved constraints, and
+available resource utilization:
+
+```shell
+# Render a human-readable report
+sprocket dev server metrics happy-dolphin-42
+
+# Match fully qualified call IDs containing "align"
+sprocket dev server metrics happy-dolphin-42 --call align
+
+# Emit the API response as JSON
+sprocket dev server metrics happy-dolphin-42 --json
+```
+
+The `--call` filter and `--json` may be combined. For field definitions, units, collection sources,
+and limitations, see [Execution Metrics](/concepts/execution-metrics).
 
 ### `cancel`
 

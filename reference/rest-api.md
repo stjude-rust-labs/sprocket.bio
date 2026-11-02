@@ -31,6 +31,8 @@ Runs represent individual workflow executions.
 - `GET /api/v1/runs/{uuid}` - Get run details.
 - `POST /api/v1/runs/{uuid}/cancel` - Cancel a running workflow.
 - `GET /api/v1/runs/{uuid}/outputs` - Get run outputs.
+- `GET /api/v1/runs/{uuid}/metrics` - Get attempts, timing, constraints, retry causes, data movement,
+  and available resource utilization for a run.
 - `GET /api/v1/runs/{uuid}/tasks` - List a run's tasks. Supports pagination and an optional
   `?status=` filter.
 - `GET /api/v1/runs/{uuid}/tasks/counts` - Get per-status task counts for a run.
@@ -51,6 +53,12 @@ Tasks represent individual task executions within a workflow run.
 - `GET /api/v1/tasks` - List tasks.
 - `GET /api/v1/tasks/{name}` - Get task details.
 - `GET /api/v1/tasks/{name}/logs` - Get task logs.
+
+Task responses include the task's fully qualified WDL call ID, zero-based attempt number, resolved
+execution constraints, retry cause, scheduler submission time, and available resource utilization.
+The constraints include the resolved retry policy and curated `preemptible`, `max_cpu`, and
+`max_memory` hints. See [Execution Metrics](/concepts/execution-metrics) for field semantics and
+collection sources.
 
 ### Example usage
 
@@ -90,4 +98,7 @@ curl http://localhost:8080/api/v1/runs/{run_uuid}
 
 # List all running workflows
 curl http://localhost:8080/api/v1/runs?status=running
+
+# Get execution metrics for one run
+curl http://localhost:8080/api/v1/runs/{run_uuid}/metrics
 ```
