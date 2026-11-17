@@ -13,8 +13,8 @@ import DocFigure from './DocFigure.vue'
       <title id="exec-attempt-w-title">The life of a task attempt</title>
       <desc id="exec-attempt-w-desc">
         Sprocket evaluates a task's inputs and private declarations once. Each attempt then
-        evaluates the requirements, hints, runtime and command, localizes inputs, and — on the
-        first attempt only — looks up the call cache. A hit reuses the cached execution result; a
+        evaluates the requirements, hints, runtime, and command, localizes inputs, and, when the
+        task is cacheable, looks up the call cache. A hit reuses the cached execution result; a
         miss executes the command on the backend. Sprocket then checks the exit code. If the task
         succeeded it updates the call cache entry and evaluates the outputs. If it failed and
         retries remain, the next attempt starts again from the requirements; if no retries remain,
@@ -48,7 +48,7 @@ import DocFigure from './DocFigure.vue'
 
       <rect class="sp-fig-box--accent" x="147" y="248" width="300" height="52" rx="8" />
       <text class="sp-fig-label" x="297" y="271" text-anchor="middle">Look up the call cache</text>
-      <text class="sp-fig-note" x="297" y="289" text-anchor="middle">first attempt only</text>
+      <text class="sp-fig-note" x="297" y="289" text-anchor="middle">when cacheable</text>
 
       <path class="sp-fig-edge" d="M447,274 H536" marker-end="url(#exec-attempt-w-arrow)" />
       <text class="sp-fig-note" x="492" y="262" text-anchor="middle">hit</text>
@@ -98,8 +98,8 @@ import DocFigure from './DocFigure.vue'
       <title id="exec-attempt-n-title">The life of a task attempt</title>
       <desc id="exec-attempt-n-desc">
         Sprocket evaluates a task's inputs and private declarations once. Each attempt then
-        evaluates the requirements, hints, runtime and command, localizes inputs, and — on the
-        first attempt only — looks up the call cache. A hit reuses the cached execution result; a
+        evaluates the requirements, hints, runtime, and command, localizes inputs, and, when the
+        task is cacheable, looks up the call cache. A hit reuses the cached execution result; a
         miss executes the command on the backend. Sprocket then checks the exit code. If the task
         succeeded it updates the call cache entry and evaluates the outputs. If it failed and
         retries remain, the next attempt starts again from the requirements; if no retries remain,
@@ -133,7 +133,7 @@ import DocFigure from './DocFigure.vue'
 
       <rect class="sp-fig-box--accent" x="50" y="236" width="226" height="48" rx="8" />
       <text class="sp-fig-label" x="163" y="257" text-anchor="middle">Look up the call cache</text>
-      <text class="sp-fig-note" x="163" y="273" text-anchor="middle">first attempt only</text>
+      <text class="sp-fig-note" x="163" y="273" text-anchor="middle">when cacheable</text>
 
       <text class="sp-fig-note" x="294" y="250">hit</text>
       <path class="sp-fig-edge" d="M276,260 H290 V544 H276"

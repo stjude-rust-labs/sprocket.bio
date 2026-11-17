@@ -9,18 +9,14 @@ description: "An end-to-end guide to running Sprocket workflows against a GA4GH 
 
 With the [Task Execution Service (TES)](https://www.ga4gh.org/product/task-execution-service-tes/)
 backend, Sprocket evaluates your WDL locally and submits each task to a remote TES server, which
-runs the task somewhere else: a cloud batch service, a Kubernetes cluster, or an HPC cluster,
-depending on the implementation.
-
-This guide walks through the whole path: what you need, how Sprocket moves data through cloud
-storage, how to authenticate, a working `sprocket.toml`, running a workflow, and what to check while
-it runs.
+executes the task on cloud batch infrastructure, Kubernetes, or an HPC cluster depending on the
+server implementation.
 
 ### Prerequisites
 
 - **A GA4GH TES server** you can reach over the network, along with its URL. The
-  [TES backend reference](/reference/backends/tes) lists implementations that Sprocket's
-  documentation points at; Sprocket talks to any of them through the same API.
+  [TES backend reference](/reference/backends/tes) lists several compatible TES servers, including
+  Planetary, Funnel, Poiesis, and TESK.
 
 - **Credentials for that server**, if it requires them. Sprocket supports basic authentication,
   bearer tokens, and OAuth device code flow (see [Authentication](#authentication)).
@@ -151,8 +147,7 @@ description lives on the [TES backend reference](/reference/backends/tes#configu
 
 ### Running a workflow
 
-Run a workflow exactly as you would locally; the backend choice is configuration, not a command-line
-change:
+Once `sprocket.toml` is configured, `sprocket run` uses the TES backend automatically:
 
 ```shell
 sprocket run workflow.wdl --target main sample="NA12878"
@@ -169,28 +164,25 @@ and YAML files with the `@` prefix.
 
 ### Monitoring a run
 
-Sprocket polls the TES server for task status every `interval` seconds. The default is 1 second,
-which is responsive but chatty; raise it for long-running tasks or servers that rate-limit.
-`max_concurrency` bounds how many requests the backend has in flight at once (10 by default).
+Sprocket polls the TES server for task status every `interval` seconds (`30` by default).
+`max_concurrency` limits how many API requests the backend sends concurrently (`10` by default).
 
-Transient network or server errors are retried `retries` times (no retries by default). This is
-separate from WDL task retries, which are configured with `run.task.retries` and a task's
-`maxRetries` value; see
-[retries](/reference/cli/run#retries).
+Transient network or server errors are retried `retries` times (`0` by default). This setting only
+covers TES API requests; WDL task retries are configured separately with `run.task.retries` and a
+task's `maxRetries` requirement (see [retries](/reference/cli/run#retries)).
 
 Progress is reported at the command line and written to `output.log` in the run directory. Add `-v`
-for more detail, or use the server implementation's own interface to see the queued tasks.
+for more detail, or inspect queued tasks through your TES server's interface.
 
 ### Outputs
 
-Run artifacts land in the usual place: `out/runs/<target>/<timestamp>/`, with `inputs.json`,
-`outputs.json`, `output.log`, and a per-call directory tree. See
-[provenance tracking](/concepts/provenance) for the full layout.
+Local run metadata is written to `out/runs/<target>/<timestamp>/` (`inputs.json`, `outputs.json`,
+`output.log`, and `calls/`). See [provenance tracking](/concepts/provenance) for the full layout.
 
 Because the TES server writes task outputs to cloud storage, `File` outputs in `outputs.json` are
-cloud storage URLs rather than local paths. Sprocket downloads a file only when evaluation needs its
-contents, so a completed run usually leaves its data in the bucket. Fetch what you need from there
-with your cloud provider's tooling.
+cloud storage URLs rather than local paths. Sprocket downloads an output file only when workflow
+evaluation reads its contents, so completed runs leave output files in cloud storage unless a
+downstream expression reads them.
 
 ### GPUs
 
@@ -201,19 +193,18 @@ backend.
 
 ### Troubleshooting
 
-- **Configuration is rejected before the run starts.** Re-read the validation rules above; a missing
-  trailing slash on `inputs` or `outputs` and a plain HTTP `url` without `insecure = true` are the
-  common causes.
+- **Configuration is rejected before the run starts.** Check the validation rules above; a missing
+  trailing slash on `inputs` or `outputs` and an `http://` `service` URL without `insecure = true`
+  are common causes.
 
 - **A task fails immediately with an image error.** The TES backend cannot use local SIF files.
   Point the task's `container` at a registry image.
 
-- **Uploads or downloads fail.** Check the storage credentials and that the TES server itself is
-  authorized to read the `inputs` prefix and write the `outputs` prefix. Sprocket's credentials and
-  the server's are not the same thing.
+- **Uploads or downloads fail.** Check both your local storage credentials and the TES server's own
+  permissions to read the `inputs` prefix and write the `outputs` prefix.
 
-- **A task stays queued.** That scheduling decision belongs to the TES implementation; use its
-  interface or logs to find out why.
+- **A task stays queued.** Scheduling belongs to the TES server; check its interface or server logs
+  to see why the task is waiting.
 
-For anything that is not specific to TES, see [troubleshooting](/guides/troubleshooting). If you are
-still stuck, ask in the places listed under [community and support](/about/community).
+For general run failures, see [troubleshooting](/guides/troubleshooting) or ask in `#sprocket` on
+the OpenWDL Slack; see [community and support](/about/community).

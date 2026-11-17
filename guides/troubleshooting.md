@@ -5,16 +5,15 @@ description: "How to diagnose a failed Sprocket run using the run output directo
 
 ## Troubleshooting
 
-When a run fails, Sprocket leaves everything it did on disk. This guide shows where to look, then
-lists the errors people hit most often and what to do about each one.
+When a run fails, Sprocket keeps the run log, resolved inputs, generated command scripts, and task
+working directories in the output directory so you can inspect what ran.
 
 ### Debugging a failed run
 
 #### Start at the run directory
 
 Every run writes to `<output_dir>/runs/<target>/<timestamp>/`, where the output directory is `./out`
-unless you passed `-o`. The `_latest` symlink for a target points at its most recent run, so you can
-go straight there:
+unless you passed `-o`. The `_latest` symlink for a target points at its most recent run:
 
 ```shell
 ls out/runs/my_workflow/_latest/
@@ -27,15 +26,15 @@ directory instead. See
 [provenance tracking](/concepts/provenance#the-latest-symlink).
 :::
 
-Two files at the top of the run directory answer most first questions:
+Check two files at the top of the run directory first:
 
-| File | What it tells you |
+| File | Contents |
 | ------ | ------------------- |
 | `output.log` | Every message emitted during the run, including ones scrolled past in the terminal |
-| `inputs.json` | The inputs Sprocket actually used, after merging every file and key-value pair |
+| `inputs.json` | The resolved inputs after merging input files and command-line arguments |
 
-If a run did not do what you expected, check `inputs.json` before anything else. It is the resolved
-result of [incremental input application](/concepts/inputs), so it shows which value won.
+If a task received unexpected values, inspect `inputs.json` to see how
+[incremental input application](/concepts/inputs) resolved your files and `key=value` arguments.
 
 #### Find the failing task's attempt
 
@@ -46,8 +45,8 @@ Where attempts live depends on what you ran:
 - **Workflow runs** put them under the call they belong to:
   `runs/<target>/<timestamp>/calls/<task_call_id>/attempts/<n>/`.
 
-Attempts are numbered from `0`, and a retried task keeps every attempt, which is how you compare a
-failure against a later success. Each attempt directory contains:
+Attempts are numbered from `0`, and retries create new directories (`attempts/1/`, `attempts/2/`,
+and so on) without overwriting earlier ones. Each attempt directory contains:
 
 | File | Contents |
 | ------ | ---------- |
@@ -112,10 +111,10 @@ Caused by:
     missing required input `greeting` to task `say_hello`
 ```
 
-Supply the input on the command line (`greeting="Hello"`) or in an inputs file. `sprocket inputs`
-writes the inputs schema for a document (optionally for one `--target`), which is the quickest way
-to see what a target accepts. A related error, `does not have an input named ...`, means the key
-exists in your file but not in the WDL — usually a typo or a stale inputs file.
+Supply the input on the command line (`greeting="Hello"`) or in an inputs file.
+[`sprocket inputs`](/reference/cli/inputs) generates an input template for a document (optionally
+for one `--target`). A related error, `does not have an input named ...`, means the key exists in
+your inputs file or CLI arguments but not in the WDL; check for typos or stale keys.
 
 #### An inputs file without the `@` prefix
 
@@ -134,14 +133,13 @@ sprocket run workflow.wdl @inputs.json
 
 #### A resource request exceeds the maximum
 
-A task that asks for more CPU or memory than the backend knows it can provide fails before it is
-submitted. The Docker backend compares the request against the host; the HPC backends compare it
-against a queue's or partition's `max_cpu_per_task` and `max_memory_per_task`, when those are
-configured. (Without them, an impossible job is submitted and stays pending — see below.)
+A task that requests more CPU or memory than the configured limit fails before submission. The
+Docker and Local backends compare requests against host resources; LSF and Slurm compare them
+against a queue's or partition's `max_cpu_per_task` and `max_memory_per_task` when set (without
+those settings, an unsatisfiable job is submitted and stays pending in the scheduler).
 
-You have two options: lower the request in the WDL, or let Sprocket clamp it. Setting
-`cpu_limit_behavior` and `memory_limit_behavior` to `"try_with_max"` runs the task with the maximum
-available instead of erroring:
+Lower the request in the WDL, or set `cpu_limit_behavior` and `memory_limit_behavior` to
+`"try_with_max"` so Sprocket clamps oversized requests to the available maximum instead of erroring:
 
 ```toml
 [run.task]
@@ -177,10 +175,10 @@ message printed at the terminal is often less informative than the files left in
 
 #### A cached call was not reused
 
-The call cache is off by default and must be enabled with `run.task.cache`. Once it is on, Sprocket
+The call cache is off by default and must be enabled with `run.task.cache`. Once enabled, Sprocket
 logs an `INFO` message when it reuses or invalidates an entry; pass `-v` to see those messages.
-Changing the document URI, task name, input values, backend, evaluated command, or container
-invalidates an entry, and a task that only succeeded on a retry is never cached. See
+Changes to the document URI, task name, input values or file contents, backend, shell, container,
+requirements, hints, or evaluated command miss or invalidate the cache; see
 [call caching](/concepts/call-caching#logged-messages).
 
 #### Other backend-specific problems
@@ -194,7 +192,7 @@ Each backend page lists its own limitations and quirks:
 
 ### Getting help
 
-If the run directory does not explain the failure, ask. [Community and support](/about/community)
-lists the Slack channel, issue trackers, and discussion forums where the Sprocket team and users
-answer questions. Include the Sprocket version (`sprocket --version`), the backend you are using,
-and the relevant part of `output.log` or the failing attempt's `stderr`.
+If you still need help diagnosing a failure, reach out in `#sprocket` on the OpenWDL Slack or open
+an issue; see [community and support](/about/community). Include the Sprocket version
+(`sprocket --version`), your execution backend, and the relevant lines from `output.log` or the
+failing attempt's `stderr`.

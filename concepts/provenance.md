@@ -10,15 +10,9 @@ same [execution engine](/concepts/execution-model) and output structure, so the 
 here apply equally to both commands.
 
 ::: info Note
-Provenance is a well-established research area within scientific workflow systems. Formal models
-such as the [W3C PROV](https://www.w3.org/TR/prov-overview/) family and its workflow-oriented
-extension [ProvONE](https://purl.dataone.org/provone-v1-dev) define rich vocabularies for describing
-data lineage, activity chains, and agent relationships (cf.
-[Ludäscher et al., 2016](https://link.springer.com/chapter/10.1007/978-3-319-40226-0_7);
-[Deelman et al., 2018](https://journals.sagepub.com/doi/abs/10.1177/1094342017704893)).
-Sprocket uses the term "provenance" more loosely here to describe its execution tracking
-capabilities—recording what was run, with which inputs, when, and by whom—rather than implementing
-the full data lineage and dependency tracking described in those formal models.
+Sprocket uses **provenance** to mean execution tracking (recording what ran, when, with which
+inputs, and what it produced) rather than formal data-lineage models such as
+[W3C PROV](https://www.w3.org/TR/prov-overview/).
 :::
 
 For design details, see [RFC #3](https://github.com/stjude-rust-labs/rfcs/pull/3).
@@ -30,35 +24,16 @@ without deprecation. See [Project Status](/about/project-status) for the full po
 
 ## Runs and the index
 
-The output directory contains two complementary directory hierarchies that together address a
-fundamental tension in workflow management: users need both a complete provenance record for
-reproducibility and auditing _and_ a simplified, domain-specific view for everyday access to
-results. Rather than forcing users to choose one or maintain both manually, Sprocket provides both
-automatically.
+The output directory separates execution history from user-organized result paths:
 
-The **`runs/`** directory is the immutable record of truth. It organizes every execution
-chronologically by target name and timestamp, preserving the full history of inputs, outputs, and
-individual task attempts. This structure is currently append-only — Sprocket does not modify or
-remove previous runs — so it serves as a reliable audit trail. When a workflow is run multiple
-times, each execution receives its own timestamped directory, and the complete set of attempts is
-available for inspection. The internal layout of `runs/` is not a stable interface, though; see
-[Querying execution history](#querying-execution-history).
-
-The **`index/`** directory is an optional, user-curated view layered on top of the runs. When the
-`--index-on` flag is provided, Sprocket creates symlinks under `index/` that point back into
-`runs/`, giving users a way to organize results by whatever dimension makes sense for their domain
-(e.g., by project or by experiment) without duplicating any data. Because the index consists
-entirely of relative symlinks, it adds negligible storage overhead and can be reconstructed from the
-provenance database at any time.
-
-This separation means that the provenance record remains intact regardless of how the index evolves.
-Re-running a workflow with the same `--index-on` path updates the index symlinks to point to the
-latest results, but the previous run's directory under `runs/` is preserved, and the database
-records the full history of index changes. The design follows a principle of
-[progressive disclosure](https://en.wikipedia.org/wiki/Progressive_disclosure):
-users who simply run `sprocket run` get a well-organized `runs/` directory and a provenance database
-with no extra configuration, and those who need logical organization can opt into indexing by adding
-a single flag.
+- **`runs/`** stores one timestamped directory per execution under its target name, preserving each
+  completed run's inputs, logs, outputs, and task attempts without overwriting earlier runs
+  (`_latest` updates to point to the most recent run for each target). The internal layout of
+  `runs/` is not a stable interface; see [Querying execution history](#querying-execution-history).
+- **`index/`** is an optional tree of relative symlinks into `runs/`, created when you pass
+  `--index-on <path>`. Re-running with the same `--index-on` path updates the symlinks in `index/`
+  to the latest outputs while keeping previous run directories in `runs/` intact and recording the
+  update in `sprocket.db`.
 
 ## Output directory
 
@@ -315,7 +290,7 @@ and `sprocket.db-shm`). For a consistent backup, either stop active workflows fi
 
 ### Preserving the `runs/` directory
 
-The `runs/` hierarchy is the immutable record of truth for all workflow executions. Do not modify,
-rename, or delete files within it, as doing so may invalidate provenance records and break index
-symlinks that reference those paths. If disk space becomes a concern, consider archiving older runs
-rather than deleting them.
+Do not modify, rename, or delete files inside `runs/`. Provenance records in `sprocket.db` and
+symlinks under `index/` reference paths inside those directories, so altering them can break indexed
+outputs and run inspection. To reclaim disk space, archive older output directories intact rather
+than deleting individual files inside `runs/`.
