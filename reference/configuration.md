@@ -1070,6 +1070,15 @@ Configuration for the `run` command.
 
 **See also:** [Run command](/reference/cli/run).
 
+### `output_dir` {#run-output-dir}
+
+- **Type:** string
+- **Default:** `"./out"`
+
+The output directory (default: `./out`).
+
+Individual runs are stored at `<output_dir>/runs/<target>/<timestamp>/`.
+
 ### `backend` {#run-backend}
 
 - **Type:** string
@@ -1150,15 +1159,6 @@ The capacity cannot be zero.
 
 Defaults to `1000`.
 
-### `output_dir` {#run-output-dir}
-
-- **Type:** string
-- **Default:** `"./out"`
-
-The output directory (default: `./out`).
-
-Individual runs are stored at `<output_dir>/runs/<target>/<timestamp>/`.
-
 ### `events_capacity` {#run-events-capacity}
 
 - **Type:** integer
@@ -1182,11 +1182,13 @@ HTTP configuration.
 ### `cache_dir` {#run-http-cache-dir}
 
 - **Type:** string
-- **Default:** `"system"`
+- **Default:** `"default"`
 
 The HTTP download cache location.
 
-Defaults to an operating system specific cache directory for the user.
+The specified directory is relative to the output directory.
+
+Default cache directory is `cache/downloads`.
 
 ### `retries` {#run-http-retries}
 
@@ -1341,27 +1343,16 @@ The behavior when a task's `cpu` requirement cannot be met.
 
 The behavior when a task's `memory` requirement cannot be met.
 
-### `measure_resource_usage` {#run-task-measure-resource-usage}
-
-- **Type:** boolean
-- **Default:** `false`
-
-Whether to measure a task's resource usage from within its execution environment.
-
-When enabled, the engine wraps each task command with a portable measurement shim that attempts to record CPU time and, in containerized environments, peak cgroup memory, reporting them as resource usage metrics. CPU measurement requires Linux procfs, and peak-memory measurement requires a readable cgroup v1 or v2 peak counter. This works on any backend — including remote ones like TES — without requiring measurement tools in the container. Non-null shim measurements override overlapping backend measurements; fields reported only by the backend remain intact.
-
-The shim writes a small hidden file (`.sprocket_usage`) into the task's work directory by default. It is removed after collection on local file systems. Backends may redirect the file; TES exports it as a separate `usage` object outside the task's exported work directory.
-
-Defaults to `false`.
-
 ### `cache_dir` {#run-task-cache-dir}
 
 - **Type:** string
-- **Default:** `"system"`
+- **Default:** `"default"`
 
 The call cache directory to use for caching task execution results.
 
-Defaults to an operating system specific cache directory for the user.
+The specified directory is relative to the output directory.
+
+Defaults to `cache/calls`.
 
 ### `cache` {#run-task-cache}
 
@@ -1481,21 +1472,23 @@ Defaults to `true`.
 ### `resource_usage_interval` {#run-backends-name-docker-resource-usage-interval}
 
 - **Type:** integer, nullable
-- **Default:** `null`
+- **Default:** `1`
 - **Constraints:** minimum `0`; format `uint64`
 
 The interval, in seconds, at which to sample a running container's resource usage.
 
-When set to a positive value, Sprocket asks Crankshaft to sample local containers at this interval. Memory is sampled container memory with inactive file cache removed; the maximum is the largest observed sample, and the average is the arithmetic mean of successful samples. CPU time may be undercounted by up to one interval.
+Memory is sampled from the container with inactive file cache removed. Peak memory is the largest sample; average memory is the arithmetic mean of successful samples. CPU time excludes work after the last successful sample.
 
-An unset or zero value disables sampling. Sampling is unavailable for Docker Swarm services, and tasks that finish before the first interval may report no usage.
+Defaults to one second. Set to zero to disable sampling. Sampling applies only to local container execution, not Docker Swarm services. Tasks that finish before the first sample may report no usage.
 
-### `type` {#run-backends-name-docker-type}
+### `cgroup_usage` {#run-backends-name-docker-cgroup-usage}
 
-- **Type:** "docker"
-- **Required:** yes
+- **Type:** boolean
+- **Default:** `true`
 
-Selects the `docker` variant for this table.
+Collect a final cgroup-v2 recording for Docker Swarm services only.
+
+Defaults to `true`, independently of `resource_usage_interval`. Requires `/bin/sh`, a private task-scoped cgroup namespace, and readable `cpu.stat` and `memory.peak`. Peak memory includes page cache. Set to `false` to leave the configured task shell and arguments unwrapped, without a usage mount or event observer. Local Docker sampling is unaffected.
 
 ## `[run.backends.<name>]` — `tes` {#run-backends-name-tes}
 
@@ -1568,6 +1561,15 @@ Defaults to 10 concurrent requests.
 
 Whether or not the TES server URL may use an insecure protocol like HTTP.
 
+### `cgroup_usage` {#run-backends-name-tes-cgroup-usage}
+
+- **Type:** boolean
+- **Default:** `true`
+
+Collect a final cgroup-v2 recording when no native usage events are available. Explicit zero native measurements take priority. This option does not enable TES metadata parsing.
+
+Defaults to `true`. Requires `/bin/sh`, a private task-scoped cgroup namespace, and readable `cpu.stat` and `memory.peak`. Peak memory includes page cache. Missing recordings only warn. Set to `false` to leave the configured shell and arguments unwrapped, without a usage volume, output, or event observer.
+
 ### `resource_usage_metadata` {#run-backends-name-tes-resource-usage-metadata}
 
 - **Type:** boolean
@@ -1578,13 +1580,6 @@ Whether or not to read task resource usage from the TES server's task log metada
 When enabled, tasks are polled with the `BASIC` view and the documented resource usage metadata keys (e.g. `peak_memory_bytes`, `avg_memory_bytes`, `cpu_time_ms`), when reported by the server, are recorded as task resource usage.
 
 Defaults to `false`.
-
-### `type` {#run-backends-name-tes-type}
-
-- **Type:** "tes"
-- **Required:** yes
-
-Selects the `tes` variant for this table.
 
 ## `[run.backends.<name>.auth]` — `tes / basic` {#run-backends-name-auth-tes-basic}
 
@@ -1914,11 +1909,13 @@ Defaults to `"apptainer"`. Set to `"singularity"` or a full path (e.g., `/usr/lo
 ### `image_cache_dir` {#run-backends-name-apptainer-lsf-apptainer-image-cache-dir}
 
 - **Type:** string
-- **Default:** `"system"`
+- **Default:** `"default"`
 
 Path to a shared directory for caching pulled `.sif` images.
 
-Defaults to an operating system specific cache directory for the user.
+The specified directory is relative to the output directory.
+
+Defaults to `cache/images`.
 
 ### `extra_args` {#run-backends-name-apptainer-lsf-apptainer-extra-args}
 
@@ -2139,11 +2136,13 @@ Defaults to `"apptainer"`. Set to `"singularity"` or a full path (e.g., `/usr/lo
 ### `image_cache_dir` {#run-backends-name-apptainer-slurm-apptainer-image-cache-dir}
 
 - **Type:** string
-- **Default:** `"system"`
+- **Default:** `"default"`
 
 Path to a shared directory for caching pulled `.sif` images.
 
-Defaults to an operating system specific cache directory for the user.
+The specified directory is relative to the output directory.
+
+Defaults to `cache/images`.
 
 ### `extra_args` {#run-backends-name-apptainer-slurm-apptainer-extra-args}
 
@@ -2287,13 +2286,6 @@ Port to bind to.
 
 Allowed CORS origins.
 
-### `output_dir` {#server-output-dir}
-
-- **Type:** string
-- **Default:** `"./out"`
-
-Directory for workflow outputs.
-
 ### `allowed_file_paths` {#server-allowed-file-paths}
 
 - **Type:** array of string
@@ -2342,6 +2334,15 @@ Database URL (e.g., `sqlite://sprocket.db`). Defaults to `sprocket.db` in the ou
 The engine configuration to use during execution.
 
 **See also:** [Server command](/reference/cli/dev/server).
+
+### `output_dir` {#server-engine-output-dir}
+
+- **Type:** string
+- **Default:** `"./out"`
+
+The output directory (default: `./out`).
+
+Individual runs are stored at `<output_dir>/runs/<target>/<timestamp>/`.
 
 ### `backend` {#server-engine-backend}
 
@@ -2432,11 +2433,13 @@ HTTP configuration.
 ### `cache_dir` {#server-engine-http-cache-dir}
 
 - **Type:** string
-- **Default:** `"system"`
+- **Default:** `"default"`
 
 The HTTP download cache location.
 
-Defaults to an operating system specific cache directory for the user.
+The specified directory is relative to the output directory.
+
+Default cache directory is `cache/downloads`.
 
 ### `retries` {#server-engine-http-retries}
 
@@ -2591,27 +2594,16 @@ The behavior when a task's `cpu` requirement cannot be met.
 
 The behavior when a task's `memory` requirement cannot be met.
 
-### `measure_resource_usage` {#server-engine-task-measure-resource-usage}
-
-- **Type:** boolean
-- **Default:** `false`
-
-Whether to measure a task's resource usage from within its execution environment.
-
-When enabled, the engine wraps each task command with a portable measurement shim that attempts to record CPU time and, in containerized environments, peak cgroup memory, reporting them as resource usage metrics. CPU measurement requires Linux procfs, and peak-memory measurement requires a readable cgroup v1 or v2 peak counter. This works on any backend — including remote ones like TES — without requiring measurement tools in the container. Non-null shim measurements override overlapping backend measurements; fields reported only by the backend remain intact.
-
-The shim writes a small hidden file (`.sprocket_usage`) into the task's work directory by default. It is removed after collection on local file systems. Backends may redirect the file; TES exports it as a separate `usage` object outside the task's exported work directory.
-
-Defaults to `false`.
-
 ### `cache_dir` {#server-engine-task-cache-dir}
 
 - **Type:** string
-- **Default:** `"system"`
+- **Default:** `"default"`
 
 The call cache directory to use for caching task execution results.
 
-Defaults to an operating system specific cache directory for the user.
+The specified directory is relative to the output directory.
+
+Defaults to `cache/calls`.
 
 ### `cache` {#server-engine-task-cache}
 
@@ -2731,21 +2723,23 @@ Defaults to `true`.
 ### `resource_usage_interval` {#server-engine-backends-name-docker-resource-usage-interval}
 
 - **Type:** integer, nullable
-- **Default:** `null`
+- **Default:** `1`
 - **Constraints:** minimum `0`; format `uint64`
 
 The interval, in seconds, at which to sample a running container's resource usage.
 
-When set to a positive value, Sprocket asks Crankshaft to sample local containers at this interval. Memory is sampled container memory with inactive file cache removed; the maximum is the largest observed sample, and the average is the arithmetic mean of successful samples. CPU time may be undercounted by up to one interval.
+Memory is sampled from the container with inactive file cache removed. Peak memory is the largest sample; average memory is the arithmetic mean of successful samples. CPU time excludes work after the last successful sample.
 
-An unset or zero value disables sampling. Sampling is unavailable for Docker Swarm services, and tasks that finish before the first interval may report no usage.
+Defaults to one second. Set to zero to disable sampling. Sampling applies only to local container execution, not Docker Swarm services. Tasks that finish before the first sample may report no usage.
 
-### `type` {#server-engine-backends-name-docker-type}
+### `cgroup_usage` {#server-engine-backends-name-docker-cgroup-usage}
 
-- **Type:** "docker"
-- **Required:** yes
+- **Type:** boolean
+- **Default:** `true`
 
-Selects the `docker` variant for this table.
+Collect a final cgroup-v2 recording for Docker Swarm services only.
+
+Defaults to `true`, independently of `resource_usage_interval`. Requires `/bin/sh`, a private task-scoped cgroup namespace, and readable `cpu.stat` and `memory.peak`. Peak memory includes page cache. Set to `false` to leave the configured task shell and arguments unwrapped, without a usage mount or event observer. Local Docker sampling is unaffected.
 
 ## `[server.engine.backends.<name>]` — `tes` {#server-engine-backends-name-tes}
 
@@ -2818,6 +2812,15 @@ Defaults to 10 concurrent requests.
 
 Whether or not the TES server URL may use an insecure protocol like HTTP.
 
+### `cgroup_usage` {#server-engine-backends-name-tes-cgroup-usage}
+
+- **Type:** boolean
+- **Default:** `true`
+
+Collect a final cgroup-v2 recording when no native usage events are available. Explicit zero native measurements take priority. This option does not enable TES metadata parsing.
+
+Defaults to `true`. Requires `/bin/sh`, a private task-scoped cgroup namespace, and readable `cpu.stat` and `memory.peak`. Peak memory includes page cache. Missing recordings only warn. Set to `false` to leave the configured shell and arguments unwrapped, without a usage volume, output, or event observer.
+
 ### `resource_usage_metadata` {#server-engine-backends-name-tes-resource-usage-metadata}
 
 - **Type:** boolean
@@ -2828,13 +2831,6 @@ Whether or not to read task resource usage from the TES server's task log metada
 When enabled, tasks are polled with the `BASIC` view and the documented resource usage metadata keys (e.g. `peak_memory_bytes`, `avg_memory_bytes`, `cpu_time_ms`), when reported by the server, are recorded as task resource usage.
 
 Defaults to `false`.
-
-### `type` {#server-engine-backends-name-tes-type}
-
-- **Type:** "tes"
-- **Required:** yes
-
-Selects the `tes` variant for this table.
 
 ## `[server.engine.backends.<name>.auth]` — `tes / basic` {#server-engine-backends-name-auth-tes-basic}
 
@@ -3164,11 +3160,13 @@ Defaults to `"apptainer"`. Set to `"singularity"` or a full path (e.g., `/usr/lo
 ### `image_cache_dir` {#server-engine-backends-name-apptainer-lsf-apptainer-image-cache-dir}
 
 - **Type:** string
-- **Default:** `"system"`
+- **Default:** `"default"`
 
 Path to a shared directory for caching pulled `.sif` images.
 
-Defaults to an operating system specific cache directory for the user.
+The specified directory is relative to the output directory.
+
+Defaults to `cache/images`.
 
 ### `extra_args` {#server-engine-backends-name-apptainer-lsf-apptainer-extra-args}
 
@@ -3389,11 +3387,13 @@ Defaults to `"apptainer"`. Set to `"singularity"` or a full path (e.g., `/usr/lo
 ### `image_cache_dir` {#server-engine-backends-name-apptainer-slurm-apptainer-image-cache-dir}
 
 - **Type:** string
-- **Default:** `"system"`
+- **Default:** `"default"`
 
 Path to a shared directory for caching pulled `.sif` images.
 
-Defaults to an operating system specific cache directory for the user.
+The specified directory is relative to the output directory.
+
+Defaults to `cache/images`.
 
 ### `extra_args` {#server-engine-backends-name-apptainer-slurm-apptainer-extra-args}
 
@@ -3567,7 +3567,6 @@ If not set, runs are written to `<workspace>/test/runs`.
 
 - **Type:** boolean
 - **Default:** `false`
-- **Required:** yes
 
 Whether to enable arbitrary code execution for custom test assertions.
 
