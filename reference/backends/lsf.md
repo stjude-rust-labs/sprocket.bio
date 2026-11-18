@@ -76,8 +76,9 @@ args = ["-app", "my_app_profile"]
 # Settings related to `apptainer`.
 [run.backends.default.apptainer]
 # Additional command-line arguments to pass to `apptainer exec` when executing
-# tasks.
-extra_args = ["--hostname=\"my_host\""]
+# tasks. Each entry is passed as one literal argument, without shell expansion
+# or splitting, so use a separate entry for each argument.
+extra_args = ["--hostname=my_host"]
 
 # Path to the Apptainer (or Singularity) executable. Defaults to `"apptainer"`.
 # Set to `"singularity"` or a full path if the executable is not on `PATH`.
