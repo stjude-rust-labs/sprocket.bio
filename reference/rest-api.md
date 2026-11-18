@@ -28,7 +28,7 @@ Runs represent individual workflow executions.
 
 - `POST /api/v1/runs` - Submit a new workflow.
 - `GET /api/v1/runs` - List all runs. Supports optional `?status=` filter (e.g., `?status=running`).
-- `GET /api/v1/runs/{uuid}` - Get run details.
+- `GET /api/v1/runs/{uuid}` - Get run details, including the execution `backend` the run used.
 - `POST /api/v1/runs/{uuid}/cancel` - Cancel a running workflow.
 - `GET /api/v1/runs/{uuid}/outputs` - Get run outputs.
 - `GET /api/v1/runs/{uuid}/metrics` - Get attempts, timing, constraints, retry causes, data movement,
@@ -56,6 +56,9 @@ Tasks represent individual task executions within a workflow run.
 
 Task responses include the task's fully qualified WDL call ID, zero-based attempt number, resolved
 execution constraints, retry cause, scheduler submission time, and available resource utilization.
+They also include `external_id`, the ID the backend assigned to the attempt: the job ID for LSF and
+Slurm, or the task ID for TES. It is `null` for other backends and for attempts that were never
+submitted.
 The constraints include the resolved retry policy and curated `preemptible`, `max_cpu`, and
 `max_memory` hints. See [Execution Metrics](/concepts/execution-metrics) for field semantics and
 collection sources.

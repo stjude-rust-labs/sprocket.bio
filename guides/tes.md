@@ -186,7 +186,8 @@ for more detail, or use the server implementation's own interface to see the que
 With `resource_usage_metadata = true`, Sprocket also requests the TES `BASIC` view and records
 supported resource usage values from top-level `TaskLog.metadata`. Planetary can provide sampled
 Kubernetes working-set memory and cumulative CPU time this way. Other TES implementations may return
-some or none of the supported keys. See
+some or none of the supported keys. When no metadata is reported, Sprocket uses a cgroup recording
+taken inside the task, if the container allows it. See
 [TES resource utilization](/reference/backends/tes#resource-utilization) for details.
 
 ### Outputs

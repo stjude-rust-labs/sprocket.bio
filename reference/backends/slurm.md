@@ -98,9 +98,8 @@ they are available, including memory and cumulative CPU time. Availability and p
 the cluster's accounting configuration; missing scheduler values remain absent from the execution
 metrics.
 
-You can combine scheduler accounting with Sprocket's optional in-task measurement. See
-[Execution Metrics](/concepts/execution-metrics#resource-utilization-sources) for configuration,
-field semantics, and precedence.
+See [Execution Metrics](/concepts/execution-metrics#resource-utilization-sources) for field
+semantics and how scheduler accounting compares with other sources.
 
 ## Conditional `sbatch` Arguments
 

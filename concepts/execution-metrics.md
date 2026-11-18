@@ -55,16 +55,44 @@ Each call has two identifiers:
 Attempts are numbered from zero. A backend-local resubmission with a `~<n>` suffix remains part of
 the same logical attempt; it does not increment the attempt number.
 
+### Report fields
+
+The JSON report has three top-level objects: `run`, `calls`, and `totals`.
+
+| Object | Fields |
+| --- | --- |
+| `run` | `uuid`, `name`, `status`, `wall_time_ms`, `backend`, `sprocket_version`, `transfer` (`downloaded_bytes`, `uploaded_bytes`) |
+| Each entry in `calls` | `call_id`, `name`, `attempts` |
+| Each entry in `attempts` | `name`, `attempt`, `status`, `exit_status`, `wall_time_ms`, `queued_ms`, `pending_ms`, `allocated_cpu_time_ms`, `constraints`, `retry_cause`, `utilization`, `logs` |
+| `totals` | `attempts`, `retries`, `cached`, `preempted`, `allocated_cpu_time_ms`, `preemption_wasted_ms` |
+
+`run.backend` identifies the execution backend the run used:
+
+- `name` is the configured backend name, such as `default`.
+- `type` is the backend type, such as `docker`, `tes`, or `slurm_apptainer`.
+- `info` holds non-secret settings that vary by type:
+  - local: CPU and memory limits;
+  - TES: the service URL without credentials, plus `max_concurrency`;
+  - LSF and Slurm: `max_concurrency` and the configured queue or partition names.
+
+  Docker reports an empty `info` object.
+
+`backend` is `null` for runs that never started or that were recorded before backends were tracked.
+
+`run.sprocket_version` is the version of Sprocket that produced the report. In `metrics.json`, that
+is the version that executed the run. From the server, it is the version of the server answering the
+request, which may be newer than the version that executed an older run.
+
 ## Timing
 
 All JSON durations are expressed in milliseconds.
 
 | Field | Meaning |
 | --- | --- |
-| Run wall time | Time from the run starting until it reaches a terminal status |
-| Attempt wall time | Time from the attempt starting execution until it completes |
-| Queue time | Time from creating the attempt until execution starts; includes evaluation, input localization, and backend queuing |
-| Scheduler-pending time | Time from backend submission until execution starts |
+| Run wall time (`run.wall_time_ms`) | Time from the run starting until it reaches a terminal status |
+| Attempt wall time (`wall_time_ms`) | Time from the attempt starting execution until it completes |
+| Queue time (`queued_ms`) | Time from creating the attempt until execution starts; includes evaluation, input localization, and backend queuing |
+| Scheduler-pending time (`pending_ms`) | Time from backend submission until execution starts |
 
 Scheduler-pending time is a subset of queue time. It may be unavailable when a backend does not
 report submission time or for attempts recorded before submission times were tracked.
@@ -80,12 +108,19 @@ curated `preemptible`, `max_cpu`, and `max_memory` hints. CPU values are counts,
 disk values are bytes. Observed utilization describes what the task consumed, when a measurement
 source is available.
 
+| Object | Fields |
+| --- | --- |
+| `constraints` | `container`, `cpu`, `memory`, `gpu`, `fpga`, `disks`, `max_retries`, `preemptible`, `max_cpu`, `max_memory` |
+| `utilization` | `max_memory`, `avg_memory`, `disk_used` (bytes); `cpu_time_ms`, `user_cpu_time_ms`, `system_cpu_time_ms` (milliseconds) |
+
+Each `utilization` field is present only when a source reported it.
+
 Do not confuse the two CPU measurements:
 
 - **Allocated CPU time** is the resolved CPU count multiplied by attempt wall time. It is reported
   in core-milliseconds and reflects reserved capacity, not CPU cycles consumed.
 - **CPU time** under resource utilization is cumulative CPU consumed as reported by a backend or by
-  Sprocket's optional in-task measurement.
+  Sprocket's cgroup fallback.
 
 Run totals include allocated CPU time for successful, failed, and retried attempts. They also
 include execution time lost to preempted attempts.
@@ -99,35 +134,55 @@ Resource utilization is best effort. Different execution backends expose differe
 | --- | --- | --- | --- |
 | LSF | Automatic | Scheduler-reported memory and CPU | Availability depends on cluster accounting |
 | Slurm | Automatic | Scheduler-reported memory and CPU | Availability depends on `sacct` accounting |
-| Docker | Set a positive `resource_usage_interval` | Sampled peak and average memory, cumulative CPU | Local containers only; short tasks may finish before the first sample |
-| Engine measurement | Set `measure_resource_usage = true` | CPU time and, for containers, peak cgroup memory | Adds a small measurement wrapper to the task command |
+| Docker | Automatic; sampled every second by default (`resource_usage_interval`) | Sampled peak and average memory, cumulative CPU | Local containers only; short tasks may finish before the first sample; `0` disables sampling |
 | TES metadata | Set `resource_usage_metadata = true` | Measurements reported by a compatible TES server | Key support depends on the server |
+| Cgroup fallback | Automatic for Docker Swarm and TES; `cgroup_usage = false` disables | Total, user, and system CPU time; peak cgroup memory | Used only when the backend reports no native usage; requires cgroup v2 |
 
-Sprocket also measures disk usage in local task work directories. If more than one source reports
-the same field, a non-null engine measurement takes precedence. Fields reported only by a backend,
-such as average memory, are preserved.
+Sprocket also measures the size of local task work directories as `disk_used`. This is the size
+when the task finishes, not a high-water mark.
 
-### Measuring from inside the task
+Memory values from different sources measure different things:
 
-Enable portable in-task measurement for local or server runs:
+- Docker samples exclude inactive file cache.
+- Cgroup fallback peaks include page cache.
+- LSF, Slurm, and TES report whatever their scheduler or server calculates.
+
+Average memory is not comparable across backends either. Docker reports the unweighted mean of its
+samples, while the other sources define their own averages.
+
+### Cgroup fallback
+
+Docker Swarm services and TES tasks have no native usage source by default. For these backends,
+Sprocket wraps each task command in a small `/bin/sh` script that runs the original command and then
+records the task's cgroup v2 counters: total, user, and system CPU time from `cpu.stat`, and peak
+memory from `memory.peak`.
+
+Sprocket uses the recording only when the backend reported no native usage for the attempt. Native
+usage always wins, including native values of zero, and the two are never mixed. With TES, native
+usage means metadata read through `resource_usage_metadata`.
+
+The recording needs:
+
+- `/bin/sh` in the container;
+- a private, task-scoped cgroup v2 namespace; and
+- readable `cpu.stat` and `memory.peak` files.
+
+When any of these is missing, the attempt reports no fallback usage and the task still runs
+normally. The recording is stored outside the task's work directory and does not affect call-cache
+keys:
+
+- Docker Swarm writes it under the attempt directory.
+- TES uploads it to a `usage-<n>/` directory beside the task's outputs, where it may remain.
+
+To turn the fallback off and run the task command unwrapped, set `cgroup_usage = false` on the
+backend:
 
 ```toml
-[run.task]
-measure_resource_usage = true
-
-[server.engine.task]
-measure_resource_usage = true
+[run.backends.default]
+type = "tes"
+# ...
+cgroup_usage = false
 ```
-
-The setting defaults to `false`. When enabled, Sprocket wraps the task command with a portable shell
-shim that attempts to record CPU time and, in containerized environments, peak cgroup memory. CPU
-measurement requires Linux procfs at `/proc`, and peak-memory measurement requires a readable cgroup
-v1 or v2 peak counter. The shim does not require additional tools in the container and can run with
-remote backends such as TES, but unavailable platform counters produce no measurement.
-
-By default, the shim writes `.sprocket_usage` in the task's work directory. Sprocket removes the
-file after collecting it on local file systems. Backends may redirect it: TES exports a separate
-`usage` object outside the task's exported work directory, which may remain in remote storage.
 
 See the backend pages for additional measurements and configuration:
 
@@ -163,9 +218,10 @@ A missing or `null` value is expected when:
 - the run or attempt has not reached the lifecycle point needed to calculate it;
 - the call was served from the call cache and never reached a backend;
 - the backend or scheduler does not expose the measurement;
-- optional collection is disabled;
+- optional collection is disabled, or the cgroup fallback was disabled or unsupported;
 - a task completes before the first sampling interval;
 - no TES metadata key was reported; or
 - the run predates collection of that field.
 
 Compare runs only when their backend, Sprocket version, and collection settings are compatible.
+Check `run.backend` to confirm that two runs used the same backend before comparing them.
