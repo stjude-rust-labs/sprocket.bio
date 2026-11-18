@@ -83,8 +83,8 @@ extra_args = ["--hostname=\"my_host\""]
 # Set to `"singularity"` or a full path if the executable is not on `PATH`.
 executable = "apptainer"
 
-# Shared directory for caching pulled `.sif` images across runs. When unset,
-# images are stored per-run and not shared.
+# Directory for caching pulled `.sif` images. Relative paths are relative to the
+# output directory. Defaults to `cache/images` in the output directory.
 image_cache_dir = "/shared/containers/cache"
 ```
 

@@ -68,7 +68,6 @@ Server settings can also be configured in `sprocket.toml`:
 [server]
 host = "127.0.0.1"
 port = 8080
-output_dir = "./out"
 allowed_file_paths = ["/path/to/workflows"]
 allowed_urls = ["https://raw.githubusercontent.com/"]
 allowed_origins = ["http://localhost:3000"]
@@ -79,7 +78,8 @@ orphan_timeout_minutes = 5
 url = "sqlite://sprocket.db"
 
 [server.engine]
-# Engine configuration (same options as [run] section)
+output_dir = "./out"
+# Other engine configuration (same options as [run] section)
 ```
 
 ### Configuration options
@@ -88,13 +88,13 @@ url = "sqlite://sprocket.db"
 | -------- | ------ | --------- | ------------- |
 | `host` | String | `"127.0.0.1"` | Host address to bind |
 | `port` | Integer | `8080` | Port to bind |
-| `output_dir` | Path | `"./out"` | Directory for workflow outputs |
 | `allowed_file_paths` | List | `[]` | Allowed local paths for workflow sources |
 | `allowed_urls` | List | `[]` | Allowed URL prefixes for workflow sources |
 | `allowed_origins` | List | `[]` | CORS allowed origins |
 | `max_concurrent_runs` | Integer | None | Maximum concurrent workflow executions |
 | `database.url` | String | None | Database path. When omitted, defaults to `sprocket.db` within the output directory. When provided, relative paths resolve from the current working directory (not the output directory). |
 | `orphan_timeout_minutes` | Integer | `5` | Minutes without a server heartbeat before its active runs are marked `orphaned`; must be at least `1` |
+| `engine.output_dir` | Path | `"./out"` | Directory for workflow outputs |
 | `engine` | Object | `{}` | Engine configuration (see execution backends) |
 
 ## Managing runs

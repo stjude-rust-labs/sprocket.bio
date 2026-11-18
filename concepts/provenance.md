@@ -67,7 +67,10 @@ workflow outputs and provenance data. This location can be configured via:
 
 - The `-o, --output-dir` CLI flag (for `sprocket run` and `sprocket dev server start`).
 - The `run.output_dir` configuration option (for run mode).
-- The `server.output_dir` configuration option (for server mode).
+- The `server.engine.output_dir` configuration option (for server mode).
+
+The output directory also holds Sprocket's caches under `cache/`. Runs that use the same output
+directory share these caches.
 
 ### Directory structure
 
@@ -81,6 +84,10 @@ When running a task directly, the `attempts/` directory sits at the top level of
 ```text
 ./out/
 ├── sprocket.db                       # SQLite provenance database
+├── cache/                            # Caches shared by runs (created when used)
+│   ├── calls/                        # Call cache (see Call Caching)
+│   ├── downloads/                    # HTTP download cache
+│   └── images/                       # SIF images (Apptainer backends only)
 ├── runs/
 │   └── <target>/
 │       ├── <timestamp>/              # Individual run (YYYY-MM-DD_HHMMSSffffff)
@@ -88,7 +95,6 @@ When running a task directly, the `attempts/` directory sits at the top level of
 │       │   ├── inputs.json           # Serialized inputs for the run
 │       │   ├── outputs.json          # Serialized outputs from the run
 │       │   ├── metrics.json          # Execution metrics (`sprocket run`; best effort)
-│       │   ├── apptainer-images/     # Cached SIF images (Apptainer backends only)
 │       │   ├── tmp/                  # Temporary localization files
 │       │   └── attempts/
 │       │       └── <n>/              # Attempt number (0, 1, 2, ...)
@@ -112,6 +118,7 @@ standalone task run.
 ```text
 ./out/
 ├── sprocket.db
+├── cache/
 ├── runs/
 │   └── <target>/
 │       ├── <timestamp>/
@@ -119,7 +126,6 @@ standalone task run.
 │       │   ├── inputs.json
 │       │   ├── outputs.json
 │       │   ├── metrics.json          # Execution metrics (`sprocket run`; best effort)
-│       │   ├── apptainer-images/     # Cached SIF images (Apptainer backends only)
 │       │   ├── tmp/                  # Workflow-level temporary files
 │       │   └── calls/               # Task execution directories
 │       │       └── <task_call_id>/   # One per task call in the workflow
@@ -182,7 +188,6 @@ Each run creates a timestamped directory under `runs/<target>/` containing the f
 | `inputs.json` | Serialized inputs provided for the run |
 | `outputs.json` | Serialized outputs produced by the run |
 | `metrics.json` | When its best-effort write succeeds for a local `sprocket run`, timing, retries, constraints, data movement, and available resource utilization; see [Execution Metrics](/concepts/execution-metrics) |
-| `apptainer-images/` | Cached SIF container images pulled during the run (Apptainer backends only; see [Containers](/concepts/containers#image-caching)) |
 | `tmp/` | Temporary files used during input localization |
 | `attempts/` | Directory containing attempt subdirectories (task runs) |
 | `calls/` | Directory containing per-task-call subdirectories (workflow runs) |
