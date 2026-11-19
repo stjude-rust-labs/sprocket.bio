@@ -83,10 +83,10 @@ use it in the future.
 With the Docker backend, images are stored by Docker itself, so a pulled image is available to later
 runs on the same machine.
 
-The Apptainer-based backends (LSF and Slurm) pull images and convert them to SIF files in an
-`apptainer-images/` directory inside each run's timestamped directory. A given image is only pulled
-once within a run, but each new run pulls all of its images fresh. To share images across runs, set
-`image_cache_dir` in the backend's `apptainer` table:
+The Apptainer-based backends (LSF and Slurm) pull images and convert them to SIF files in
+`cache/images` inside the output directory. Runs that use the same output directory reuse these
+images. To use another location, such as a directory shared across users, set `image_cache_dir` in
+the backend's `apptainer` table. A relative path is relative to the output directory:
 
 ```toml
 [run.backends.default.apptainer]
@@ -95,4 +95,4 @@ image_cache_dir = "/shared/containers/cache"
 
 See the [LSF](/reference/backends/lsf) and [Slurm](/reference/backends/slurm) backend references for
 the rest of the Apptainer settings, and [provenance tracking](/concepts/provenance) for where
-`apptainer-images/` sits in a run directory.
+`cache/` sits in the output directory.

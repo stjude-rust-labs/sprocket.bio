@@ -1295,7 +1295,7 @@ Warning: nested scatter statements cause exponential memory usage based on this 
 
 Task evaluation configuration.
 
-**See also:** [Call caching](/concepts/call-caching); [Run command](/reference/cli/run).
+**See also:** [Execution metrics](/concepts/execution-metrics); [Call caching](/concepts/call-caching); [Run command](/reference/cli/run).
 
 ### `retries` {#run-task-retries}
 
@@ -2546,7 +2546,7 @@ Warning: nested scatter statements cause exponential memory usage based on this 
 
 Task evaluation configuration.
 
-**See also:** [Call caching](/concepts/call-caching); [Server command](/reference/cli/dev/server).
+**See also:** [Execution metrics](/concepts/execution-metrics); [Call caching](/concepts/call-caching); [Server command](/reference/cli/dev/server).
 
 ### `retries` {#server-engine-task-retries}
 

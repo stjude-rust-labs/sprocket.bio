@@ -84,13 +84,23 @@ extra_args = ["--hostname=my_host"]
 # Set to `"singularity"` or a full path if the executable is not on `PATH`.
 executable = "apptainer"
 
-# Shared directory for caching pulled `.sif` images across runs. When unset,
-# images are stored per-run and not shared.
+# Directory for caching pulled `.sif` images. Relative paths are relative to the
+# output directory. Defaults to `cache/images` in the output directory.
 image_cache_dir = "/shared/containers/cache"
 ```
 
 If you run into problems or have other feedback, please reach out to us in the
 [#sprocket channel on the WDL Slack][sprocket-slack].
+
+## Resource Utilization
+
+After a Slurm job finishes, Sprocket records scheduler-accounting measurements from `sacct` when
+they are available, including memory and cumulative CPU time. Availability and precision depend on
+the cluster's accounting configuration; missing scheduler values remain absent from the execution
+metrics.
+
+See [Execution Metrics](/concepts/execution-metrics#resource-utilization-sources) for field
+semantics and how scheduler accounting compares with other sources.
 
 ## Conditional `sbatch` Arguments
 

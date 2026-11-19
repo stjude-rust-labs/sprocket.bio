@@ -256,21 +256,19 @@ consumption can be a multiple of this number.
 
 ### Container image caching
 
-Sprocket pulls container images and converts them to SIF files in an `apptainer-images/` directory
-inside each run's timestamped directory. A given image is only pulled once within a run, but each
-new run pulls all of its images fresh.
+Sprocket pulls container images and converts them to SIF files in `cache/images` inside the output
+directory. Runs that use the same output directory reuse these images.
 
-The preferred way to share images across runs is to set `image_cache_dir` in your backend
-configuration:
+To share images across output directories or users, set `image_cache_dir` in your backend
+configuration. A relative path is relative to the output directory:
 
 ```toml
 [run.backends.default.apptainer]
 image_cache_dir = "/shared/containers/cache"
 ```
 
-When set, Sprocket stores pulled `.sif` images in this directory and reuses them for subsequent
-runs, avoiding repeated downloads. See [containers](/concepts/containers) for how Sprocket resolves
-and caches images.
+Sprocket then stores pulled `.sif` images in this directory and reuses them for later runs. See
+[containers](/concepts/containers) for how Sprocket resolves and caches images.
 
 Alternatively, you can pre-pull images to a shared location using `apptainer pull` and reference the
 local SIF path in your WDL `container` declarations:

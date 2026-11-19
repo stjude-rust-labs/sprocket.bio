@@ -162,6 +162,10 @@ After a fresh execution succeeds, Sprocket remaps container symlinks in the work
 to host paths and updates the call cache entry (cache hits skip this write). It then evaluates the
 task's `output` section from the execution or cached result.
 
+As attempts move through this pipeline, Sprocket records their timing, resolved constraints, retry
+causes, and any resource utilization reported by the engine or backend. See
+[Execution Metrics](/concepts/execution-metrics) for the collection sources and field semantics.
+
 ### How backends differ
 
 Backends differ in where commands run, how tasks are isolated, who stages remote inputs, and how
@@ -204,7 +208,8 @@ them immediately. Pressing Ctrl-C follows the same modes; see
 Each run writes a timestamped directory under the
 [output directory](/reference/cli/run#output-directory) containing `inputs.json`, `outputs.json`,
 `output.log`, and per-call `attempts/<n>/` directories, and records the execution in `sprocket.db`.
-See [provenance tracking](/concepts/provenance) for the full layout.
+Local `sprocket run` executions also attempt a best-effort write of `metrics.json`. See
+[provenance tracking](/concepts/provenance) for the full layout.
 
 The `sprocket.db` schema and the internal layout of `runs/` may change in any release; query run
 history through Sprocket's commands or [REST API](/reference/rest-api) rather than reading those

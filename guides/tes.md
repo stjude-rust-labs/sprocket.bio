@@ -85,6 +85,8 @@ outputs = "s3://my-bucket/sprocket/outputs/"
 interval = 30
 # How many times to retry a failed request to the TES server.
 retries = 3
+# Read resource utilization from supported TES task log metadata.
+resource_usage_metadata = true
 
 # If the server requires basic authentication:
 [run.backends.default.auth]
@@ -174,10 +176,18 @@ task's `maxRetries` requirement (see [retries](/reference/cli/run#retries)).
 Progress is reported at the command line and written to `output.log` in the run directory. Add `-v`
 for more detail, or inspect queued tasks through your TES server's interface.
 
+With `resource_usage_metadata = true`, Sprocket also requests the TES `BASIC` view and records
+supported resource usage values from top-level `TaskLog.metadata`. Planetary can provide sampled
+Kubernetes working-set memory and cumulative CPU time this way. Other TES implementations may return
+some or none of the supported keys. When no metadata is reported, Sprocket uses a cgroup recording
+taken inside the task, if the container allows it. See
+[TES resource utilization](/reference/backends/tes#resource-utilization) for details.
+
 ### Outputs
 
 Local run metadata is written to `out/runs/<target>/<timestamp>/` (`inputs.json`, `outputs.json`,
-`output.log`, and `calls/`). See [provenance tracking](/concepts/provenance) for the full layout.
+`output.log`, `calls/`, and a best-effort `metrics.json`). See
+[provenance tracking](/concepts/provenance) for the full layout.
 
 Because the TES server writes task outputs to cloud storage, `File` outputs in `outputs.json` are
 cloud storage URLs rather than local paths. Sprocket downloads an output file only when workflow

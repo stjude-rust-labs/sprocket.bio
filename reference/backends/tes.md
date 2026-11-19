@@ -53,7 +53,9 @@ cloud storage.
 ## Task outputs
 
 The TES backend requests that the TES API server uploads task outputs to a cloud storage location
-using a unique prefix for the task's execution.
+using a unique prefix for the task's execution. Unless `cgroup_usage = false`, that prefix also
+holds a small `usage-<n>/` directory with the task's
+[cgroup usage recording](/concepts/execution-metrics#cgroup-fallback).
 
 Sprocket will not attempt to download an executed task's outputs until an output is needed by
 workflow evaluation. For example, if a task outputs a `File`, the `File` remains a remote URL to the
@@ -83,6 +85,12 @@ interval = 30
 # The number of retries after encountering an error communicating with the TES 
 # server (defaults to 0 retries).
 retries = 0
+# Read supported resource usage keys from TES task log metadata.
+# This is disabled by default.
+resource_usage_metadata = true
+# Record cgroup usage inside the task when no metadata is reported.
+# This is enabled by default.
+cgroup_usage = true
 
 # If basic authentication is required:
 [run.backends.default.auth]
@@ -133,6 +141,35 @@ On Unix operating systems, it is recommended that your `sprocket.toml` has an ac
 The example above shows the options most runs need. For every key the backend accepts, including
 `max_concurrency` and `insecure`, see the
 [configuration file reference](/reference/configuration#run-backends-name-tes).
+
+## Resource Utilization
+
+Set `resource_usage_metadata = true` to ask Sprocket to poll tasks using the TES `BASIC` view and
+read supported top-level `TaskLog.metadata` values:
+
+- `peak_memory_bytes`
+- `avg_memory_bytes`
+- `cpu_time_ms`
+- `user_cpu_time_ms`
+- `system_cpu_time_ms`
+- `disk_used_bytes`
+
+Collection is disabled by default. Measurements appear only when the TES implementation reports
+supported keys; enabling the setting does not make a server measure values it does not already
+provide. Values may be JSON numbers or numeric strings.
+
+Sprocket stores these values under the common `utilization` field names. `peak_memory_bytes`
+becomes `max_memory`, `avg_memory_bytes` becomes `avg_memory`, and `disk_used_bytes` becomes
+`disk_used`. The CPU time keys keep their names.
+
+[Planetary](https://github.com/stjude-rust-labs/planetary) currently reports
+`peak_memory_bytes`, `avg_memory_bytes`, and `cpu_time_ms`, based on sampled Kubernetes working-set
+memory and cumulative CPU time across its executor containers.
+
+When the server reports no supported metadata, or `resource_usage_metadata` is off, Sprocket falls
+back to a cgroup recording taken inside the task. It is enabled by default; set
+`cgroup_usage = false` to turn it off. Metadata always takes priority over the recording. See
+[Execution Metrics](/concepts/execution-metrics#cgroup-fallback) for requirements and limitations.
 
 ## GPU Support
 

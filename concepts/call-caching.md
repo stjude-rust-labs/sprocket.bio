@@ -36,22 +36,19 @@ cache = "explicit"
 
 ## Call cache directory
 
-By default, the call cache is maintained in a subdirectory of the user's operating system cache
-directory:
+By default, the call cache is kept in `cache/calls` inside the
+[output directory](/concepts/provenance#output-directory) (`./out/cache/calls` unless you change the
+output directory). Runs that use the same output directory share the cache.
 
-| Platform | Default Call Cache Directory                                      | Example                                     |
-| -------- | ----------------------------------------------------------------- | ------------------------------------------- |
-| Linux    | `$XDG_CACHE_HOME/sprocket/calls` or `$HOME/.cache/sprocket/calls` | /home/alice/.cache/sprocket/calls           |
-| macOS    | `$HOME/Library/Caches/sprocket/calls`                             | /Users/Alice/Library/Caches/sprocket/calls  |
-| Windows  | `%LOCALAPPDATA%\sprocket\calls`                                   | C:\Users\Alice\AppData\Local\sprocket\calls |
-
-The location of the call cache directory can be modified by adding the following to your
-`sprocket.toml`:
+To use a different location, add the following to your `sprocket.toml`. A relative path is relative
+to the output directory:
 
 ```toml
 [run.task]
 cache_dir = "<path-to-cache>"
 ```
+
+For `sprocket dev server`, set `cache_dir` under `[server.engine.task]` instead.
 
 ## The `cacheable` hint
 

@@ -526,6 +526,7 @@ function defaultFor(schema, field, fullPath, defaults) {
 }
 
 const narrativeLinks = [
+  [/^(?:run|server\.engine)\.task(?:\.|$)/, "Execution metrics", "/concepts/execution-metrics"],
   [/^(?:run|server\.engine)\.task(?:\.|$)/, "Call caching", "/concepts/call-caching"],
   [/^(?:run|server\.engine)\.backends\.&lt;name>.*docker/, "Docker backend", "/reference/backends/docker"],
   [/^(?:run|server\.engine)\.backends\.&lt;name>.*tes/, "TES backend", "/reference/backends/tes"],

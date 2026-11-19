@@ -164,7 +164,7 @@ submitted to that server. See
 ### SIF
 
 A Singularity Image Format (`.sif`) container image used by Apptainer-based execution backends.
-Sprocket can keep images per run under `apptainer-images/` or use a configured shared image cache.
+Sprocket caches images in `cache/images` inside the output directory, or in a configured `image_cache_dir`.
 See
 [Containers](/concepts/containers).
 
