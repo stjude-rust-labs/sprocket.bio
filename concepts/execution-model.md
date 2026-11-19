@@ -5,79 +5,59 @@ description: "How Sprocket evaluates a WDL document, schedules calls, and dispat
 
 ## Execution Model
 
-This page describes what happens between the moment you press enter on `sprocket run` and the moment
-your outputs appear: which parts of a run happen inside the Sprocket process, how the workflow is
-scheduled and parallelized, what each task attempt does, and where the execution backends differ.
-Read it when you want to know why a run behaves the way it does; the pages linked from each section
-have the settings and the details.
+When you run `sprocket run`, Sprocket parses and evaluates the WDL workflow inside its own process
+and dispatches individual task commands to a selected
+[execution backend](/reference/backends/overview). `sprocket dev server` uses the same execution
+engine and output layout.
 
 ### Orchestration engine and execution backends
 
-Sprocket's execution engine is made up of two major components: an **orchestration engine** and one
-or more **execution runtimes**.
+Sprocket's **execution engine** combines two parts:
 
-- The **orchestration engine** handles the scheduling and monitoring of units of execution within a
-  workflow.
-- **Execution runtimes** carry out the work associated with a unit of compute within a particular
-  environment (e.g., local compute, a high-performance compute cluster, or the cloud).
-
-Briefly, the orchestration engine is generally responsible for staging anything needed to run a job
-within a particular environment (localizing data, hooking up inputs and outputs, deciding which
-execution runtime to dispatch jobs to) whereas execution runtimes receive these jobs and are
-responsible only for carrying them out in an independent manner.
+- The **orchestration engine** evaluates workflow logic, stages data, connects inputs and outputs,
+  and schedules and monitors task calls.
+- **Execution runtimes** (configured in `sprocket.toml` and on the CLI as
+  [execution backends](/reference/backends/overview)) run individual task commands in a target
+  environment: locally with Docker (`docker`, the default) or on the host (`local`), remotely
+  through a Task Execution Service ([TES]) server (`tes`), or on an HPC cluster with Apptainer
+  (`lsf_apptainer` and `slurm_apptainer`, both experimental).
 
 <ExecArchitectureFigure />
 
-The split matters because it decides what runs where. All of the workflow logic — expressions,
-declarations, conditionals, scatters, and the graph that orders the calls — is evaluated inside the
-Sprocket process. What leaves that process is a task's evaluated command, its inputs, and its
-requirements. Depending on the backend you configure, that command may run on your own machine or on
-a machine you never touch.
-
-Collectively, we consider the combination of an orchestration engine with one or more configured
-execution runtimes to comprise an **execution engine**. We envision the orchestration engine being
-provided by Sprocket alongside three official execution runtimes: (a) a local, Docker-based runtime,
-(b) a Task Execution Service ([TES]) based runtime, and (c) a flexible "generic" runtime that can be
-used to configure execution within HPC clusters. Beyond that, we plan to make it easy for vendors to
-build and maintain their own runtimes that are available within Sprocket.
-
-In the command line interface and the configuration file, a configured execution runtime is called
-an [execution backend](/reference/backends/overview).
+Expressions, declarations, conditionals, scatters, and call dependencies all run inside the Sprocket
+process. Only each task's evaluated command, inputs, and resource requirements are handed to the
+selected backend.
 
 ### The life of a run
 
-1. **Parse and validate the document.** Sprocket parses the WDL document, reports any errors it
-   finds, and resolves the [target and its inputs](/concepts/inputs).
+1. **Parse and validate the document.** Sprocket parses the WDL document, reports any errors, and
+   resolves the [target and its inputs](/concepts/inputs).
 2. **Evaluate the workflow.** Sprocket builds a dependency graph of the workflow and evaluates it in
-   the Sprocket process. Calls to tasks become units of work for the backend; everything else —
-   declarations, conditionals, scatters, and calls to other workflows — is evaluated in the process
-   itself. See [workflow evaluation](#workflow-evaluation).
+   the Sprocket process. Task calls are dispatched to the backend, while declarations, conditionals,
+   scatters, and subworkflow calls run in-process; see [workflow evaluation](#workflow-evaluation).
 3. **Prepare each call.** For each task call, Sprocket evaluates the requirements, hints, and
-   command, then stages the inputs. Remote `File` and `Directory` inputs are downloaded first for
-   every backend except TES, whose server fetches them itself. Sprocket reads from and writes to
-   [cloud storage](/reference/storage/overview) directly, so inputs can be given as `az://`,
-   `s3://`, or `gs://` URLs.
+   command, then stages inputs. Remote `File` and `Directory` inputs (`http://`, `https://`,
+   `az://`, `s3://`, or `gs://`) are downloaded locally for every backend except TES, whose server
+   fetches remote URLs itself; see [cloud storage](/reference/storage/overview).
 4. **Look the call up in the call cache.** When the [call cache](/concepts/call-caching) is enabled
-   and a previous successful execution matches, Sprocket reuses that result instead of running the
-   task again. This is what lets a failed run resume at the point of failure.
-5. **Run the command on the backend.** Sprocket uses exactly one configured
-   [execution backend](/reference/backends/overview) per evaluation: the local Docker backend by
-   default, or a TES server, or an LSF or Slurm cluster with Apptainer. The backend runs the command
-   in the task's [container](/concepts/containers) and reports back. The `local` backend is the
-   exception: it runs the command directly on the host.
-6. **Monitor and retry.** Sprocket tracks the lifecycle of every dispatched task. A failed task is
-   retried up to the maximum it requests, or up to the configured default; see
+   and a previous successful execution matches, Sprocket reuses the cached result instead of
+   re-running the task.
+5. **Run the command on the backend.** A run uses one selected
+   [execution backend](/reference/backends/overview) (Docker by default). Containerized backends run
+   the command inside the task's [container](/concepts/containers); the `local` backend runs it
+   directly on the host.
+6. **Monitor and retry.** Sprocket tracks each dispatched task and retries failed tasks up to the
+   task's `maxRetries` (or `max_retries`) setting or `run.task.retries`; see
    [retries](/reference/cli/run#retries).
 7. **Record outputs and provenance.** Outputs, logs, and each task attempt are written under the
-   [output directory](/reference/cli/run#output-directory), and every execution is recorded in a
-   SQLite [provenance database](/concepts/provenance).
+   [output directory](/reference/cli/run#output-directory), and the run is recorded in a SQLite
+   [provenance database](/concepts/provenance).
 
 ### Workflow evaluation
 
-Sprocket does not walk a workflow from top to bottom. It builds a dependency graph whose nodes are
-the workflow's inputs, declarations, calls, scatters, conditionals, and outputs, and whose edges are
-the dependencies between them. A node is evaluated once every node it depends on has finished, which
-means the order in your source file does not decide the order of execution — the data flow does.
+Sprocket builds a dependency graph from the workflow's inputs, declarations, calls, scatters,
+conditionals, and outputs, and evaluates each node once its dependencies finish. Execution order
+follows data dependencies rather than declaration order in the file.
 
 ```wdl
 version 1.3
@@ -110,9 +90,8 @@ conditionals are spawned as concurrent work, so every call whose dependencies ar
 progress at the same time: in the workflow above, `describe` and the scatter over `items` both start
 as soon as the workflow inputs are evaluated, and `combine` waits only for the scatter.
 
-A call to a task produces a unit of work for the execution backend. A call to a workflow does not:
-Sprocket evaluates the called workflow's own graph in the same process, so a subworkflow is
-scheduled exactly like the workflow that called it.
+Calling a subworkflow evaluates that workflow's dependency graph in the same Sprocket process; only
+task calls are sent to the execution backend.
 
 Scatters and conditionals are evaluated as subgraphs. A scatter evaluates its body once per array
 element and gathers the results into arrays; a conditional evaluates its body only when the
@@ -123,40 +102,44 @@ condition is true and produces optional values otherwise.
 a time; it defaults to [1000](/reference/configuration#run-workflow-scatter-concurrency) and must be
 greater than zero. Independent scatters each get their own budget, and nested scatters multiply:
 with a concurrency of 10, a scatter inside a scatter evaluates up to 100 elements at once, and each
-one needs its own scopes, so nested scatters use memory exponentially. This setting does not change
-how many tasks the backend runs at once — only how many Sprocket offers it.
+one needs its own scopes, so nested scatters use memory exponentially. This setting limits how many
+scatter elements Sprocket evaluates concurrently; the backend controls how many tasks execute at
+once.
 :::
 
 ### Task execution
 
-Evaluating a call to a task is a small pipeline of its own. Sprocket evaluates the task's inputs and
-private declarations once, then runs an attempt loop.
+To run a task call, Sprocket evaluates the task's inputs and private declarations once, then runs an
+attempt loop.
 
 <ExecTaskAttemptFigure />
 
 #### Attempts
 
 Every attempt re-evaluates the `requirements`, `hints`, `runtime`, and `command` sections, so a
-command that adapts itself to the attempt number gets a fresh value each time.
+command or requirement that references `task.attempt` gets a fresh value on each retry.
 
 The `task` variable, including `task.attempt`, becomes available at different points depending on
 the WDL version:
 
-- **WDL 1.2:** once the requirements and hints have been evaluated, which is in time for the command
-  and the outputs to use it.
-- **WDL 1.3:** also while the requirements, hints, and runtime are being evaluated, so a task can
-  ask for more memory on its second attempt.
+- **WDL 1.2:** once the requirements and hints have been evaluated, in time for `command` and
+  `output` expressions.
+- **WDL 1.3:** also while `requirements`, `hints`, and `runtime` are being evaluated, so a task can
+  request more memory on a retry.
 
 #### Call cache and execution
 
-Inputs are localized next, but only for backends that need local paths; see
+Inputs are localized next for backends that use local paths; see
 [how backends differ](#how-backends-differ).
 
-On the first attempt only, and only when the task is cacheable, Sprocket computes a cache key and
-looks it up in the [call cache](/concepts/call-caching). A hit skips execution and reuses the cached
-execution result. A miss sends the command to the backend, which runs it under `attempts/<n>/` in
-the run directory, alongside the evaluated `command` file, `stdout`, `stderr`, and the task's
-`work/` directory.
+When the [call cache](/concepts/call-caching) is enabled and the task is cacheable, each attempt
+looks up a cache entry by document URI, task name, input values, and backend, then checks that the
+evaluated command, container, shell, requirements, hints, and input file contents still match. On a
+valid hit, Sprocket skips execution and reuses the cached result (if a command or requirement
+changes with `task.attempt`, an entry from a different attempt is invalidated rather than reused).
+On a miss or invalidated entry, the backend runs the command under `attempts/<n>/` in the run
+directory alongside the evaluated `command` file, `stdout`, `stderr`, and the task's `work/`
+directory.
 
 #### Success, failure, and retries
 
@@ -170,14 +153,14 @@ Success and failure are decided by the exit code. A task can declare a `return_c
 | An array of integers | Any code in the array |
 | Not set | `0` |
 
-When a task fails and it has retries left, Sprocket starts another attempt with its own attempt
-directory. When it has none left, the task errors and the run fails. Retries exclude the initial
-attempt. The number comes from the task's `max_retries` (or `maxRetries`) requirement, falling back
-to the `run.task.retries` setting; see [retries](/reference/cli/run#retries).
+When a task fails and has retries left, Sprocket starts another attempt in its own `attempts/<n>/`
+directory; when no retries remain, the task errors and the run fails. Retries exclude the initial
+attempt and come from the task's `max_retries` (or `maxRetries`) requirement, falling back to
+`run.task.retries`; see [retries](/reference/cli/run#retries).
 
-After a successful execution, Sprocket remaps any container paths in the working directory back to
-host paths and updates the call cache entry. The task's outputs are then evaluated from whichever
-produced the result: the fresh execution or the call cache.
+After a fresh execution succeeds, Sprocket remaps container symlinks in the working directory back
+to host paths and updates the call cache entry (cache hits skip this write). It then evaluates the
+task's `output` section from the execution or cached result.
 
 As attempts move through this pipeline, Sprocket records their timing, resolved constraints, retry
 causes, and any resource utilization reported by the engine or backend. See
@@ -185,8 +168,8 @@ causes, and any resource utilization reported by the engine or backend. See
 
 ### How backends differ
 
-Every backend receives the same evaluated command and the same inputs. What differs is where the
-command runs, what isolates it, who fetches remote inputs, and what limits how much runs at once.
+Backends differ in where commands run, how tasks are isolated, who stages remote inputs, and how
+concurrency is bounded:
 
 | Backend | Runs on | Container | Remote inputs | Limited by |
 | --- | --- | --- | --- | --- |
@@ -196,47 +179,40 @@ command runs, what isolates it, who fetches remote inputs, and what limits how m
 | [`lsf_apptainer`](/reference/backends/lsf) | LSF node | Apptainer | Sprocket downloads | `max_concurrency` |
 | [`slurm_apptainer`](/reference/backends/slurm) | Slurm node | Apptainer | Sprocket downloads | `max_concurrency` |
 
-- **`local`** runs the command as a shell process directly on the host, with no container to isolate
-  it. Use it only with WDL you trust.
-- **`local` and `docker`** track the host's CPU and memory and park tasks until enough is free. In
-  Docker service (swarm) mode, Docker places the tasks instead. A task that asks for more CPU or
-  memory than the backend has is an error by default. Set
+- **`local`** runs the command as a shell process directly on the host, with no container isolation.
+  Use it only with WDL you trust.
+- **`local` and `docker`** track the host's CPU and memory and queue tasks until enough capacity is
+  free (in Docker Swarm mode, Docker schedules placement instead). A task requesting more CPU or
+  memory than the backend has fails by default; set
   [`run.task.cpu_limit_behavior`](/reference/configuration#run-task-cpu-limit-behavior) or
   [`run.task.memory_limit_behavior`](/reference/configuration#run-task-memory-limit-behavior) to
-  `try_with_max` to run it with the maximum available instead of refusing it.
-- **`tes`** runs the command wherever the TES server schedules it. Remote inputs are passed to the
-  server as URLs; local inputs are uploaded to the storage location you configure. `max_concurrency`
-  caps the requests in flight and defaults to 10.
-- **`lsf_apptainer` and `slurm_apptainer`** submit through `bsub` and `sbatch`. `max_concurrency`
-  caps the concurrent submissions and defaults to 10; the cluster scheduler decides placement. Both
-  are experimental and have to be enabled with `run.experimental_features_enabled`.
+  `"try_with_max"` to clamp the request instead.
+- **`tes`** submits tasks to a TES server. Remote inputs are passed as URLs; local inputs are
+  uploaded to the configured cloud storage prefix. `max_concurrency` caps concurrent API requests
+  (`10` by default).
+- **`lsf_apptainer` and `slurm_apptainer`** submit jobs via `bsub` and `sbatch`. `max_concurrency`
+  caps concurrent submission processes (`10` by default); the cluster scheduler places and bounds
+  running jobs. Both are experimental and require `run.experimental_features_enabled = true`.
 
-The Docker backend is the one Sprocket uses when nothing is configured.
+Docker is the default backend when none is configured.
 
 ### Failures and cancellation
 
-When a task exhausts its retries, evaluation fails. What happens to the tasks that are still running
-is set by `run.fail`. The default, `slow`, waits for outstanding tasks to finish before the run
-ends; `fast` cancels executing tasks immediately. The same modes apply when you interrupt a run
-yourself — see [interrupting a run](/reference/cli/run#interrupting-a-run) for what each Ctrl-C
-does.
+When a task exhausts its retries, `run.fail` controls what happens to tasks that are still running:
+`"slow"` (the default) waits for outstanding tasks to finish before exiting, and `"fast"` cancels
+them immediately. Pressing Ctrl-C follows the same modes; see
+[interrupting a run](/reference/cli/run#interrupting-a-run).
 
 ### Outputs and provenance
 
-Each run gets a timestamped directory under the
-[output directory](/reference/cli/run#output-directory) holding the run's `inputs.json`,
-`outputs.json`, log, and one directory per task call, each with a numbered directory per attempt.
-Local `sprocket run` executions also attempt a best-effort write of `metrics.json`. Every run is
-recorded in the `sprocket.db` SQLite database at the root of the output directory. See
+Each run writes a timestamped directory under the
+[output directory](/reference/cli/run#output-directory) containing `inputs.json`, `outputs.json`,
+`output.log`, and per-call `attempts/<n>/` directories, and records the execution in `sprocket.db`.
+Local `sprocket run` executions also attempt a best-effort write of `metrics.json`. See
 [provenance tracking](/concepts/provenance) for the full layout.
 
-The database schema and the layout of `runs/` are internal and may change in any release, so query
-run history with Sprocket's commands or [REST API](/reference/rest-api) instead of reading them
-directly.
-
-::: info Note
-`sprocket dev server` shares the same execution engine and output structure as `sprocket run`, so
-everything on this page applies to runs submitted to the server as well.
-:::
+The `sprocket.db` schema and the internal layout of `runs/` may change in any release; query run
+history through Sprocket's commands or [REST API](/reference/rest-api) rather than reading those
+files directly.
 
 [TES]: https://www.ga4gh.org/product/task-execution-service-tes

@@ -23,14 +23,25 @@ or get involved.
 Which repository an issue belongs in depends on the part of the project it concerns.
 
 - [`stjude-rust-labs/sprocket`](https://github.com/stjude-rust-labs/sprocket/issues)
-  — the `sprocket` command line tool, the execution engine, and configuration.
-- [`stjude-rust-labs/wdl`](https://github.com/stjude-rust-labs/wdl/issues) — the `wdl` family of
-  crates, including validation and [lint rules](/reference/lint-rules). New rule ideas are welcome
-  here.
+  — the `sprocket` command line tool, the execution engine, configuration, the
+  [Python bindings](/integrations/python), and the `wdl` family of crates, including validation and
+  [lint rules](/reference/lint-rules). New rule ideas are welcome here.
+- [`stjude-rust-labs/sprocket.bio`](https://github.com/stjude-rust-labs/sprocket.bio/issues) —
+  [this documentation website](https://github.com/stjude-rust-labs/sprocket.bio).
 - [`stjude-rust-labs/sprocket-vscode`](https://github.com/stjude-rust-labs/sprocket-vscode/issues)
   — the [Visual Studio Code extension](/integrations/vscode).
-- [`stjude-rust-labs/sprocket.nvim`](https://github.com/stjude-rust-labs/sprocket.nvim)
-  — the [Neovim plugin](/integrations/neovim).
+- [`stjude-rust-labs/sprocket-intellij`](https://github.com/stjude-rust-labs/sprocket-intellij/issues)
+  — the [JetBrains IDE plugin](https://github.com/stjude-rust-labs/sprocket-intellij).
+- [`stjude-rust-labs/sprocket-zed`](https://github.com/stjude-rust-labs/sprocket-zed/issues) — the
+  [Zed extension](https://github.com/stjude-rust-labs/sprocket-zed).
+- [`stjude-rust-labs/sprocket.nvim`](https://github.com/stjude-rust-labs/sprocket.nvim/issues) — the
+  [Neovim plugin](/integrations/neovim).
+- [`stjude-rust-labs/sprocket-action`](https://github.com/stjude-rust-labs/sprocket-action/issues)
+  — the [Sprocket GitHub Action](/integrations/github-action) for running checks, lints, format
+  checks, and input validation in CI.
+- [`stjude-rust-labs/setup-sprocket`](https://github.com/stjude-rust-labs/setup-sprocket/issues) —
+  the [`setup-sprocket` GitHub Action](https://github.com/stjude-rust-labs/setup-sprocket) for
+  installing and caching `sprocket` in GitHub Actions workflows.
 
 Larger design changes are discussed as RFCs in
 [`stjude-rust-labs/rfcs`](https://github.com/stjude-rust-labs/rfcs). For example, the design of
@@ -43,10 +54,11 @@ Contributions are welcome. Sprocket has been architected from the beginning to m
 potential for any interested party to contribute effectively, and the practices that make that
 possible—no code ownership, required documentation for public members, a common commit message
 style, `CHANGELOG.md` entries, and a comprehensive test suite—are described in the
-[philosophy](/about/philosophy#community-focused-codebase). Start from the contributing guidelines
-in the repository you want to work on: [`sprocket`](https://github.com/stjude-rust-labs/sprocket)
-for the command line tool and engine, or [`wdl`](https://github.com/stjude-rust-labs/wdl) for the
-crates.
+[philosophy](/about/philosophy#community-focused-codebase). Start from the
+[contributing guidelines](https://github.com/stjude-rust-labs/sprocket/blob/main/CONTRIBUTING.md)
+in [`stjude-rust-labs/sprocket`](https://github.com/stjude-rust-labs/sprocket) for the command line
+tool, engine, `wdl` crates, and Python bindings, or the documentation in any of the other
+repositories above.
 
 If you plan to run Sprocket on Windows and hit problems,
 [report the issue](https://github.com/stjude-rust-labs/sprocket/issues)—native Windows support is

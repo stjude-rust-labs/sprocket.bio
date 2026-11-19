@@ -18,16 +18,17 @@ These documented, non-experimental interfaces are stable:
 
 - command syntax and behavior for commands outside `sprocket dev` that are not otherwise marked
   experimental;
-- exit statuses and whether output is written to stdout or stderr;
+- whether a command exits with zero (success) or a non-zero status (failure), and whether output is
+  written to stdout or stderr;
 - `sprocket.toml` keys, their value types, their defaults, and their documented meanings;
-- the `/api/v1` API (its server must graduate from `sprocket dev` before Sprocket `1.0` can ship);
+- the `/api/v1` API;
 - explicitly documented machine-readable JSON, including the documented `inputs.json` and
   `outputs.json` formats produced by stable commands; and
 - documented `--index-on` behavior on stable commands.
 
 Do not parse human-readable output. Its wording, layout, colors, progress indicators, diagnostics,
-and log messages may change without deprecation. Use documented machine-readable JSON, exit
-statuses, and stable APIs for automation.
+and log messages may change without deprecation. Use documented machine-readable JSON, zero or
+non-zero exit statuses, and stable APIs for automation.
 
 The following are not covered by the executable's policy:
 

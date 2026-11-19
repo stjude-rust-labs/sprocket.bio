@@ -222,6 +222,8 @@ The currently supported basic output assertions are:
 There are also several compound output assertions which can be combined with the above in order to
 test properties of compound WDL types:
 
+- `All: <inner assertion>`: applies the inner assertion to all elements of the output `Array`
+- `Any: <inner assertion>`: applies the inner assertion to elements of the output `Array`, passing if at least one element succeeds
 - `First: <inner assertion>`: applies the inner assertion to the first element of an output `Array`
 - `Last: <inner assertion>`: applies the inner assertion to the last element of an output `Array`
 - `Left: <inner assertion>`: applies the inner assertion to the left element of an output `Pair`
