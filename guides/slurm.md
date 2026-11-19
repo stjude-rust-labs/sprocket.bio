@@ -268,8 +268,8 @@ configuration. A relative path is relative to the output directory:
 image_cache_dir = "/shared/containers/cache"
 ```
 
-Sprocket then stores pulled `.sif` images in this directory and reuses them for later runs. See [containers](/concepts/containers) for how Sprocket resolves
-and caches images.
+Sprocket then stores pulled `.sif` images in this directory and reuses them for later runs. See
+[containers](/concepts/containers) for how Sprocket resolves and caches images.
 
 Alternatively, you can pre-pull images to a shared location using `apptainer pull` and reference the
 local SIF path in your WDL `container` declarations:

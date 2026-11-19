@@ -73,9 +73,8 @@ The JSON report has three top-level objects: `run`, `calls`, and `totals`.
 - `info` holds non-secret settings that vary by type:
   - local: CPU and memory limits;
   - TES: the service URL without credentials, plus `max_concurrency`;
-  - LSF and Slurm: `max_concurrency` and the configured queue or partition names.
-
-  Docker reports an empty `info` object.
+  - LSF and Slurm: `max_concurrency` and the configured queue or partition names;
+  - Docker: none (empty object).
 
 `backend` is `null` for runs that never started or that were recorded before backends were tracked.
 
@@ -138,8 +137,8 @@ Resource utilization is best effort. Different execution backends expose differe
 | TES metadata | Set `resource_usage_metadata = true` | Measurements reported by a compatible TES server | Key support depends on the server |
 | Cgroup fallback | Automatic for Docker Swarm and TES; `cgroup_usage = false` disables | Total, user, and system CPU time; peak cgroup memory | Used only when the backend reports no native usage; requires cgroup v2 |
 
-Sprocket also measures the size of local task work directories as `disk_used`. This is the size
-when the task finishes, not a high-water mark.
+Sprocket also measures the size of local task work directories as `disk_used`. This is the size when
+the task finishes, not a high-water mark.
 
 Memory values from different sources measure different things:
 
