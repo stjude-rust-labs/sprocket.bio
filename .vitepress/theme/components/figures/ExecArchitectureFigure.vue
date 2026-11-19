@@ -17,9 +17,8 @@ const compute = ['Your machine', 'TES server', 'HPC cluster']
 
 <template>
   <DocFigure
-    caption="Workflow logic never leaves the Sprocket process. It hands each task command to the
-             one configured execution backend, which runs it on your machine, a TES server, or a
-             cluster."
+    caption="Sprocket evaluates workflow logic in its own process and sends each task command to
+             the selected execution backend."
   >
     <svg class="sp-fig--wide" viewBox="0 0 720 292" role="img"
       aria-labelledby="exec-arch-w-title exec-arch-w-desc">
@@ -27,7 +26,7 @@ const compute = ['Your machine', 'TES server', 'HPC cluster']
       <desc id="exec-arch-w-desc">
         Three columns. The Sprocket process parses and validates the document, evaluates the
         workflow, localizes inputs, consults the call cache, and records provenance and outputs.
-        It sends task commands and inputs to one configured execution backend — local, docker,
+        It sends task commands and inputs to the selected execution backend — local, docker,
         tes, lsf_apptainer, or slurm_apptainer — and gets back exit codes and files. The backend
         starts and monitors the command on your machine, a TES server, or an HPC cluster.
       </desc>
@@ -83,7 +82,7 @@ const compute = ['Your machine', 'TES server', 'HPC cluster']
       <desc id="exec-arch-n-desc">
         Three stacked panels. The Sprocket process parses and validates the document, evaluates the
         workflow, localizes inputs, consults the call cache, and records provenance and outputs.
-        It sends task commands and inputs to one configured execution backend — local, docker,
+        It sends task commands and inputs to the selected execution backend — local, docker,
         tes, lsf_apptainer, or slurm_apptainer — and gets back exit codes and files. The backend
         starts and monitors the command on your machine, a TES server, or an HPC cluster.
       </desc>
@@ -111,7 +110,7 @@ const compute = ['Your machine', 'TES server', 'HPC cluster']
       <rect class="sp-fig-panel" x="8" y="316" width="304" height="108" rx="12" />
       <text class="sp-fig-title" x="20" y="340">Execution backend</text>
       <text class="sp-fig-note" x="160" y="364" text-anchor="middle">
-        exactly one is configured per run
+        one backend is used per run
       </text>
       <text class="sp-fig-mono" x="160" y="388" text-anchor="middle">local · docker · tes</text>
       <text class="sp-fig-mono" x="160" y="410" text-anchor="middle">

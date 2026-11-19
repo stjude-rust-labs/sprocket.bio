@@ -22,15 +22,15 @@ check to fail. See
 
 ### Call
 
-A use of a task inside a workflow. During a workflow run, Sprocket gives each task call its own
-directory under `calls/`, with execution attempts below it. See
+An invocation of a task or workflow inside a workflow. During a workflow run, Sprocket gives each
+task call its own directory under `calls/`, with execution attempts below it. See
 [Workflow runs](/concepts/provenance#workflow-runs).
 
 ### Call cache
 
 The persistent cache that lets Sprocket reuse the result of a previously successful task execution
-with matching inputs and execution context. Call caching is off by default, and only a task that
-succeeds on its first attempt is eligible. See [Call cache](/concepts/call-caching).
+with matching inputs and execution context. Call caching is off by default
+(`run.task.cache = "off"`). See [Call cache](/concepts/call-caching).
 
 ### Container
 
@@ -100,8 +100,8 @@ and are enabled by `sprocket lint` or `sprocket check --lint`. See
 ### Lock file
 
 The experimental `sprocket.lock` file written by `sprocket dev lock`. It records container image
-manifest checksums and the time they were resolved. Sprocket 0.33.0 does not yet consume this file
-during a run. See
+manifest checksums and the time they were resolved. When the file is present, `sprocket run` and
+`sprocket test` use it to replace container image tags with the recorded digests. See
 [`sprocket dev lock`](/reference/cli/dev/lock).
 
 ### LSP / analyzer
@@ -131,7 +131,7 @@ output index can also link file and directory outputs. See
 ### Output directory
 
 The self-contained directory where Sprocket stores execution data. It defaults to `./out` and
-contains the provenance database, immutable `runs/` hierarchy, and optional `index/` hierarchy. See
+contains the provenance database, the `runs/` hierarchy, and the optional `index/` hierarchy. See
 [Output directory](/concepts/provenance#output-directory).
 
 ### Provenance database
